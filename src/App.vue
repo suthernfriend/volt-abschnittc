@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { ref } from "vue";
-import type { Election } from "@/lib/Types";
+import { type Election, renderCandidateName } from "@/lib/Types";
 import Overview from "@/views/Overview.vue";
 import VoteInput from "@/views/VoteInput.vue";
 import Ballot from "@/views/Ballot.vue";
@@ -9,12 +9,12 @@ import Candidates from "@/views/Candidates.vue";
 import Introduction from "@/views/Introduction.vue";
 import Export from "@/views/Export.vue";
 import { v4 } from "uuid";
-import { testCandidates } from "@/test/TestData";
+import { testCandidates, testCounts } from "@/test/TestData";
 
 const election = ref<Election>({
 	counts: {
-		male: [],
-		female: []
+		female: [...testCounts.female],
+		male: [...testCounts.male]
 	},
 	candidates: [...testCandidates],
 	countingCommission: [],
@@ -49,7 +49,7 @@ const menuItems: { view: View, title: string, classes(): string }[] = [
 		<div class="container">
 			<div class="navbar-brand">
 				<a class="navbar-item" href="/">
-					<!--					<img src="./assets/logo.png" alt="Volt Logo">-->
+					<img src="./assets/logo.png" alt="Volt Logo">
 				</a>
 				<h1 class="navbar-item">Abschnitt C - Auszählungstool für das Verfahren zur Aufstellung von
 					Kandidierenden zu staatlichen Wahlen bei Volt</h1>

@@ -46,6 +46,8 @@ function removeCandidate(index: number) {
 					<th>Nachname</th>
 					<th>Titel</th>
 					<th>Extra</th>
+					<th>Ab Listenplatz</th>
+					<th>Liste</th>
 					<th></th>
 				</tr>
 				</thead>
@@ -56,6 +58,15 @@ function removeCandidate(index: number) {
 					<td><input type="text" class="input" v-model="election.candidates[i].lastName"></td>
 					<td><input type="text" class="input" v-model="election.candidates[i].title"></td>
 					<td><input type="text" class="input" v-model="election.candidates[i].extra"></td>
+					<td><input type="text" class="input" v-model="election.candidates[i].minSpot"></td>
+					<td>
+						<div class="select">
+							<select v-model="election.candidates[i].list">
+								<option value="male">Männlich / Divers</option>
+								<option value="female">Weiblich / Divers</option>
+							</select>
+						</div>
+					</td>
 					<td>
 						<button @click="removeCandidate(i)" class="button is-danger">
 							<font-awesome-icon :icon="faTrashCan" />
