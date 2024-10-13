@@ -40,7 +40,6 @@ export interface ListCompleteResult {
 	type: "list-complete";
 	list: ResultEntry[];
 	preliminaryLists: NeedRunoffResult["preliminaryLists"];
-	runoffCandidates: NeedRunoffResult["runoffCandidates"];
 }
 
 export type Result = ListCompleteResult | NeedConfirmationResult | NeedLotResult | NeedRunoffResult;
@@ -233,276 +232,218 @@ export class Evaluation {
 		return result;
 	}
 
-	static;
+	static evaluateSingleList(list: ResultEntry[], candidates: Candidate    []): ResultEntry[] {
+	}
 
-	evaluateSingleList(list
-						   :
-						   ResultEntry[], candidates;
+	static getRunoffCandidate(list: ResultEntry[], candidates: Candidate    []) {
+		let minSpot = 1;
+		const maxSpot = candidates.map(value => value.minSpot).reduce((a, b) => Math.max(a, b));
+		while (minSpot <= maxSpot) {
+			for (const entry of list) {
+				const id = entry.candidateId;
+				const candidate = candidates.find(value => value.id === id)!;
+				if (candidate.minSpot <= minSpot)
+					return id;
+			}
 
-:
-	Candidate;
-	[];
-):
-	ResultEntry;
-	[]; {
-
-}
-
-static
-getRunoffCandidate(list
-:
-ResultEntry[], candidates;
-:
-Candidate[];
-)
-{
-
-	let minSpot = 1;
-	const maxSpot = candidates.map(value => value.minSpot).reduce((a, b) => Math.max(a, b));
-
-	while (minSpot <= maxSpot) {
-
-		for (const entry of list) {
-			const id = entry.candidateId;
-			const candidate = candidates.find(value => value.id === id)!;
-
-			if (candidate.minSpot <= minSpot)
-				return id;
+			minSpot++;
 		}
 
-		minSpot++;
+		throw new Error("No candidate found for runoff");
 	}
 
-	throw new Error("No candidate found for runoff");
-}
+	static preliminaryList(candidates: string[], votes: Vote[]): ResultEntry[] {
 
-static
-preliminaryList(candidates
-:
-string[], votes;
-:
-Vote[];
-):
-ResultEntry[];
-{
+		const result: ResultEntry[] = [];
+		let next = 1;
+		const shift: { [candidateId: string]: number } = {};
 
-	const result: ResultEntry[] = [];
-	let next = 1;
+		for (const candidateId of candidates)
+			shift[candidateId] = 0;
 
-	const shift: { [candidateId: string]: number } = {};
-	for (const candidateId of candidates)
-		shift[candidateId] = 0;
+		while (result.length < candidates.length) {
 
-	while (result.length < candidates.length) {
+			const toConsiderForNext = candidates
+				.filter(value => result.find(value1 => value1.candidateId === value) === undefined)
+				.map(value => value);
 
-		const toConsiderForNext = candidates
-			.filter(value => result.find(value1 => value1.candidateId === value) === undefined)
-			.map(value => value);
+			// find out how many candidates have the heighest average
+			const twoHighest = Evaluation.getTwoHighest(toConsiderForNext, votes);
 
-		// find out how many candidates have the heighest average
-		const twoHighest = Evaluation.getTwoHighest(toConsiderForNext, votes);
+			if (typeof twoHighest === "string") {
+				result.push({
+					candidateId: twoHighest,
+					score: Evaluation.averageForCandidate(twoHighest, votes),
+					shift: -shift[twoHighest],
+					position: next
+				});
+			} else {
+				const higher = Evaluation.directComparison(twoHighest[0], twoHighest[1], votes);
 
-		if (typeof twoHighest === "string") {
-			result.push({
-				candidateId: twoHighest,
-				score: Evaluation.averageForCandidate(twoHighest, votes),
-				shift: -shift[twoHighest],
-				position: next
-			});
-		} else {
-			const higher = Evaluation.directComparison(twoHighest[0], twoHighest[1], votes);
+				const theHigher = higher > 0 ? twoHighest[0] : twoHighest[1];
+				const theLower = higher > 0 ? twoHighest[1] : twoHighest[0];
 
-			const theHigher = higher > 0 ? twoHighest[0] : twoHighest[1];
-			const theLower = higher > 0 ? twoHighest[1] : twoHighest[0];
+				result.push({
+					candidateId: theHigher,
+					score: Evaluation.averageForCandidate(theHigher, votes),
+					shift: -shift[theHigher],
+					position: next
+				});
 
-			result.push({
-				candidateId: theHigher,
-				score: Evaluation.averageForCandidate(theHigher, votes),
-				shift: -shift[theHigher],
-				position: next
-			});
+				// only increase shift if the lower one is the one that has the higher rating
+				if (theLower === twoHighest[0])
+					shift[theLower]++;
+			}
 
-			// only increase shift if the lower one is the one that has the higher rating
-			if (theLower === twoHighest[0])
-				shift[theLower]++;
+			next++;
 		}
 
-		next++;
+		return result;
 	}
 
-	return result;
-}
+	static directComparison(candidateA: string, candidateB: string, votes: Vote[]): number {
+		let a = 0;
+		let b = 0;
 
-static
-directComparison(candidateA
-:
-string, candidateB;
-:
-string, votes;
-:
-Vote[];
-):
-number;
-{
-	let a = 0;
-	let b = 0;
+		for (const vote of votes) {
+			if (vote.rankings[candidateA] === undefined || vote.rankings[candidateB] === undefined)
+				continue;
 
-	for (const vote of votes) {
-		if (vote.rankings[candidateA] === undefined || vote.rankings[candidateB] === undefined)
-			continue;
-
-		if (vote.rankings[candidateA] < vote.rankings[candidateB]) {
-			a++;
-		} else if (vote.rankings[candidateA] > vote.rankings[candidateB]) {
-			b++;
-		}
-	}
-
-	return b - a;
-}
-
-
-static
-highestRankedCandidateByPointCounts(candidates
-:
-string[], votes;
-:
-Vote[];
-):
-string[];
-{
-
-	let leftInComparison = [...candidates];
-	let i = 10;
-	while (leftInComparison.length > 1 && i > 0) {
-		leftInComparison = this.highestRankedCandidatesByPointCount(i, leftInComparison, votes);
-		i--;
-	}
-
-	return leftInComparison;
-}
-
-static
-highestRankedCandidatesByPointCount(count
-:
-number, candidates;
-:
-string[], votes;
-:
-Vote[];
-):
-string[];
-{
-	const nCount: { [candidateId: string]: number } = {};
-
-	for (const candidate of candidates) {
-		nCount[candidate] = 0;
-	}
-
-	for (const vote of votes) {
-		for (const candidate of candidates) {
-			if (vote.rankings[candidate] === count) {
-				nCount[candidate]++;
+			if (vote.rankings[candidateA] < vote.rankings[candidateB]) {
+				a++;
+			} else if (vote.rankings[candidateA] > vote.rankings[candidateB]) {
+				b++;
 			}
 		}
+
+		return b - a;
 	}
 
-	// return the highest
-	const highest = Math.max(...Object.values(nCount));
+	static highestRankedCandidateByPointCounts(candidates: string[], votes: Vote[]): string[] {
 
-	const out: string[] = [];
-	for (const k in nCount)
-		if (nCount[k] === highest)
-			out.push(k);
-
-	return out;
-}
-
-static
-getTwoHighest(candidates
-:
-string[], votes;
-:
-Vote[];
-):
-[string, string] | string;
-{
-
-	// first
-	const first = this.getHighestAverage(candidates, votes);
-
-	if (candidates.length === 1)
-		return candidates[0];
-	else if (first.length === 2)
-		return [first[0], first[1]];
-	else if (first.length > 2) {
-		// the two candidates which have a higher score more often
-		const highest = this.highestRankedCandidateByPointCounts(first, votes);
-
-		if (highest.length === 2)
-			return [highest[0], highest[1]];
-
-		if (highest.length === 1) {
-			const withoutHeighest = first.filter(value => value !== highest[0]);
-			const nextHighest = this.getHighestAverage(withoutHeighest, votes);
-
-			if (nextHighest.length === 1)
-				return [highest[0], nextHighest[0]];
+		let leftInComparison = [...candidates];
+		let i = 1;
+		while (leftInComparison.length > 1 && i > 0) {
+			leftInComparison = this.highestRankedCandidatesByPointCount(i, leftInComparison, votes);
+			i--;
 		}
 
-		throw new Error("This is not possible without all votes being equal");
-
-	} else if (first.length === 1) {
-		// we have 1 guy with the highest average
-		const withoutHighest = candidates.filter(value => value !== first[0]);
-
-		// by average
-		const secondHighestByAverage = this.getHighestAverage(withoutHighest, votes);
-
-		if (secondHighestByAverage.length === 1)
-			return [first[0], secondHighestByAverage[0]];
-
-		const secondHighest = this.highestRankedCandidateByPointCounts(withoutHighest, votes);
-
-		if (secondHighest.length === 1)
-			return [first[0], secondHighest[0]];
-
-		throw new Error("Cannot determine second highest: All votes identical");
-
-	} else {
-		throw new Error(`Huh ? ${first}`);
+		return leftInComparison;
 	}
+
+	static highestRankedCandidatesByPointCount(count: number, candidates: string[], votes: Vote[]): string[] {
+		const nCount: { [candidateId: string]: number } = {};
+
+		for (const candidate of candidates) {
+			nCount[candidate] = 0;
+		}
+
+		for (const vote of votes) {
+			for (const candidate of candidates) {
+				if (vote.rankings[candidate] === count) {
+					nCount[candidate]++;
+				}
+			}
+		}
+
+		// return the highest
+		const highest = Math.max(...Object.values(nCount));
+
+		const out: string[] = [];
+		for (const k in nCount)
+			if (nCount[k] === highest)
+				out.push(k);
+
+		return out;
+	}
+
+	static getTwoHighest(candidates: string[], votes: Vote[]): [string, string] | string {
+
+		// first
+		const first = this.getHighestAverage(candidates, votes);
+
+		if (candidates.length === 1)
+			return candidates[0];
+		else if (first.length === 2)
+			return [first[0], first[1]];
+		else if (first.length > 2) {
+			// the two candidates which have a higher score more often
+			const highest = this.highestRankedCandidateByPointCounts(first, votes);
+
+			if (highest.length === 2)
+				return [highest[0], highest[1]];
+
+			if (highest.length === 1) {
+				const withoutHeighest = first.filter(value => value !== highest[0]);
+				const nextHighest = this.getHighestAverage(withoutHeighest, votes);
+
+				if (nextHighest.length === 1)
+					return [highest[0], nextHighest[0]];
+			}
+
+			throw new Error("This is not possible without all votes being equal");
+
+		} else if (first.length === 1) {
+			// we have 1 guy with the highest average
+			const withoutHighest = candidates.filter(value => value !== first[0]);
+
+			// by average
+			const secondHighestByAverage = this.getHighestAverage(withoutHighest, votes);
+
+			if (secondHighestByAverage.length === 1)
+				return [first[0], secondHighestByAverage[0]];
+
+			const secondHighest = this.highestRankedCandidateByPointCounts(withoutHighest, votes);
+
+			if (secondHighest.length === 1)
+				return [first[0], secondHighest[0]];
+
+			throw new Error("Cannot determine second highest: All votes identical");
+
+		} else {
+			throw new Error(`Huh ? ${first}`);
+		}
+	}
+
+	/**
+	 * If the first N candidates with the same average
+	 */
+	static;
+
+	getHighestAverage(candidates
+						  :
+						  string[], votes;
+
+:
+	Vote;
+	[];
+):
+	string;
+	[]; {
+
+	if(candidates
+
+.
+	length;
+===
+	0;
+) {
+	return;
+	[];
 }
 
-/**
- * If the first N candidates with the same average
- */
-static
-getHighestAverage(candidates
-:
-string[], votes;
-:
-Vote[];
-):
-string[];
-{
+if (candidates.length === 1) {
+	return [candidates[0]];
+}
 
-	if (candidates.length === 0) {
-		return [];
-	}
+const averages = this.averagesForCandidates(candidates, votes);
+const highest = Math.max(...Object.values(averages));
 
-	if (candidates.length === 1) {
-		return [candidates[0]];
-	}
-
-	const averages = this.averagesForCandidates(candidates, votes);
-	const highest = Math.max(...Object.values(averages));
-
-	const out: string[] = [];
-	for (const k in averages)
-		if (this.equalsWithEpsilon(averages[k], highest, 1e-7))
-			out.push(k);
-	return out;
+const out: string[] = [];
+for (const k in averages)
+	if (this.equalsWithEpsilon(averages[k], highest, 1e-7))
+		out.push(k);
+return out;
 }
 
 static
