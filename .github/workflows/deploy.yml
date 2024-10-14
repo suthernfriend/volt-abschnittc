@@ -16,7 +16,7 @@ jobs:
       - name: Install Dependencies
         run: npm install
       - name: Build for Production
-        run: npm run build
+        run: npm run build-gh
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
