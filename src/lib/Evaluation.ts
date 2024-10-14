@@ -26,6 +26,8 @@ export interface NeedLotResult {
 		position: number;
 		list: "male" | "female";
 	};
+	preliminaryLists: NeedRunoffResult["preliminaryLists"];
+	runoffCandidates: NeedRunoffResult["runoffCandidates"];
 }
 
 export interface NeedConfirmationResult {
@@ -34,12 +36,16 @@ export interface NeedConfirmationResult {
 		candidate: string;
 		position: number;
 	};
+	list: ResultEntry[];
+	preliminaryLists: NeedRunoffResult["preliminaryLists"];
+	runoffCandidates: NeedRunoffResult["runoffCandidates"];
 }
 
 export interface ListCompleteResult {
 	type: "list-complete";
 	list: ResultEntry[];
 	preliminaryLists: NeedRunoffResult["preliminaryLists"];
+	runoffCandidates: NeedRunoffResult["runoffCandidates"];
 }
 
 export type Result = ListCompleteResult | NeedConfirmationResult | NeedLotResult | NeedRunoffResult;
@@ -51,9 +57,7 @@ export interface EvaluationOptions {
 }
 
 export class Evaluation {
-
-	constructor(private options: EvaluationOptions) {
-	}
+	constructor(private options: EvaluationOptions) {}
 
 	static nullCountForCandidate(candidate: string, votes: Vote[]): number {
 		let i = 0;
@@ -71,8 +75,7 @@ export class Evaluation {
 		let i = 0;
 
 		for (const vote of votes) {
-			if (vote.rankings.hasOwnProperty(candidate))
-				i++;
+			if (vote.rankings.hasOwnProperty(candidate)) i++;
 		}
 
 		return i;
@@ -96,15 +99,14 @@ export class Evaluation {
 		let sum = 0;
 
 		for (const vote of votes) {
-			if (vote.rankings.hasOwnProperty(candidate))
-				sum += vote.rankings[candidate];
+			if (vote.rankings.hasOwnProperty(candidate)) sum += vote.rankings[candidate];
 		}
 
 		return sum / this.voteCountForCandidate(candidate, votes);
 	}
 
 	static filterCandidatesByList(candidates: Candidate[], list: "male" | "female") {
-		return candidates.filter(candidate => candidate.list === list);
+		return candidates.filter((candidate) => candidate.list === list);
 	}
 
 	uniqueVotes(): Vote[] {
@@ -121,7 +123,6 @@ export class Evaluation {
 	}
 
 	public evaluate(): Result {
-
 		if (this.options.votes.length === 0) {
 			throw new Error("No votes to evaluate");
 		}
@@ -152,22 +153,36 @@ export class Evaluation {
 		const male = Evaluation.filterCandidatesByList(passed241, "male");
 		const female = Evaluation.filterCandidatesByList(passed241, "female");
 
-		const maleList = Evaluation.preliminaryList(male.map(value => value.id), votes);
-		const femaleList = Evaluation.preliminaryList(female.map(value => value.id), votes);
+		const maleList = Evaluation.preliminaryList(
+			male.map((value) => value.id),
+			votes,
+		);
+		const femaleList = Evaluation.preliminaryList(
+			female.map((value) => value.id),
+			votes,
+		);
 
 		const maleRunoffCandidate = Evaluation.getRunoffCandidate(maleList, this.options.candidates);
 		const femaleRunoffCandidate = Evaluation.getRunoffCandidate(femaleList, this.options.candidates);
 
 		if (maleList.length > 0 && femaleList.length > 0 && this.options.runoffWinner === undefined) {
-
+			// runoff undecided and we have two lists
 			return {
 				type: "need-runoff",
 				preliminaryLists: { male: maleList, female: femaleList },
-				runoffCandidates: { maleCandidate: maleRunoffCandidate, femaleCandidate: femaleRunoffCandidate }
+				runoffCandidates: { maleCandidate: maleRunoffCandidate, femaleCandidate: femaleRunoffCandidate },
 			};
 		} else if (maleList.length === 0) {
+			// only female list
+			throw new Error("Not implemented");
+
+		} else if (femaleList.length === 0) {
+			// only male list
+			throw new Error("Not implemented");
 
 		} else if (this.options.runoffWinner !== undefined) {
+			// runoff decided, now we need to evaluate the spots
+
 			const winnerList = this.options.runoffWinner == maleRunoffCandidate ? maleList : femaleList;
 			const loserList = this.options.runoffWinner == femaleRunoffCandidate ? maleList : femaleList;
 
@@ -177,8 +192,10 @@ export class Evaluation {
 				type: "list-complete",
 				list: dl,
 				preliminaryLists: { male: maleList, female: femaleList },
-				runoffCandidates: { maleCandidate: maleRunoffCandidate, femaleCandidate: femaleRunoffCandidate }
+				runoffCandidates: { maleCandidate: maleRunoffCandidate, femaleCandidate: femaleRunoffCandidate },
 			};
+		} else {
+			throw new Error("Not implemented");
 		}
 	}
 
@@ -188,7 +205,6 @@ export class Evaluation {
 		let previous = "none";
 
 		while (haveSpot.length < result.length) {
-
 			let nextList: ResultEntry[];
 
 			if (previous === "winner") {
@@ -199,8 +215,7 @@ export class Evaluation {
 				previous = "winner";
 			}
 
-			let nextPossible = nextList
-				.filter(value => !haveSpot.includes(value.candidateId));
+			let nextPossible = nextList.filter((value) => !haveSpot.includes(value.candidateId));
 
 			if (nextPossible.length === 0) {
 				if (previous === "winner") {
@@ -213,37 +228,36 @@ export class Evaluation {
 			}
 
 			for (const entry of nextPossible) {
-				const minSpot = candidates.find(value => value.id === entry.candidateId)!.minSpot;
+				const minSpot = candidates.find((value) => value.id === entry.candidateId)!.minSpot;
 
-				if (minSpot <= spot) {
+				if (minSpot <= haveSpot.length + 1) {
 					result.push({
 						candidateId: entry.candidateId,
 						score: entry.score,
 						shift: entry.shift,
-						position: haveSpot.length + 1
+						position: haveSpot.length + 1,
 					});
 					haveSpot.push(entry.candidateId);
 					break;
 				}
 			}
-
 		}
 
 		return result;
 	}
 
-	static evaluateSingleList(list: ResultEntry[], candidates: Candidate    []): ResultEntry[] {
+	static evaluateSingleList(list: ResultEntry[], candidates: Candidate[]): ResultEntry[] {
+		throw new Error("Not implemented");
 	}
 
-	static getRunoffCandidate(list: ResultEntry[], candidates: Candidate    []) {
+	static getRunoffCandidate(list: ResultEntry[], candidates: Candidate[]) {
 		let minSpot = 1;
-		const maxSpot = candidates.map(value => value.minSpot).reduce((a, b) => Math.max(a, b));
+		const maxSpot = candidates.map((value) => value.minSpot).reduce((a, b) => Math.max(a, b));
 		while (minSpot <= maxSpot) {
 			for (const entry of list) {
 				const id = entry.candidateId;
-				const candidate = candidates.find(value => value.id === id)!;
-				if (candidate.minSpot <= minSpot)
-					return id;
+				const candidate = candidates.find((value) => value.id === id)!;
+				if (candidate.minSpot <= minSpot) return id;
 			}
 
 			minSpot++;
@@ -253,19 +267,16 @@ export class Evaluation {
 	}
 
 	static preliminaryList(candidates: string[], votes: Vote[]): ResultEntry[] {
-
 		const result: ResultEntry[] = [];
 		let next = 1;
 		const shift: { [candidateId: string]: number } = {};
 
-		for (const candidateId of candidates)
-			shift[candidateId] = 0;
+		for (const candidateId of candidates) shift[candidateId] = 0;
 
 		while (result.length < candidates.length) {
-
 			const toConsiderForNext = candidates
-				.filter(value => result.find(value1 => value1.candidateId === value) === undefined)
-				.map(value => value);
+				.filter((value) => result.find((value1) => value1.candidateId === value) === undefined)
+				.map((value) => value);
 
 			// find out how many candidates have the heighest average
 			const twoHighest = Evaluation.getTwoHighest(toConsiderForNext, votes);
@@ -275,7 +286,7 @@ export class Evaluation {
 					candidateId: twoHighest,
 					score: Evaluation.averageForCandidate(twoHighest, votes),
 					shift: -shift[twoHighest],
-					position: next
+					position: next,
 				});
 			} else {
 				const higher = Evaluation.directComparison(twoHighest[0], twoHighest[1], votes);
@@ -287,12 +298,11 @@ export class Evaluation {
 					candidateId: theHigher,
 					score: Evaluation.averageForCandidate(theHigher, votes),
 					shift: -shift[theHigher],
-					position: next
+					position: next,
 				});
 
 				// only increase shift if the lower one is the one that has the higher rating
-				if (theLower === twoHighest[0])
-					shift[theLower]++;
+				if (theLower === twoHighest[0]) shift[theLower]++;
 			}
 
 			next++;
@@ -306,8 +316,7 @@ export class Evaluation {
 		let b = 0;
 
 		for (const vote of votes) {
-			if (vote.rankings[candidateA] === undefined || vote.rankings[candidateB] === undefined)
-				continue;
+			if (vote.rankings[candidateA] === undefined || vote.rankings[candidateB] === undefined) continue;
 
 			if (vote.rankings[candidateA] < vote.rankings[candidateB]) {
 				a++;
@@ -320,7 +329,6 @@ export class Evaluation {
 	}
 
 	static highestRankedCandidateByPointCounts(candidates: string[], votes: Vote[]): string[] {
-
 		let leftInComparison = [...candidates];
 		let i = 1;
 		while (leftInComparison.length > 1 && i > 0) {
@@ -350,56 +358,45 @@ export class Evaluation {
 		const highest = Math.max(...Object.values(nCount));
 
 		const out: string[] = [];
-		for (const k in nCount)
-			if (nCount[k] === highest)
-				out.push(k);
+		for (const k in nCount) if (nCount[k] === highest) out.push(k);
 
 		return out;
 	}
 
 	static getTwoHighest(candidates: string[], votes: Vote[]): [string, string] | string {
-
 		// first
 		const first = this.getHighestAverage(candidates, votes);
 
-		if (candidates.length === 1)
-			return candidates[0];
-		else if (first.length === 2)
-			return [first[0], first[1]];
+		if (candidates.length === 1) return candidates[0];
+		else if (first.length === 2) return [first[0], first[1]];
 		else if (first.length > 2) {
 			// the two candidates which have a higher score more often
 			const highest = this.highestRankedCandidateByPointCounts(first, votes);
 
-			if (highest.length === 2)
-				return [highest[0], highest[1]];
+			if (highest.length === 2) return [highest[0], highest[1]];
 
 			if (highest.length === 1) {
-				const withoutHeighest = first.filter(value => value !== highest[0]);
+				const withoutHeighest = first.filter((value) => value !== highest[0]);
 				const nextHighest = this.getHighestAverage(withoutHeighest, votes);
 
-				if (nextHighest.length === 1)
-					return [highest[0], nextHighest[0]];
+				if (nextHighest.length === 1) return [highest[0], nextHighest[0]];
 			}
 
 			throw new Error("This is not possible without all votes being equal");
-
 		} else if (first.length === 1) {
 			// we have 1 guy with the highest average
-			const withoutHighest = candidates.filter(value => value !== first[0]);
+			const withoutHighest = candidates.filter((value) => value !== first[0]);
 
 			// by average
 			const secondHighestByAverage = this.getHighestAverage(withoutHighest, votes);
 
-			if (secondHighestByAverage.length === 1)
-				return [first[0], secondHighestByAverage[0]];
+			if (secondHighestByAverage.length === 1) return [first[0], secondHighestByAverage[0]];
 
 			const secondHighest = this.highestRankedCandidateByPointCounts(withoutHighest, votes);
 
-			if (secondHighest.length === 1)
-				return [first[0], secondHighest[0]];
+			if (secondHighest.length === 1) return [first[0], secondHighest[0]];
 
 			throw new Error("Cannot determine second highest: All votes identical");
-
 		} else {
 			throw new Error(`Huh ? ${first}`);
 		}
@@ -408,56 +405,24 @@ export class Evaluation {
 	/**
 	 * If the first N candidates with the same average
 	 */
-	static;
+	static getHighestAverage(candidates: string[], votes: Vote[]): string[] {
+		if (candidates.length === 0) {
+			return [];
+		}
 
-	getHighestAverage(candidates
-						  :
-						  string[], votes;
+		if (candidates.length === 1) {
+			return [candidates[0]];
+		}
 
-:
-	Vote;
-	[];
-):
-	string;
-	[]; {
+		const averages = this.averagesForCandidates(candidates, votes);
+		const highest = Math.max(...Object.values(averages));
 
-	if(candidates
+		const out: string[] = [];
+		for (const k in averages) if (this.equalsWithEpsilon(averages[k], highest, 1e-7)) out.push(k);
+		return out;
+	}
 
-.
-	length;
-===
-	0;
-) {
-	return;
-	[];
-}
-
-if (candidates.length === 1) {
-	return [candidates[0]];
-}
-
-const averages = this.averagesForCandidates(candidates, votes);
-const highest = Math.max(...Object.values(averages));
-
-const out: string[] = [];
-for (const k in averages)
-	if (this.equalsWithEpsilon(averages[k], highest, 1e-7))
-		out.push(k);
-return out;
-}
-
-static
-equalsWithEpsilon(a
-:
-number, b;
-:
-number, epsilon;
-:
-number;
-):
-boolean;
-{
-	return Math.abs(a - b) < epsilon;
-}
-
+	static equalsWithEpsilon(a: number, b: number, epsilon: number): boolean {
+		return Math.abs(a - b) < epsilon;
+	}
 }

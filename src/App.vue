@@ -1,7 +1,6 @@
 <script setup lang="ts">
-
-import { ref } from "vue";
-import { type Election, renderCandidateName } from "@/lib/Types";
+import { onMounted, ref } from "vue";
+import { type Election } from "@/lib/Types";
 import Overview from "@/views/Overview.vue";
 import VoteInput from "@/views/VoteInput.vue";
 import Ballot from "@/views/Ballot.vue";
@@ -10,16 +9,20 @@ import Introduction from "@/views/Introduction.vue";
 import Export from "@/views/Export.vue";
 import { v4 } from "uuid";
 import { testCandidates, testCounts } from "@/test/TestData";
+import AuthFence from "@/AuthFence.vue";
+import { container } from "@/lib/Container";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
 const election = ref<Election>({
 	counts: {
 		female: [...testCounts.female],
-		male: [...testCounts.male]
+		male: [...testCounts.male],
 	},
 	candidates: [...testCandidates],
 	countingCommission: [],
 	lead: "",
-	id: v4()
+	id: v4(),
 });
 const view = ref<View>("overview");
 
@@ -30,18 +33,40 @@ function setView(newView: View): void {
 }
 
 function eqActive(viewName: View): () => string {
-	return () => view.value === viewName ? "is-active" : "";
+	return () => (view.value === viewName ? "is-active" : "");
 }
 
-const menuItems: { view: View, title: string, classes(): string }[] = [
+const menuItems: { view: View; title: string; classes(): string }[] = [
 	{ view: "overview", title: "Übersicht", classes: eqActive("overview") },
 	{ view: "candidates", title: "Bewerber", classes: eqActive("candidates") },
 	{ view: "ballot", title: "Stimmzettel", classes: eqActive("ballot") },
 	{ view: "vote-input", title: "Eingabe", classes: eqActive("vote-input") },
 	{ view: "export", title: "Ergebniszettel", classes: eqActive("export") },
-	{ view: "introduction", title: "Einführung / Anleitung", classes: eqActive("introduction") }
+	{ view: "introduction", title: "Einführung / Anleitung", classes: eqActive("introduction") },
 ];
 
+const clientId = "612877073998-0nn7h87htlg1f76es2m2f3mr3lgglgsg.apps.googleusercontent.com";
+const hd = "volteuropa.org";
+
+const auth = ref<null | { name: string }>(null);
+
+const authManager = container.authManager();
+
+onMounted(() => {
+	if (authManager.isAuthenticated()) auth.value = { name: authManager.payload().name };
+});
+
+async function useCredential(cred: string) {
+	await authManager.useCredential(cred);
+	const payload = authManager.payload();
+	console.log(payload);
+	auth.value = { name: payload.name };
+}
+
+async function clearAuth() {
+	await authManager.clear();
+	auth.value = null;
+}
 </script>
 
 <template>
@@ -49,14 +74,26 @@ const menuItems: { view: View, title: string, classes(): string }[] = [
 		<div class="container">
 			<div class="navbar-brand">
 				<a class="navbar-item" href="/">
-					<img src="./assets/logo.png" alt="Volt Logo">
+					<img src="./assets/logo.png" alt="Volt Logo" />
 				</a>
-				<h1 class="navbar-item">Abschnitt C - Auszählungstool für das Verfahren zur Aufstellung von
-					Kandidierenden zu staatlichen Wahlen bei Volt</h1>
+				<h1 class="navbar-item">
+					Abschnitt C - Auszählungstool für das Verfahren zur Aufstellung von Kandidierenden zu staatlichen Wahlen bei Volt
+				</h1>
+			</div>
+			<div v-if="auth" class="navbar-end">
+				<div class="navbar-item">
+					{{ auth.name }}
+				</div>
+				<div class="navbar-item">
+					<button @click="clearAuth" class="button is-danger">
+						<font-awesome-icon :icon="faSignOutAlt" />
+					</button>
+				</div>
 			</div>
 		</div>
 	</nav>
-	<nav>
+	<auth-fence v-if="auth === null" :domain="hd" :client-id="clientId" @credential="useCredential" />
+	<nav v-if="auth">
 		<div class="tabs is-centered">
 			<ul>
 				<li v-for="v in menuItems" :class="v.classes()">
@@ -65,7 +102,7 @@ const menuItems: { view: View, title: string, classes(): string }[] = [
 			</ul>
 		</div>
 	</nav>
-	<main>
+	<main v-if="auth">
 		<overview v-if="view === 'overview'" v-model="election" />
 		<candidates v-if="view === 'candidates'" v-model="election" />
 		<ballot v-if="view === 'ballot'" v-model="election" />
@@ -78,8 +115,8 @@ const menuItems: { view: View, title: string, classes(): string }[] = [
 			<div class="message is-danger mt-4">
 				<div class="message-body">
 					<strong>Achtung!</strong>
-					Die Nutzung dieser Software erfordert eine Lizenz. Bitte kontaktiere <a
-					href="mailto:janpeter.koenig@volteuropa.org">mich</a>
+					Die Nutzung dieser Software erfordert eine Lizenz. Bitte kontaktiere
+					<a href="mailto:janpeter.koenig@volteuropa.org">mich</a>
 					bevor du die Software nutzt.
 				</div>
 			</div>
@@ -87,5 +124,4 @@ const menuItems: { view: View, title: string, classes(): string }[] = [
 	</footer>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
