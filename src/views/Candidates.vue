@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import type { Candidate, Election } from "@/lib/Types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faPlusSquare, faTrashCan } from "@fortawesome/free-regular-svg-icons";
@@ -14,8 +13,10 @@ function emptyCandidate(): Candidate {
 		firstName: "",
 		lastName: "",
 		id: v4(),
+		list: "male",
+		minSpot: 1,
 		title: "",
-		extra: ""
+		extra: "",
 	};
 }
 
@@ -29,7 +30,6 @@ function addCandidate() {
 function removeCandidate(index: number) {
 	election.value.candidates.splice(index, 1);
 }
-
 </script>
 
 <template>
@@ -40,57 +40,59 @@ function removeCandidate(index: number) {
 		<div class="box">
 			<table class="table">
 				<thead>
-				<tr>
-					<th></th>
-					<th>Vorname</th>
-					<th>Nachname</th>
-					<th>Titel</th>
-					<th>Extra</th>
-					<th>Ab Listenplatz</th>
-					<th>Liste</th>
-					<th></th>
-				</tr>
+					<tr>
+						<th></th>
+						<th>Vorname</th>
+						<th>Nachname</th>
+						<th>Titel</th>
+						<th>Extra</th>
+						<th>Ab Listenplatz</th>
+						<th>Liste</th>
+						<th></th>
+					</tr>
 				</thead>
 				<tbody>
-				<tr v-for="(candidate, i) in election.candidates">
-					<td><span class="tag">{{ candidate.id }}</span></td>
-					<td><input type="text" class="input" v-model="election.candidates[i].firstName"></td>
-					<td><input type="text" class="input" v-model="election.candidates[i].lastName"></td>
-					<td><input type="text" class="input" v-model="election.candidates[i].title"></td>
-					<td><input type="text" class="input" v-model="election.candidates[i].extra"></td>
-					<td><input type="text" class="input" v-model="election.candidates[i].minSpot"></td>
-					<td>
-						<div class="select">
-							<select v-model="election.candidates[i].list">
-								<option value="male">Männlich / Divers</option>
-								<option value="female">Weiblich / Divers</option>
-							</select>
-						</div>
-					</td>
-					<td>
-						<button @click="removeCandidate(i)" class="button is-danger">
-							<font-awesome-icon :icon="faTrashCan" />
-						</button>
-					</td>
-				</tr>
-				<tr>
-					<td><span class="tag">{{ newCandidate.id }}</span></td>
-					<td><input type="text" class="input" v-model="newCandidate.firstName"></td>
-					<td><input type="text" class="input" v-model="newCandidate.lastName"></td>
-					<td><input type="text" class="input" v-model="newCandidate.title"></td>
-					<td><input type="text" class="input" v-model="newCandidate.extra"></td>
-					<td>
-						<button @click="addCandidate" class="button is-success">
-							<font-awesome-icon :icon="faPlus" />
-						</button>
-					</td>
-				</tr>
+					<tr v-for="(candidate, i) in election.candidates">
+						<td>
+							<span class="tag">{{ candidate.id }}</span>
+						</td>
+						<td><input type="text" class="input" v-model="election.candidates[i].firstName" /></td>
+						<td><input type="text" class="input" v-model="election.candidates[i].lastName" /></td>
+						<td><input type="text" class="input" v-model="election.candidates[i].title" /></td>
+						<td><input type="text" class="input" v-model="election.candidates[i].extra" /></td>
+						<td><input type="text" class="input" v-model="election.candidates[i].minSpot" /></td>
+						<td>
+							<div class="select">
+								<select v-model="election.candidates[i].list">
+									<option value="male">Männlich / Divers</option>
+									<option value="female">Weiblich / Divers</option>
+								</select>
+							</div>
+						</td>
+						<td>
+							<button @click="removeCandidate(i)" class="button is-danger">
+								<font-awesome-icon :icon="faTrashCan" />
+							</button>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="tag">{{ newCandidate.id }}</span>
+						</td>
+						<td><input type="text" class="input" v-model="newCandidate.firstName" /></td>
+						<td><input type="text" class="input" v-model="newCandidate.lastName" /></td>
+						<td><input type="text" class="input" v-model="newCandidate.title" /></td>
+						<td><input type="text" class="input" v-model="newCandidate.extra" /></td>
+						<td>
+							<button @click="addCandidate" class="button is-success">
+								<font-awesome-icon :icon="faPlus" />
+							</button>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
