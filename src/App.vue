@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { type Election } from "@/lib/Types";
 import Overview from "@/views/Overview.vue";
 import VoteInput from "@/views/VoteInput.vue";
@@ -13,14 +13,16 @@ import AuthFence from "@/AuthFence.vue";
 import { container } from "@/lib/Container";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { remoteReactive } from "@/lib/RemoteObject";
 
-const election = ref<Election>({
+const [election, dataStatus] = remoteReactive<Election>("volt-abschnittc-election", {
 	counts: {
 		female: [...testCounts.female],
 		male: [...testCounts.male],
 	},
 	candidates: [...testCandidates],
 	countingCommission: [],
+	runoffWinner: "none",
 	lead: "",
 	id: v4(),
 });
@@ -67,6 +69,11 @@ async function clearAuth() {
 	await authManager.clear();
 	auth.value = null;
 }
+
+const ready = computed(() => {
+	return auth.value !== null && dataStatus.value.ready;
+});
+
 </script>
 
 <template>
@@ -93,7 +100,7 @@ async function clearAuth() {
 		</div>
 	</nav>
 	<auth-fence v-if="auth === null" :domain="hd" :client-id="clientId" @credential="useCredential" />
-	<nav v-if="auth">
+	<nav v-if="ready">
 		<div class="tabs is-centered">
 			<ul>
 				<li v-for="v in menuItems" :class="v.classes()">
@@ -102,7 +109,7 @@ async function clearAuth() {
 			</ul>
 		</div>
 	</nav>
-	<main v-if="auth">
+	<main v-if="ready">
 		<overview v-if="view === 'overview'" v-model="election" />
 		<candidates v-if="view === 'candidates'" v-model="election" />
 		<ballot v-if="view === 'ballot'" v-model="election" />

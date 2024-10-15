@@ -122,6 +122,7 @@ export interface Election {
 	countingCommission: string[];
 	lead: string;
 	candidates: Candidate[];
+	runoffWinner: string;
 	counts: {
 		male: Vote[];
 		female: Vote[];
@@ -156,4 +157,3 @@ export interface Ballot {
 	id: string;
 	candidates: Candidate[];
 }
-

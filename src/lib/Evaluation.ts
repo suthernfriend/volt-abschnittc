@@ -200,11 +200,13 @@ export class Evaluation {
 	}
 
 	static evaluateDoubleList(runoffWinnerList: ResultEntry[], runoffLoserList: ResultEntry[], candidates: Candidate[]): ResultEntry[] {
+
 		const result: ResultEntry[] = [];
 		const haveSpot: string[] = [];
+
 		let previous = "none";
 
-		while (haveSpot.length < result.length) {
+		while (haveSpot.length < candidates.length) {
 			let nextList: ResultEntry[];
 
 			if (previous === "winner") {

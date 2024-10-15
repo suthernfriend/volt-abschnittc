@@ -30,7 +30,7 @@ export class VoltToolsIopApi {
 		}
 	}
 
-	messageStream<I, O>(url: string): Promise<MessageStream<I, O>> {
+	messageStream<I, O>(url: string): MessageStream<I, O> {
 		const webSocket = new WebSocket(url);
 
 		let onMessageCb: MessageStreamCallback<T> | undefined = undefined;
@@ -53,32 +53,42 @@ export class VoltToolsIopApi {
 			close() {},
 		};
 
+		webSocket.onmessage = (ev: MessageEvent) => {
+			const data = JSON.parse(ev.data);
+			if (onMessageCb) {
+				onMessageCb(data);
+			}
+		};
+
 		webSocket.onopen = (ev: Event) => {
+			console.log("WebSocket opened");
 			onOpenCb?.();
 		};
 
 		webSocket.onerror = (ev: Event) => {
+			console.error("WebSocket error", ev);
 			webSocket.close();
 		};
 
 		webSocket.onclose = (ev: CloseEvent) => {
+			console.log("WebSocket closed", ev);
 			onCloseCb?.();
 		};
 
 		return messageStream;
 	}
 
-	async v1SynchronizedObject<T>(name: string, init: () => T): Promise<MessageStream<T, T>> {
-		const stream = await this.messageStream<T, T>(`${this.options.webSocketEndpoint}/api/v1/synchronized-object`);
+	async v1SynchronizedObject<T>(name: string, token: string): Promise<MessageStream<T, T>> {
+		const stream = this.messageStream<T, T>(`${this.options.webSocketEndpoint}/api/v1/synchronized-object?token=${token}`);
+		console.log("stream", stream);
 
 		stream.onOpen(() => {
 			stream.sendMessage({
-				type: "meta",
-				data: {
-					type: "set-object",
-					name,
-				},
+				type: "set-object",
+				name,
 			});
 		});
+
+		return stream;
 	}
 }

@@ -33,6 +33,10 @@ export class AuthManager {
 		return this.token !== null;
 	}
 
+	public getToken() {
+		return this.token;
+	}
+
 	public payload(): {
 		sub: string;
 		name: string;

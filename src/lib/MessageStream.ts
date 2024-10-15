@@ -1,35 +1,59 @@
-export interface MessageStreamMetaExit {
-	type: "exit";
-}
+export type MessageStreamCallback<T> = {
+	(setObject: MessageStreamMessageSetObject): void;
+	(exit: MessageStreamMessageExit): void;
+	(data: MessageStreamMessageData<T>): void;
+};
 
-export interface MessageStreamMetaSetObject {
+export interface MessageStreamMessageSetObject {
 	type: "set-object";
 	name: string;
 }
 
-export type MessageStreamMeta = MessageStreamMetaExit | MessageStreamMetaSetObject;
-
-export type MessageStreamCallback<T> = {
-	(type: "meta", data: MessageStreamMeta): void;
-	(type: "data", data: T): void;
-};
-
-export interface MessageStreamOutgoingMessageMeta {
-	type: "meta";
-	data: MessageStreamMeta;
+export interface MessageStreamMessageExit {
+	type: "exit";
 }
 
-export interface MessageStreamOutgoingMessageData<T> {
+export interface MessageStreamMessageCreated {
+	type: "created";
+}
+
+export interface MessageStreamMessageData<T> {
 	type: "data";
 	data: T;
 }
 
-export type MessageStreamOutgoingMessage<T> = MessageStreamOutgoingMessageMeta | MessageStreamOutgoingMessageData<T>;
+export interface MessageStreamCatchUp<T> {
+	type: "catch-up";
+	data: T[];
+}
 
-export interface MessageStream<I, O> {
-	onMessage(callback: MessageStreamCallback<I>): void;
+export type MessageStreamMessage<T> = MessageStreamMessageSetObject | MessageStreamMessageCreated |
+	MessageStreamMessageExit | MessageStreamMessageData<T> | MessageStreamCatchUp<T>;
 
-	sendMessage(type: MessageStreamOutgoingMessage<O>): void;
+export function isMessageStreamMessageSetObject<T>(message: MessageStreamMessage<T>): message is MessageStreamMessageSetObject {
+	return message.type === "set-object" && message.name.length > 0;
+}
+
+export function isMessageStreamMessageExit<T>(message: MessageStreamMessage<T>): message is MessageStreamMessageExit {
+	return message.type === "exit";
+}
+
+export function isMessageStreamMessageCreated<T>(message: MessageStreamMessage<T>): message is MessageStreamMessageCreated {
+	return message.type === "created";
+}
+
+export function isMessageStreamMessageData<T>(message: MessageStreamMessage<T>): message is MessageStreamMessageData<T> {
+	return message.type === "data" && message.data !== undefined;
+}
+
+export function isMessageStreamCatchUp<T>(message: MessageStreamMessage<T>): message is MessageStreamCatchUp<T> {
+	return message.type === "catch-up" && message.data !== undefined;
+}
+
+export interface MessageStream<T> {
+	onMessage(callback: MessageStreamCallback<T>): void;
+
+	sendMessage(type: MessageStreamMessage<T>): void;
 
 	onOpen(callback: () => void): void;
 
