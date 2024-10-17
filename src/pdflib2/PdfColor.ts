@@ -29,3 +29,7 @@ export class PdfColorImpl implements PdfColor {
 		return this._blue;
 	}
 }
+
+export function color(red: number, green: number, blue: number): PdfColor {
+	return new PdfColorImpl(red, green, blue);
+}

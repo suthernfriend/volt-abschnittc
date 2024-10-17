@@ -1,29 +1,51 @@
-import { vector2d, type Vector2d } from "@/pdflib2/Vector2d";
+import { type Vector2d } from "@/pdflib2/Vector2d";
 
 export interface PdfFont {
+	ref(): string;
+
 	name(): string;
 
 	fontSize(): number;
 
 	sizeOfText(text: string): Vector2d;
+
+	atSize(size: number): PdfFont;
+}
+
+export interface PdfFontImplOptions {
+	name: string;
+	sizeOfTextGetter: (text: string, dpt: number) => Vector2d;
+	size: number;
+	ref: string;
 }
 
 export class PdfFontImpl implements PdfFont {
-	private readonly _name: string;
+	constructor(private readonly options: PdfFontImplOptions) {}
 
-	constructor(name: string) {
-		this._name = name;
+	ref(): string {
+		return this.options.ref;
 	}
 
 	name(): string {
-		return this._name;
+		return this.options.name;
 	}
 
 	sizeOfText(text: string): Vector2d {
-		return vector2d(0, 0);
+		return this.options.sizeOfTextGetter(text, this.fontSize());
 	}
 
 	fontSize(): number {
-		return 0;
+		return this.options.size;
+	}
+
+	atSize(size: number): PdfFont {
+		return new PdfFontImpl({
+			ref: this.options.ref,
+			name: this.options.name,
+			sizeOfTextGetter: (text: string, dpt: number) => {
+				return this.options.sizeOfTextGetter(text, size);
+			},
+			size: size,
+		});
 	}
 }
