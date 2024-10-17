@@ -1,4 +1,4 @@
-import type { MessageStream, MessageStreamCallback, MessageStreamOutgoingMessage } from "@/lib/MessageStream";
+import type { MessageStream, MessageStreamCallback, MessageStreamMessage } from "@/lib/MessageStream";
 
 export interface VoltToolsIopApiOptions {
 	endpoint: string;
@@ -30,18 +30,18 @@ export class VoltToolsIopApi {
 		}
 	}
 
-	messageStream<I, O>(url: string): MessageStream<I, O> {
+	messageStream<T>(url: string): MessageStream<T> {
 		const webSocket = new WebSocket(url);
 
 		let onMessageCb: MessageStreamCallback<T> | undefined = undefined;
 		let onCloseCb: (() => void) | undefined = undefined;
 		let onOpenCb: (() => void) | undefined = undefined;
 
-		const messageStream: MessageStream<T, T> = {
+		const messageStream: MessageStream<T> = {
 			onMessage(callback: MessageStreamCallback<T>) {
 				onMessageCb = callback;
 			},
-			sendMessage(type: MessageStreamOutgoingMessage<T>) {
+			sendMessage(type: MessageStreamMessage<T>) {
 				webSocket.send(JSON.stringify(type));
 			},
 			onOpen(callback: () => void) {
@@ -78,8 +78,8 @@ export class VoltToolsIopApi {
 		return messageStream;
 	}
 
-	async v1SynchronizedObject<T>(name: string, token: string): Promise<MessageStream<T, T>> {
-		const stream = this.messageStream<T, T>(`${this.options.webSocketEndpoint}/api/v1/synchronized-object?token=${token}`);
+	async v1SynchronizedObject<T>(name: string, token: string): Promise<MessageStream<T>> {
+		const stream = this.messageStream<T>(`${this.options.webSocketEndpoint}/api/v1/synchronized-object?token=${token}`);
 		console.log("stream", stream);
 
 		stream.onOpen(() => {

@@ -1,17 +1,47 @@
 <script setup lang="ts">
 import type { Election } from "@/lib/Types";
 import ResultDisplay from "@/views/ResultDisplay.vue";
+import { BallotGeneratorImpl } from "@/lib/BallotGeneratorImpl";
+import { computed } from "vue";
+import { Evaluation } from "@/lib/Evaluation";
+import { downloadFile } from "@/lib/utility";
 
-const election = defineModel<Election>({ required: true });
+const model = defineModel<Election>({ required: true });
 
-function downloadPdf() {
+const evaluation = computed(() => {
+	return new Evaluation({
+		votes: [...model.value.counts.male, ...model.value.counts.female],
+		candidates: model.value.candidates,
+		runoffWinner: model.value.runoffWinner === "none" ? undefined : model.value.runoffWinner,
+	});
+});
 
+const result = computed(() => {
+	return evaluation.value.evaluate();
+});
+
+const ballotGenerator = new BallotGeneratorImpl();
+
+async function downloadPdf() {
+	if (result.value.type !== "list-complete") {
+		alert("Ergebnis ist nicht vollständig.");
+		return;
+	}
+
+	const ballot = await ballotGenerator.resultComplete({
+		assemblyName: model.value.general.assemblyName,
+		electionName: model.value.general.electionName,
+		result: result.value,
+		uniqueIds: model.value.general.ballotIds,
+	});
+
+	const url = URL.createObjectURL(new Blob([ballot], { type: "application/pdf" }));
+
+	const filePrefix = model.value.general.electionName.replace(/\s+/g, "_");
+	downloadFile(url, `${filePrefix}_Ergebnis.pdf`);
 }
 
-function copyMinutesText() {
-
-}
-
+function copyMinutesText() {}
 </script>
 
 <template>
@@ -21,15 +51,12 @@ function copyMinutesText() {
 		</div>
 		<div class="columns">
 			<div class="column is-two-thirds">
-				<result-display v-model="election" />
+				<result-display :result="result" v-model="model" />
 			</div>
 			<div class="column">
 				<div class="box">
+					<h3 class="title is-4">Ergebniszettel und Dokumentation</h3>
 					<div class="block">
-
-					</div>
-					<div class="block">
-						<h3>Ergebniszettel und Dokumentation</h3>
 						<div class="buttons">
 							<div @click="downloadPdf" class="button is-primary">PDF herunterladen</div>
 							<div @click="copyMinutesText" class="button is-info">Text für Protokoll kopieren</div>
@@ -41,6 +68,4 @@ function copyMinutesText() {
 	</div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

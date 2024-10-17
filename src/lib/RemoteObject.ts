@@ -2,7 +2,7 @@ import { type Ref, ref, watch } from "vue";
 import { container } from "@/lib/Container";
 import type { MessageStream, MessageStreamMessage } from "@/lib/MessageStream";
 
-function deepCopy<T extends object>(obj: T): T {
+function deepCopy<T>(obj: T): T {
 	if (Array.isArray(obj)) {
 		return obj.map((v) => deepCopy(v)) as T;
 	}
@@ -20,7 +20,21 @@ function deepCopy<T extends object>(obj: T): T {
 	return copy;
 }
 
-function deepEquals<T extends object>(a: T, b: T): boolean {
+function arrayEquals<T>(a: T[], b: T[]): boolean {
+	if (a.length !== b.length) {
+		return false;
+	}
+
+	for (let i = 0; i < a.length; i++) {
+		if (a[i] !== b[i]) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+function deepEquals<T>(a: T, b?: T): boolean {
 	if (a === b) {
 		return true;
 	}
@@ -29,14 +43,21 @@ function deepEquals<T extends object>(a: T, b: T): boolean {
 		return false;
 	}
 
-	const aKeys = Object.keys(a);
-	const bKeys = Object.keys(b);
+	if (Array.isArray(a)) {
+		if (!Array.isArray(b)) return false;
 
-	if (aKeys.length !== bKeys.length) {
+		return arrayEquals(a, b);
+	} else if (Array.isArray(b)) {
 		return false;
 	}
 
-	for (const key of aKeys) {
+	if (a === null) {
+		return b === null;
+	} else if (b === null) {
+		return false;
+	}
+
+	for (const key in a) {
 		if (!b.hasOwnProperty(key)) {
 			return false;
 		}
@@ -80,21 +101,24 @@ function applyArrayDiff<T>(target: T[], source: T[], path?: string) {
 
 	let i = 0;
 	while (i < targetLength && i < sourceLength) {
-		const targetType = Array.isArray(target[i]) ? "array" : typeof target[i];
-		const sourceType = Array.isArray(source[i]) ? "array" : typeof source[i];
+		const targetV = target[i];
+		const sourceV = source[i];
+
+		const targetType = typeof targetV;
+		const sourceType = typeof sourceV;
 
 		if (targetType !== sourceType) {
-			console.log(`Updating ${path}[${i}] (${target[i]} -> ${source[i]})`);
-			target[i] = deepCopy(source[i]);
+			console.log(`Updating ${path}[${i}] (${targetV} -> ${sourceV})`);
+			target[i] = deepCopy(sourceV);
 		} else {
-			if (targetType === "array") {
-				applyArrayDiff(target[i], source[i], path + "[" + i + "]");
+			if (Array.isArray(target[i]) && Array.isArray(sourceV)) {
+				applyArrayDiff(target[i] as any, sourceV, path + "[" + i + "]");
 			} else if (targetType === "object") {
-				applyDiff(target[i], source[i], path + "[" + i + "]");
+				applyDiff(target[i] as any, sourceV, path + "[" + i + "]");
 			} else {
-				if (target[i] !== source[i]) {
-					console.log(`Updating ${path}[${i}] (${target[i]} -> ${source[i]})`);
-					target[i] = deepCopy(source[i]);
+				if (targetV !== sourceV) {
+					console.log(`Updating ${path}[${i}] (${targetV} -> ${sourceV})`);
+					target[i] = deepCopy(sourceV);
 				}
 			}
 		}
@@ -116,11 +140,18 @@ function applyArrayDiff<T>(target: T[], source: T[], path?: string) {
 		target.push(deepCopy(source[i]));
 		i++;
 	}
-
 }
 
-function applyDiff<T extends object>(target: T, source: T, path?: string) {
+function applyDiff<T>(target: T, source: T, path?: string) {
 	path = path || "";
+
+	if (target === undefined || source === undefined) {
+		throw new Error("Undefined values are not allowed");
+	} else if (typeof target !== "object" || typeof source !== "object") {
+		throw new Error("Only objects are allowed");
+	} else if (target === null || source === null) {
+		throw new Error("Null values are not allowed");
+	}
 
 	for (const key in source) {
 		if (!target.hasOwnProperty(key)) {
@@ -128,18 +159,17 @@ function applyDiff<T extends object>(target: T, source: T, path?: string) {
 			target[key] = source[key];
 			continue;
 		}
-
-		const targetType = Array.isArray(target[key]) ? "array" : typeof target[key];
-		const sourceType = Array.isArray(source[key]) ? "array" : typeof source[key];
+		const targetType = typeof target[key];
+		const sourceType = typeof source[key];
 
 		if (targetType !== sourceType) {
 			console.log(`Updating ${path}.${key} (${target[key]} -> ${source[key]})`);
 			target[key] = deepCopy(source[key]);
 		} else {
-			if (targetType === "array") {
-				applyArrayDiff(target[key], source[key], path + "." + key);
+			if (Array.isArray(target[key]) && Array.isArray(source[key])) {
+				applyArrayDiff(target[key] as any, source[key], path + "." + key);
 			} else if (targetType === "object") {
-				applyDiff(target[key], source[key], path + "." + key);
+				applyDiff(target[key] as any, source[key], path + "." + key);
 			} else {
 				if (target[key] !== source[key]) {
 					console.log(`Updating ${path}.${key} (${target[key]} -> ${source[key]})`);
@@ -157,8 +187,16 @@ function applyDiff<T extends object>(target: T, source: T, path?: string) {
 	}
 }
 
-export function remoteReactive<T>(name: string, defaultValue: T): [Ref<T>, Ref<{ ready: boolean }>] {
-	const shadow: { obj: T } = {
+export function remoteReactive<T extends object>(
+	name: string,
+	defaultValue: T,
+): [
+	Ref<T | undefined>,
+	Ref<{
+		ready: boolean;
+	}>,
+] {
+	const shadow: { obj?: T } = {
 		obj: undefined,
 	};
 
@@ -176,16 +214,20 @@ export function remoteReactive<T>(name: string, defaultValue: T): [Ref<T>, Ref<{
 	let stream: MessageStream<any> | undefined = undefined;
 
 	function remotelyChanged(remoteObj: T) {
-		// 1. check if there really was a change
-		if (deepEquals(remoteObj, shadow.obj)) {
+		if (remoteObj === undefined && shadow.obj === undefined) {
 			return;
+		} else if (deepEquals(remoteObj, shadow.obj)) {
+			return;
+		} else if (remoteObj === undefined && shadow.obj !== undefined) {
+			shadow.obj = undefined;
+		} else if (remoteObj !== undefined && shadow.obj === undefined) {
+			shadow.obj = deepCopy(remoteObj);
+		} else {
+			shadow.obj = deepCopy(remoteObj);
 		}
 
-		// 2. apply diff
-		if (!shadow.obj) shadow.obj = deepCopy(remoteObj);
-		else applyDiff(shadow.obj, remoteObj, "shadow.obj");
-
 		if (!obj.value) obj.value = deepCopy(shadow.obj);
+		else if (!shadow.obj) obj.value = shadow.obj;
 		else applyDiff(obj.value, shadow.obj, "obj.value");
 	}
 
@@ -195,9 +237,16 @@ export function remoteReactive<T>(name: string, defaultValue: T): [Ref<T>, Ref<{
 			return;
 		}
 
-		// 1a. send to server
-		if (!shadow.obj) shadow.obj = deepCopy(obj.value);
-		else applyDiff(shadow.obj, obj.value, "shadow.obj");
+		if (obj.value === undefined && shadow.obj === undefined) {
+			return;
+		} else if (obj.value === undefined && shadow.obj !== undefined) {
+			shadow.obj = undefined;
+		} else if (obj.value !== undefined && shadow.obj === undefined) {
+			shadow.obj = deepCopy(obj.value);
+		} else {
+			applyDiff(shadow.obj, obj.value, "shadow.obj");
+		}
+
 		stream?.sendMessage({
 			type: "data",
 			data: shadow.obj,
@@ -206,13 +255,15 @@ export function remoteReactive<T>(name: string, defaultValue: T): [Ref<T>, Ref<{
 
 	watch(
 		obj,
-		(value) => {
+		() => {
 			locallyChanged();
 		},
 		{ deep: true },
 	);
 
-	api.v1SynchronizedObject(name, authManager.getToken()).then((ns) => {
+	const token = authManager.getToken();
+
+	api.v1SynchronizedObject(name, token).then((ns) => {
 		stream = ns;
 
 		ns.onMessage((data: MessageStreamMessage<any>) => {

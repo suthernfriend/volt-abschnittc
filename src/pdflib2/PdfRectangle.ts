@@ -28,7 +28,7 @@ export class PdfRectangleImpl implements PdfRectangle {
 		this._id = v4();
 	}
 
-	id(): string {
+	ref(): string {
 		return this._id;
 	}
 

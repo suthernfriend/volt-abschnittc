@@ -1,6 +1,7 @@
 import { type PdfPage, PdfPageImpl } from "@/pdflib2/PdfPage";
 import { type PdfFont } from "@/pdflib2/PdfFont";
 import type { Vector2d } from "@/pdflib2/Vector2d";
+import type { PdfImage } from "@/pdflib2/PdfImage";
 
 export interface PdfDocument {
 	pages(): PdfPage[];
@@ -12,11 +13,14 @@ export interface PdfDocument {
 	ref(): string;
 
 	addFont(bytes: ArrayBuffer): Promise<PdfFont>;
+
+	addImage(bytes: ArrayBuffer, type: "png"): Promise<PdfImage>;
 }
 
 export interface PdfDocumentImplOptions {
 	ref: string;
 	font: (bytes: ArrayBuffer) => Promise<PdfFont>;
+	image: (bytes: ArrayBuffer, type: "png") => Promise<PdfImage>;
 }
 
 export class PdfDocumentImpl implements PdfDocument {
@@ -50,5 +54,9 @@ export class PdfDocumentImpl implements PdfDocument {
 
 	addFont(bytes: ArrayBuffer): Promise<PdfFont> {
 		return this.options.font(bytes);
+	}
+
+	addImage(bytes: ArrayBuffer, type: "png"): Promise<PdfImage> {
+		return this.options.image(bytes, type);
 	}
 }

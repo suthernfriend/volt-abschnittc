@@ -9,12 +9,15 @@ export interface PdfFont {
 
 	sizeOfText(text: string): Vector2d;
 
+	splitIntoLines(text: string, width: number): string[];
+
 	atSize(size: number): PdfFont;
 }
 
 export interface PdfFontImplOptions {
 	name: string;
-	sizeOfTextGetter: (text: string, dpt: number) => Vector2d;
+	sizeOfTextGetter: (text: string, dtp: number) => Vector2d;
+	splitIntoLines: (text: string, dtp: number, width: number) => string[];
 	size: number;
 	ref: string;
 }
@@ -38,13 +41,13 @@ export class PdfFontImpl implements PdfFont {
 		return this.options.size;
 	}
 
+	splitIntoLines(text: string, width: number): string[] {
+		return this.options.splitIntoLines(text, this.fontSize(), width);
+	}
+
 	atSize(size: number): PdfFont {
 		return new PdfFontImpl({
-			ref: this.options.ref,
-			name: this.options.name,
-			sizeOfTextGetter: (text: string, dpt: number) => {
-				return this.options.sizeOfTextGetter(text, size);
-			},
+			...this.options,
 			size: size,
 		});
 	}

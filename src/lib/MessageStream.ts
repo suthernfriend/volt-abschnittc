@@ -24,31 +24,11 @@ export interface MessageStreamMessageData<T> {
 
 export interface MessageStreamCatchUp<T> {
 	type: "catch-up";
-	data: T[];
+	data: T;
 }
 
 export type MessageStreamMessage<T> = MessageStreamMessageSetObject | MessageStreamMessageCreated |
 	MessageStreamMessageExit | MessageStreamMessageData<T> | MessageStreamCatchUp<T>;
-
-export function isMessageStreamMessageSetObject<T>(message: MessageStreamMessage<T>): message is MessageStreamMessageSetObject {
-	return message.type === "set-object" && message.name.length > 0;
-}
-
-export function isMessageStreamMessageExit<T>(message: MessageStreamMessage<T>): message is MessageStreamMessageExit {
-	return message.type === "exit";
-}
-
-export function isMessageStreamMessageCreated<T>(message: MessageStreamMessage<T>): message is MessageStreamMessageCreated {
-	return message.type === "created";
-}
-
-export function isMessageStreamMessageData<T>(message: MessageStreamMessage<T>): message is MessageStreamMessageData<T> {
-	return message.type === "data" && message.data !== undefined;
-}
-
-export function isMessageStreamCatchUp<T>(message: MessageStreamMessage<T>): message is MessageStreamCatchUp<T> {
-	return message.type === "catch-up" && message.data !== undefined;
-}
 
 export interface MessageStream<T> {
 	onMessage(callback: MessageStreamCallback<T>): void;

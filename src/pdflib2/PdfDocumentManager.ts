@@ -1,15 +1,15 @@
 import { type PdfDocument, PdfDocumentImpl } from "@/pdflib2/PdfDocument";
-import { color, type PdfColor, PdfColorImpl } from "@/pdflib2/PdfColor";
+import { color, type PdfColor } from "@/pdflib2/PdfColor";
 import { type PdfFont, PdfFontImpl } from "@/pdflib2/PdfFont";
-import { ColorTypes, PDFDocument, PDFFont, PDFPage, type RGB } from "pdf-lib";
+import { ColorTypes, PDFDocument, PDFFont, PDFImage, PDFPage, type RGB } from "pdf-lib";
 import { isPdfText, type PdfText } from "@/pdflib2/PdfText";
-import fontkit from "@pdf-lib/fontkit";
 import { v4 } from "uuid";
-import { root, type Vector2d, vector2d } from "@/pdflib2/Vector2d";
+import { type Vector2d, vector2d } from "@/pdflib2/Vector2d";
 import { isPdfObjectGroup } from "@/pdflib2/PdfObjectGroup";
 import type { PdfObject } from "@/pdflib2/PdfObject";
 import { type PdfPositionedObject, positionedObject } from "@/pdflib2/PdfPositionedObject";
 import { isPdfRectangle, type PdfRectangle, strokeRect } from "@/pdflib2/PdfRectangle";
+import { isPdfImage, type PdfImage, PdfImageImpl } from "@/pdflib2/PdfImage";
 
 export interface PdfDocumentManager {
 	create(): Promise<PdfDocument>;
@@ -29,11 +29,12 @@ export interface PdfDocumentManagerImplOptions {
 	debug?: boolean;
 }
 
-export class PdfDocumentManagerImpl implements PdfDocumentManager {
+class PdfDocumentManagerImpl implements PdfDocumentManager {
 	private docs: {
 		[ref: string]: {
 			document: PDFDocument;
 			fonts: { [ref: string]: PDFFont };
+			images: { [ref: string]: PDFImage };
 		};
 	} = {};
 
@@ -45,33 +46,85 @@ export class PdfDocumentManagerImpl implements PdfDocumentManager {
 		this.docs[ref] = {
 			document: await PDFDocument.create(),
 			fonts: {},
+			images: {},
 		};
+
+		const fontkit = await import("@pdf-lib/fontkit");
 		this.docs[ref].document.registerFontkit(fontkit);
 
+		const splitIntoLines = (font: PDFFont, text: string, dtp: number, width: number) => {
+			const words = text.split(/\s+/);
+			const lines: string[] = [];
+			const next: string[] = [];
+
+			while (words.length > 0) {
+				const withNextWord = next.concat(words[0]).join(" ");
+				const widthWithNextWord = dtp2mm(font.widthOfTextAtSize(withNextWord, dtp));
+				if (widthWithNextWord > width) {
+					lines.push(next.join(" "));
+					next.length = 0;
+				} else {
+					next.push(words.shift() as string);
+				}
+			}
+
+			if (next.length > 0) {
+				lines.push(next.join(" "));
+			}
+
+			return lines;
+		};
+
+		const sizeOfTextGetter = (font: PDFFont, text: string, dtp: number) => {
+			const widthDtp = font.widthOfTextAtSize(text, dtp);
+			const heightDtp = font.heightAtSize(dtp);
+
+			const width = dtp2mm(widthDtp);
+			const height = dtp2mm(heightDtp);
+
+			return vector2d(width, height);
+		};
+
+		const font = async (bytes: ArrayBuffer) => {
+			const fontRef = v4();
+			const font = await this.docs[ref].document.embedFont(bytes);
+
+			this.docs[ref].fonts[fontRef] = font;
+
+			const pdfFont = new PdfFontImpl({
+				ref: fontRef,
+				size: 12,
+				name: font.name,
+				splitIntoLines: (text: string, dtp: number, width: number) => {
+					return splitIntoLines(font, text, dtp, width);
+				},
+				sizeOfTextGetter: (text: string, dtp: number) => {
+					return sizeOfTextGetter(font, text, dtp);
+				},
+			});
+
+			return pdfFont as PdfFont;
+		};
+
+		const image = async (bytes: ArrayBuffer, type: "png") => {
+			const imgRef = v4();
+			const rImg = await this.docs[ref].document.embedPng(bytes);
+
+			this.docs[ref].images[imgRef] = rImg;
+
+			const width = dtp2mm(rImg.width);
+			const height = dtp2mm(rImg.height);
+
+			return new PdfImageImpl({
+				size: vector2d(width, height),
+				ref: imgRef,
+			});
+		};
+
 		return new PdfDocumentImpl({
-			ref: ref,
-			font: async (bytes: ArrayBuffer) => {
-				const fontRef = v4();
-				const font = await this.docs[ref].document.embedFont(bytes);
-				const pdfFont = new PdfFontImpl({
-					ref: fontRef,
-					size: 12,
-					name: font.name,
-					sizeOfTextGetter: (text: string, dtp: number) => {
-						const widthDtp = font.widthOfTextAtSize(text, dtp);
-						const heightDtp = font.heightAtSize(dtp);
-
-						const width = dtp2mm(widthDtp);
-						const height = dtp2mm(heightDtp);
-
-						return vector2d(width, height);
-					},
-				});
-
-				this.docs[ref].fonts[fontRef] = font;
-
-				return pdfFont as PdfFont;
-			},
+			ref,
+			font,
+			image,
 		});
 	}
 
@@ -85,7 +138,6 @@ export class PdfDocumentManagerImpl implements PdfDocumentManager {
 	}
 
 	renderRectangle(tl: Vector2d, obj: PdfRectangle, docId: string, rPage: PDFPage) {
-
 		const translated = this.translateVector2d(rPage, tl, obj.size());
 
 		rPage.drawRectangle({
@@ -95,16 +147,28 @@ export class PdfDocumentManagerImpl implements PdfDocumentManager {
 			height: mm2dtp(obj.size().height()),
 			color: obj.isFilled() ? PdfDocumentManagerImpl.colorToRGB(obj.fillColor()) : undefined,
 			borderColor: obj.isFilled() ? undefined : PdfDocumentManagerImpl.colorToRGB(obj.color()),
-			borderWidth: obj.isFilled() ? undefined : obj.lineWidth()
-		})
+			borderWidth: obj.isFilled() ? undefined : obj.lineWidth(),
+		});
 	}
 
 	translateVector2d(rPage: PDFPage, topLeft: Vector2d, size: Vector2d): Vector2d {
-
 		const translatedX = mm2dtp(topLeft.x());
 		const translatedY = rPage.getHeight() - mm2dtp(topLeft.y()) - mm2dtp(size.height());
 
 		return vector2d(translatedX, translatedY);
+	}
+
+	renderImage(tl: Vector2d, obj: PdfImage, docId: string, rPage: PDFPage) {
+		const img = this.docs[docId].images[obj.ref()];
+
+		const translated = this.translateVector2d(rPage, tl, obj.size());
+
+		rPage.drawImage(img, {
+			x: translated.x(),
+			y: translated.y(),
+			width: mm2dtp(obj.size().width()),
+			height: mm2dtp(obj.size().height()),
+		});
 	}
 
 	renderText(tl: Vector2d, obj: PdfText, docId: string, rPage: PDFPage) {
@@ -118,8 +182,7 @@ export class PdfDocumentManagerImpl implements PdfDocumentManager {
 		// console.log(`translatedX: ${translatedX}, translatedY: ${translatedY}, tly: ${tl.y()}, size.height: ${size.height()}`);
 		const rTranslated = this.translateVector2d(rPage, position, size);
 
-		if (this.options.debug)
-			this.renderRectangle(position, strokeRect(size, 0.3, color(0.1, 0.1, 0.7)), docId, rPage);
+		if (this.options.debug) this.renderRectangle(position, strokeRect(size, 0.3, color(0.1, 0.1, 0.7)), docId, rPage);
 
 		rPage.drawText(text, {
 			x: rTranslated.x(),
@@ -131,7 +194,6 @@ export class PdfDocumentManagerImpl implements PdfDocumentManager {
 	}
 
 	reducePageObject(objects: PdfPositionedObject<PdfObject>[]): PdfPositionedObject<PdfObject>[] {
-
 		const out: PdfPositionedObject<PdfObject>[] = [];
 
 		for (const posObj of objects) {
@@ -176,6 +238,8 @@ export class PdfDocumentManagerImpl implements PdfDocumentManager {
 					this.renderText(tl, obj, ref, rPage);
 				} else if (isPdfRectangle(obj)) {
 					this.renderRectangle(tl, obj, ref, rPage);
+				} else if (isPdfImage(obj)) {
+					this.renderImage(tl, obj, ref, rPage);
 				}
 			}
 		}
@@ -188,4 +252,10 @@ export class PdfDocumentManagerImpl implements PdfDocumentManager {
 		const buffer = await doc.save();
 		return buffer.buffer;
 	}
+}
+
+export function pdfDocumentManager(): PdfDocumentManager {
+	return new PdfDocumentManagerImpl({
+		debug: false,
+	});
 }

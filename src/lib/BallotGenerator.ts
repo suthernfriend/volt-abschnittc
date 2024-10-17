@@ -1,7 +1,7 @@
-import type { Candidate } from "@/lib/Types";
+import type { Candidate, ElectionBallotIds } from "@/lib/Types";
 import type { ListCompleteResult, NeedRunoffResult } from "@/lib/Evaluation";
 
-export type PageSizeNames = "A42" | "A41" | "2A4" | "A32" | "A31";
+export type PageSizeNames = "A4_2" | "A4" | "2_A4" | "A3_2" | "A3_3";
 
 export interface Ballot241 {
 	candidates: Candidate[];
@@ -20,12 +20,17 @@ export interface Ballot242 {
 	uniqueId: string;
 }
 
+export interface ResultComplete {
+	electionName: string;
+	assemblyName: string;
+	result: ListCompleteResult
+	uniqueIds: ElectionBallotIds;
+}
+
 export interface BallotGenerator {
 	ballot241(ballot241: Ballot241): Promise<ArrayBuffer>;
 
 	ballot242(ballot242: Ballot242): Promise<ArrayBuffer>;
 
-	result241(needRunoffResult: NeedRunoffResult | ListCompleteResult): Promise<ArrayBuffer>;
-
-	result242(needRunoffResult: NeedRunoffResult): Promise<ArrayBuffer>;
+	resultComplete(result: ResultComplete): Promise<ArrayBuffer>;
 }

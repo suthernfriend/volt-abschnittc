@@ -34,6 +34,9 @@ export class AuthManager {
 	}
 
 	public getToken() {
+		if (!this.token)
+			throw new Error("No token available");
+
 		return this.token;
 	}
 

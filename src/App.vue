@@ -14,16 +14,26 @@ import { container } from "@/lib/Container";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { remoteReactive } from "@/lib/RemoteObject";
+import { randomString } from "@/lib/utility";
 
-const [election, dataStatus] = remoteReactive<Election>("volt-abschnittc-election", {
+const [election, dataStatus] = remoteReactive<Election>("volt-abschnittc-election-2", {
 	counts: {
 		female: [...testCounts.female],
 		male: [...testCounts.male],
 	},
+	general: {
+		lead: "",
+		assemblyName: "Name der Veranstaltung",
+		electionName: "Name der Wahl",
+		ballotIds: {
+			male: randomString(8),
+			female: randomString(8),
+			"242": randomString(8),
+		},
+		countingCommission: [],
+	},
 	candidates: [...testCandidates],
-	countingCommission: [],
 	runoffWinner: "none",
-	lead: "",
 	id: v4(),
 });
 const view = ref<View>("overview");
@@ -66,14 +76,13 @@ async function useCredential(cred: string) {
 }
 
 async function clearAuth() {
-	await authManager.clear();
+	authManager.clear();
 	auth.value = null;
 }
 
 const ready = computed(() => {
 	return auth.value !== null && dataStatus.value.ready;
 });
-
 </script>
 
 <template>
@@ -109,7 +118,7 @@ const ready = computed(() => {
 			</ul>
 		</div>
 	</nav>
-	<main v-if="ready">
+	<main v-if="ready && election">
 		<overview v-if="view === 'overview'" v-model="election" />
 		<candidates v-if="view === 'candidates'" v-model="election" />
 		<ballot v-if="view === 'ballot'" v-model="election" />

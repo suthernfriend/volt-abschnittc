@@ -1,8 +1,9 @@
 import { isPdf2DObject, type Pdf2DObject } from "@/pdflib2/Pdf2DObject";
 import type { PdfColor } from "@/pdflib2/PdfColor";
 import { v4 } from "uuid";
-import { root, type Vector2d } from "@/pdflib2/Vector2d";
+import { root, vector2d, type Vector2d } from "@/pdflib2/Vector2d";
 import type { PdfFont } from "@/pdflib2/PdfFont";
+import { objectGroup, type PdfObjectGroup } from "@/pdflib2/PdfObjectGroup";
 
 export interface PdfText extends Pdf2DObject {
 	text(): string;
@@ -57,7 +58,7 @@ export class PdfTextImpl implements PdfText {
 		}
 	}
 
-	id(): string {
+	ref(): string {
 		return this._id;
 	}
 
@@ -91,7 +92,6 @@ export function text(text: string, font: PdfFont, color: PdfColor): PdfText {
 }
 
 export function centeredText(text: string, font: PdfFont, color: PdfColor, size: Vector2d): PdfText {
-
 	const actualSize = font.sizeOfText(text);
 	const offset = size.add(actualSize.negate()).scale(0.5);
 
@@ -102,4 +102,30 @@ export function centeredText(text: string, font: PdfFont, color: PdfColor, size:
 		size,
 		textPosition: offset,
 	});
+}
+
+export function rightAlignedText(text: string, font: PdfFont, color: PdfColor, width: number): PdfText {
+	const actualSize = font.sizeOfText(text);
+	const offset = vector2d(width - actualSize.x(), 0);
+
+	return new PdfTextImpl({
+		text,
+		font,
+		color,
+		size: vector2d(width, actualSize.y()),
+		textPosition: offset,
+	});
+}
+
+export function multilineText(mlText: string, font: PdfFont, color: PdfColor, maxWidth: number): PdfObjectGroup {
+	const lines = font.splitIntoLines(mlText, maxWidth);
+
+	console.log(`lines: ${lines}`);
+
+	const group = objectGroup();
+
+	for (const line of lines)
+		group.addFlow(text(line, font, color));
+
+	return group;
 }

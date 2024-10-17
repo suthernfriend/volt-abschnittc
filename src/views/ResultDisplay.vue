@@ -1,24 +1,16 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { Evaluation, type ListCompleteResult } from "@/lib/Evaluation";
+import { Evaluation, type ListCompleteResult, type Result } from "@/lib/Evaluation";
 import { type Candidate, type Election, renderCandidateName } from "@/lib/Types";
 
 const model = defineModel<Election>({ required: true });
 
-const evaluation = computed(() => {
-	return new Evaluation({
-		votes: [...model.value.counts.male, ...model.value.counts.female],
-		candidates: model.value.candidates,
-		runoffWinner: model.value.runoffWinner === "none" ? undefined : model.value.runoffWinner,
-	});
-});
-
-const result = computed(() => {
-	return evaluation.value.evaluate();
-});
+const props = defineProps<{
+	result: Result;
+}>();
 
 function candidateById(id: string): Candidate {
-	return model.value.candidates.find((c) => c.id === id);
+	return model.value.candidates.find((c) => c.id === id)!;
 }
 
 function candidateNameById(id: string) {
@@ -37,11 +29,11 @@ function numberFormat(n: number) {
 }
 
 const showPreliminary = computed(() => {
-	return ["need-runoff", "list-complete"].includes(result.value.type);
+	return ["need-runoff", "list-complete"].includes(props.result.type);
 });
 
 const showFinal = computed(() => {
-	return ["list-complete"].includes(result.value.type);
+	return ["list-complete"].includes(props.result.type);
 });
 </script>
 

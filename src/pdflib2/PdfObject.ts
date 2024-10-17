@@ -1,3 +1,3 @@
 export interface PdfObject {
-	id(): string;
+	ref(): string;
 }

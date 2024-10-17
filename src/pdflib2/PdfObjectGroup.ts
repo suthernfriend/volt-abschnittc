@@ -20,7 +20,7 @@ export class PdfObjectGroupImpl implements PdfObjectGroup {
 		this._id = v4();
 	}
 
-	id(): string {
+	ref(): string {
 		return this._id;
 	}
 

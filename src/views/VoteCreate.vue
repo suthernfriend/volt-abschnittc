@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { type Candidate, renderCandidateName, sortCandidates, type Vote } from "@/lib/Types";
+import { type Candidate, type ElectionGender, renderCandidateName, sortCandidates, type Vote } from "@/lib/Types";
 import { computed, ref } from "vue";
 
 const props = defineProps<{
 	candidates: Candidate[];
-	gender: string;
+	gender: ElectionGender;
 }>();
 
 const emits = defineEmits<{
@@ -15,7 +15,7 @@ function candidates(gender: "male" | "female") {
 	return sortCandidates(props.candidates.filter((candidate) => candidate.list === gender));
 }
 
-const votes = ref<{ [candidateId: string]: number }>({});
+const votes = ref<{ [candidateId: string]: string }>({});
 const ballotId = ref<string>("");
 
 for (const candidate of props.candidates) {
@@ -55,7 +55,10 @@ function complete() {
 	const vote: Vote = {
 		ballotId: ballotId.value,
 		created: `${new Date().getTime()}`,
-		rankings: Object.fromEntries(Object.values(votes.value).filter(value => value[1] !== ""))
+		rankings: Object.fromEntries(Object.entries(votes.value)
+			.filter(value => value[1] !== "")
+			.map(value => [value[0], parseInt(value[1])])
+		)
 	};
 
 	emits("created", vote);

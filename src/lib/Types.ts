@@ -9,7 +9,6 @@ export interface Candidate {
 }
 
 export function renderCandidateName(candidate: Candidate) {
-
 	const output = [];
 
 	if (candidate.title) {
@@ -90,7 +89,6 @@ export function voteDiff(a: Vote, b: Vote): VoteDiffEntry[] {
 	const allKeys = [...new Set([...aKeys, ...bKeys])].sort();
 
 	if (!arrayEquals(aKeys, bKeys)) {
-
 		for (const key of allKeys) {
 			if (!a.rankings[key]) {
 				out.push({ type: "missing-candidate", in: "a", candidateId: key });
@@ -98,7 +96,6 @@ export function voteDiff(a: Vote, b: Vote): VoteDiffEntry[] {
 				out.push({ type: "missing-candidate", in: "b", candidateId: key });
 			}
 		}
-
 	}
 
 	for (const key of allKeys) {
@@ -108,7 +105,7 @@ export function voteDiff(a: Vote, b: Vote): VoteDiffEntry[] {
 					type: "points-missmatch",
 					candidateId: key,
 					pointsA: a.rankings[key],
-					pointsB: b.rankings[key]
+					pointsB: b.rankings[key],
 				});
 			}
 		}
@@ -117,15 +114,29 @@ export function voteDiff(a: Vote, b: Vote): VoteDiffEntry[] {
 	return out;
 }
 
-export interface Election {
-	id: string;
+export type ElectionGender = "male" | "female";
+
+export type ElectionBallotIdType = ElectionGender | "242";
+
+export type ElectionBallotIds = {
+	[k in ElectionBallotIdType]: string;
+};
+
+export interface ElectionGeneral {
+	assemblyName: string;
+	electionName: string;
+	ballotIds: ElectionBallotIds;
 	countingCommission: string[];
 	lead: string;
+}
+
+export interface Election {
+	id: string;
+	general: ElectionGeneral;
 	candidates: Candidate[];
 	runoffWinner: string;
 	counts: {
-		male: Vote[];
-		female: Vote[];
+		[k in ElectionGender]: Vote[];
 	};
 }
 
@@ -151,9 +162,4 @@ export function candidateSort(a: Candidate, b: Candidate): number {
 	} else {
 		return 0;
 	}
-}
-
-export interface Ballot {
-	id: string;
-	candidates: Candidate[];
 }
