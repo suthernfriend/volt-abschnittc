@@ -23,6 +23,7 @@ export interface Ballot242 {
 export interface ResultComplete {
 	electionName: string;
 	assemblyName: string;
+	candidates: Candidate[];
 	result: ListCompleteResult
 	uniqueIds: ElectionBallotIds;
 }

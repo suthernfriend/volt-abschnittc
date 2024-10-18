@@ -27,6 +27,7 @@ export function renderCandidateName(candidate: Candidate) {
 
 export interface Vote {
 	ballotId: string;
+	list: ElectionGender;
 	created: string;
 	rankings: { [candidateId: string]: number };
 }
@@ -138,6 +139,17 @@ export interface Election {
 	counts: {
 		[k in ElectionGender]: Vote[];
 	};
+}
+
+export function invertGender(gender: ElectionGender): ElectionGender {
+	return gender === "male" ? "female" : "male";
+}
+
+export function electionGenderString(gender: ElectionGender): string {
+	if (gender === "male")
+		return "Männlich / Diverse";
+	else
+		return "Weiblich / Diverse";
 }
 
 export function sortCandidates(candidates: Candidate[]): Candidate[] {

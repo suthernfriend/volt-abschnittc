@@ -16,7 +16,7 @@ import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { remoteReactive } from "@/lib/RemoteObject";
 import { randomString } from "@/lib/utility";
 
-const [election, dataStatus] = remoteReactive<Election>("volt-abschnittc-election-2", {
+const [election, dataStatus] = remoteReactive<Election>("volt-abschnittc-election-4", {
 	counts: {
 		female: [...testCounts.female],
 		male: [...testCounts.male],

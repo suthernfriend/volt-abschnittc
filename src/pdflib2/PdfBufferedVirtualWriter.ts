@@ -15,6 +15,8 @@ export interface PdfBufferedVirtualWriterImplOptions {
 export interface PdfBufferedVirtualWriter {
 	addObject<T extends Pdf2DObject>(object: T): PdfBufferedVirtualWriter;
 
+	addObjects(objects: Pdf2DObject[]): PdfBufferedVirtualWriter;
+
 	onEachPage<T extends PdfObject>(obj: T, topLeft: Vector2d): PdfBufferedVirtualWriter;
 
 	complete(document: PdfDocument): void;
@@ -38,6 +40,13 @@ export class PdfBufferedVirtualWriterImpl implements PdfBufferedVirtualWriter {
 
 	addObject<T extends Pdf2DObject>(object: T): PdfBufferedVirtualWriter {
 		this.objects.push(object);
+		return this;
+	}
+
+	addObjects(objects: Pdf2DObject[]): PdfBufferedVirtualWriter {
+		for (const obj of objects) {
+			this.addObject(obj);
+		}
 		return this;
 	}
 

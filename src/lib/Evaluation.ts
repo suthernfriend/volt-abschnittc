@@ -1,4 +1,15 @@
-import type { Candidate, Vote } from "@/lib/Types";
+import { type Candidate, type ElectionGender, invertGender, type Vote } from "@/lib/Types";
+import type {
+	EvaluationMessage,
+	EvaluationMessageCombined,
+	EvaluationMessageCombinedPosition,
+	EvaluationMessagePreliminaryList,
+	EvaluationMessagePreliminaryListMessage,
+	EvaluationMessagePreliminaryListSpot,
+	EvaluationMessagePreliminaryListSpotDuoTieBreaker,
+	EvaluationMessageRunoffCandidate,
+	EvaluationMessageTroublemakersCandidate,
+} from "@/lib/EvaluationMessage";
 
 export interface ResultEntry {
 	candidateId: string;
@@ -46,14 +57,26 @@ export interface ListCompleteResult {
 	list: ResultEntry[];
 	preliminaryLists: NeedRunoffResult["preliminaryLists"];
 	runoffCandidates: NeedRunoffResult["runoffCandidates"];
+	messages: EvaluationMessage[];
 }
 
 export type Result = ListCompleteResult | NeedConfirmationResult | NeedLotResult | NeedRunoffResult;
 
-export interface EvaluationOptions {
+export interface EvaluationOptionsSimple {
 	candidates: Candidate[];
 	votes: Vote[];
-	runoffWinner?: string;
+}
+
+export interface EvaluationOptionsWithRunoffWinner extends EvaluationOptionsSimple {
+	runoffWinner: string;
+	runoffMaleVotes: number;
+	runoffFemaleVotes: number;
+}
+
+export type EvaluationOptions = EvaluationOptionsSimple | EvaluationOptionsWithRunoffWinner;
+
+function hasRunoffWinner(options: EvaluationOptions): options is EvaluationOptionsWithRunoffWinner {
+	return (options as EvaluationOptionsWithRunoffWinner).runoffWinner !== undefined;
 }
 
 export class Evaluation {
@@ -123,6 +146,8 @@ export class Evaluation {
 	}
 
 	public evaluate(): Result {
+		const messages: EvaluationMessage[] = [];
+
 		if (this.options.votes.length === 0) {
 			throw new Error("No votes to evaluate");
 		}
@@ -136,8 +161,18 @@ export class Evaluation {
 
 		const votes = this.uniqueVotes();
 
+		messages.push({
+			type: "vote-count",
+			count: votes.length,
+			male: votes.filter((value) => value.list === "male").length,
+			female: votes.filter((value) => value.list === "female").length,
+		});
+
 		// 1. filter candidate
 		// § 24 Abs. 1
+
+		const troublemakers: EvaluationMessageTroublemakersCandidate[] = [];
+
 		for (const candidate of this.options.candidates) {
 			const nullCount = Evaluation.nullCountForCandidate(candidate.id, votes);
 			const voteCount = Evaluation.nonNullCountForCandidate(candidate.id, votes);
@@ -147,25 +182,57 @@ export class Evaluation {
 			} else {
 				passed241.push(candidate);
 			}
+
+			troublemakers.push({
+				candidateId: candidate.id,
+				nullVotes: nullCount,
+				nonNullVotes: voteCount,
+				passed: nullCount < voteCount,
+			});
 		}
+
+		messages.push({ type: "troublemakers", candidates: troublemakers });
 
 		// split into lists
 		const male = Evaluation.filterCandidatesByList(passed241, "male");
 		const female = Evaluation.filterCandidatesByList(passed241, "female");
 
-		const maleList = Evaluation.preliminaryList(
+		const { result: maleList, messages: maleMessages } = Evaluation.preliminaryList(
 			male.map((value) => value.id),
-			votes,
+			votes.filter((value) => value.list === "male"),
 		);
-		const femaleList = Evaluation.preliminaryList(
+		messages.push({
+			type: "preliminary-list",
+			messages: maleMessages,
+			list: "male",
+		});
+
+		const { result: femaleList, messages: femaleMessages } = Evaluation.preliminaryList(
 			female.map((value) => value.id),
-			votes,
+			votes.filter((value) => value.list === "female"),
+		);
+		messages.push({
+			type: "preliminary-list",
+			messages: femaleMessages,
+			list: "female",
+		});
+
+		const { candidate: maleRunoffCandidate, message: maleRunoffMessage } = Evaluation.getRunoffCandidate(
+			maleList,
+			this.options.candidates,
+		);
+		const { candidate: femaleRunoffCandidate, message: femaleRunoffMessage } = Evaluation.getRunoffCandidate(
+			femaleList,
+			this.options.candidates,
 		);
 
-		const maleRunoffCandidate = Evaluation.getRunoffCandidate(maleList, this.options.candidates);
-		const femaleRunoffCandidate = Evaluation.getRunoffCandidate(femaleList, this.options.candidates);
+		messages.push({
+			type: "runoff-candidates",
+			maleCandidate: maleRunoffMessage,
+			femaleCandidate: femaleRunoffMessage,
+		});
 
-		if (maleList.length > 0 && femaleList.length > 0 && this.options.runoffWinner === undefined) {
+		if (maleList.length > 0 && femaleList.length > 0 && !hasRunoffWinner(this.options)) {
 			// runoff undecided and we have two lists
 			return {
 				type: "need-runoff",
@@ -175,36 +242,55 @@ export class Evaluation {
 		} else if (maleList.length === 0) {
 			// only female list
 			throw new Error("Not implemented");
-
 		} else if (femaleList.length === 0) {
 			// only male list
 			throw new Error("Not implemented");
-
-		} else if (this.options.runoffWinner !== undefined) {
+		} else if (hasRunoffWinner(this.options)) {
 			// runoff decided, now we need to evaluate the spots
 
 			const winnerList = this.options.runoffWinner == maleRunoffCandidate ? maleList : femaleList;
 			const loserList = this.options.runoffWinner == femaleRunoffCandidate ? maleList : femaleList;
+			const winnerListGender: ElectionGender = this.options.runoffWinner == maleRunoffCandidate ? "male" : "female";
 
-			const dl = Evaluation.evaluateDoubleList(winnerList, loserList, this.options.candidates);
+			messages.push({
+				type: "runoff",
+				maleCandidateId: maleRunoffCandidate,
+				femaleCandidateId: femaleRunoffCandidate,
+				maleVotes: this.options.runoffMaleVotes,
+				femaleVotes: this.options.runoffFemaleVotes,
+			});
+
+			const { result: dl, message } = Evaluation.evaluateDoubleList(winnerListGender, winnerList, loserList, this.options.candidates);
+
+			messages.push(message);
 
 			return {
 				type: "list-complete",
 				list: dl,
 				preliminaryLists: { male: maleList, female: femaleList },
 				runoffCandidates: { maleCandidate: maleRunoffCandidate, femaleCandidate: femaleRunoffCandidate },
+				messages,
 			};
 		} else {
 			throw new Error("Not implemented");
 		}
 	}
 
-	static evaluateDoubleList(runoffWinnerList: ResultEntry[], runoffLoserList: ResultEntry[], candidates: Candidate[]): ResultEntry[] {
-
+	static evaluateDoubleList(
+		runoffWinner: ElectionGender,
+		runoffWinnerList: ResultEntry[],
+		runoffLoserList: ResultEntry[],
+		candidates: Candidate[],
+	): {
+		result: ResultEntry[];
+		message: EvaluationMessageCombined;
+	} {
+		const messages: EvaluationMessageCombinedPosition[] = [];
 		const result: ResultEntry[] = [];
 		const haveSpot: string[] = [];
 
 		let previous = "none";
+		let current: ElectionGender = runoffWinner;
 
 		while (haveSpot.length < candidates.length) {
 			let nextList: ResultEntry[];
@@ -212,9 +298,11 @@ export class Evaluation {
 			if (previous === "winner") {
 				nextList = runoffLoserList;
 				previous = "loser";
+				current = invertGender(runoffWinner);
 			} else {
 				nextList = runoffWinnerList;
 				previous = "winner";
+				current = runoffWinner;
 			}
 
 			let nextPossible = nextList.filter((value) => !haveSpot.includes(value.candidateId));
@@ -229,37 +317,72 @@ export class Evaluation {
 				}
 			}
 
+			const notConsidered: string[] = [];
+
 			for (const entry of nextPossible) {
 				const minSpot = candidates.find((value) => value.id === entry.candidateId)!.minSpot;
 
 				if (minSpot <= haveSpot.length + 1) {
+					haveSpot.push(entry.candidateId);
 					result.push({
 						candidateId: entry.candidateId,
 						score: entry.score,
 						shift: entry.shift,
 						position: haveSpot.length + 1,
 					});
-					haveSpot.push(entry.candidateId);
+					messages.push({
+						position: haveSpot.length + 1,
+						candidateId: entry.candidateId,
+						score: entry.score,
+						shift: entry.shift,
+						skippedCandidatesBecauseMinSpot: notConsidered,
+						preliminaryList: current,
+					});
 					break;
 				}
+
+				notConsidered.push(entry.candidateId);
 			}
 		}
 
-		return result;
+		return {
+			result,
+			message: {
+				type: "combined",
+				positions: messages,
+			},
+		};
 	}
 
 	static evaluateSingleList(list: ResultEntry[], candidates: Candidate[]): ResultEntry[] {
 		throw new Error("Not implemented");
 	}
 
-	static getRunoffCandidate(list: ResultEntry[], candidates: Candidate[]) {
+	static getRunoffCandidate(
+		list: ResultEntry[],
+		candidates: Candidate[],
+	): {
+		candidate: string;
+		message: EvaluationMessageRunoffCandidate;
+	} {
 		let minSpot = 1;
 		const maxSpot = candidates.map((value) => value.minSpot).reduce((a, b) => Math.max(a, b));
+
+		const considered: string[] = [];
+
 		while (minSpot <= maxSpot) {
 			for (const entry of list) {
 				const id = entry.candidateId;
 				const candidate = candidates.find((value) => value.id === id)!;
-				if (candidate.minSpot <= minSpot) return id;
+				if (candidate.minSpot <= minSpot)
+					return {
+						candidate: id,
+						message: {
+							candidateId: id,
+							skippedCandidatesBecauseMinSpot: considered,
+						},
+					};
+				else considered.push(id);
 			}
 
 			minSpot++;
@@ -268,7 +391,15 @@ export class Evaluation {
 		throw new Error("No candidate found for runoff");
 	}
 
-	static preliminaryList(candidates: string[], votes: Vote[]): ResultEntry[] {
+	static preliminaryList(
+		candidates: string[],
+		votes: Vote[],
+	): {
+		result: ResultEntry[];
+		messages: EvaluationMessagePreliminaryListMessage[];
+	} {
+		const messages: EvaluationMessagePreliminaryListMessage[] = [];
+
 		const result: ResultEntry[] = [];
 		let next = 1;
 		const shift: { [candidateId: string]: number } = {};
@@ -284,70 +415,175 @@ export class Evaluation {
 			const twoHighest = Evaluation.getTwoHighest(toConsiderForNext, votes);
 
 			if (typeof twoHighest === "string") {
+				const score = Evaluation.averageForCandidate(twoHighest, votes);
+				const theShift = -shift[twoHighest];
 				result.push({
 					candidateId: twoHighest,
-					score: Evaluation.averageForCandidate(twoHighest, votes),
-					shift: -shift[twoHighest],
+					score: score,
+					shift: theShift,
 					position: next,
 				});
+				messages.push({
+					type: "preliminary-list-spot-single",
+					position: next,
+					score: score,
+					candidateId: twoHighest,
+					shift: theShift,
+				});
 			} else {
-				const higher = Evaluation.directComparison(twoHighest[0], twoHighest[1], votes);
+				const dcr = Evaluation.directComparison(twoHighest[0], twoHighest[1], votes);
 
-				const theHigher = higher > 0 ? twoHighest[0] : twoHighest[1];
-				const theLower = higher > 0 ? twoHighest[1] : twoHighest[0];
+				const { a, b, equal, excluded } = dcr;
 
+				const theHigher = a > b ? twoHighest[0] : twoHighest[1];
+				const theLower = a > b ? twoHighest[1] : twoHighest[0];
+				const winnerBallots = Math.max(a, b);
+				const loserBallots = Math.min(a, b);
+
+				const winnerScore = Evaluation.averageForCandidate(theHigher, votes);
+				const loserScore = Evaluation.averageForCandidate(theLower, votes);
+
+				const winnerShift = -shift[theHigher];
 				result.push({
 					candidateId: theHigher,
-					score: Evaluation.averageForCandidate(theHigher, votes),
-					shift: -shift[theHigher],
+					score: winnerScore,
+					shift: winnerShift,
 					position: next,
 				});
 
 				// only increase shift if the lower one is the one that has the higher rating
 				if (theLower === twoHighest[0]) shift[theLower]++;
+
+				const loserShiftNow = -shift[theLower];
+				messages.push({
+					type: "preliminary-list-spot-duo",
+					position: next,
+					directComparisonExcludedBallots: excluded,
+					directComparisonWinner: dcr.winner,
+					directComparisonTieBreaker: dcr.messages,
+					equalBallots: equal,
+					winner: {
+						score: winnerScore,
+						candidateId: theHigher,
+						shift: winnerShift,
+						directComparisonBallots: winnerBallots,
+					},
+					loser: {
+						score: loserScore,
+						candidateId: theLower,
+						shift: loserShiftNow,
+						directComparisonBallots: loserBallots,
+					},
+				});
 			}
 
 			next++;
 		}
 
-		return result;
+		return {
+			result,
+			messages,
+		};
 	}
 
-	static directComparison(candidateA: string, candidateB: string, votes: Vote[]): number {
+	static directComparison(
+		candidateA: string,
+		candidateB: string,
+		votes: Vote[],
+	): {
+		a: number;
+		b: number;
+		equal: number;
+		excluded: number;
+		messages: EvaluationMessagePreliminaryListSpotDuoTieBreaker[];
+		winner: string;
+	} {
+		console.log(`Performing direct comparison for candidates ${candidateA} and ${candidateB} with ${votes.length} votes`);
+
 		let a = 0;
 		let b = 0;
+		let equal = 0;
+		let excluded = 0;
 
 		for (const vote of votes) {
-			if (vote.rankings[candidateA] === undefined || vote.rankings[candidateB] === undefined) continue;
-
-			if (vote.rankings[candidateA] < vote.rankings[candidateB]) {
-				a++;
-			} else if (vote.rankings[candidateA] > vote.rankings[candidateB]) {
+			if (vote.rankings[candidateA] === undefined || vote.rankings[candidateB] === undefined) {
+				excluded++;
+			} else if (vote.rankings[candidateA] === vote.rankings[candidateB]) {
+				equal++;
+			} else if (vote.rankings[candidateA] < vote.rankings[candidateB]) {
 				b++;
+			} else if (vote.rankings[candidateA] > vote.rankings[candidateB]) {
+				a++;
 			}
 		}
 
-		return b - a;
+		if (a == b) {
+			// runoff with higher points more often
+
+			const obj = this.highestRankedCandidateByPointCounts([candidateA, candidateB], votes);
+
+			if (obj.candidates.length > 1)
+				throw new Error(`Cannot determine winner between ${candidateA} and ${candidateB} with ${votes.length} votes: ${a} vs ${b}`);
+
+			console.log(obj.messages);
+
+			return {
+				winner: obj.candidates[0],
+				equal,
+				messages: obj.messages,
+				b,
+				excluded,
+				a,
+			};
+		} else if (a > b) {
+			return { a, b, equal, messages: [], excluded, winner: candidateA };
+		} else {
+			return { a, b, equal, messages: [], excluded, winner: candidateB };
+		}
 	}
 
-	static highestRankedCandidateByPointCounts(candidates: string[], votes: Vote[]): string[] {
+	static highestRankedCandidateByPointCounts(
+		candidates: string[],
+		votes: Vote[],
+	): {
+		candidates: string[];
+		messages: EvaluationMessagePreliminaryListSpotDuoTieBreaker[];
+	} {
+		const messages: EvaluationMessagePreliminaryListSpotDuoTieBreaker[] = [];
+
+		console.log(`Trying to determine highest point count for candidates: ${candidates.join(", ")}`);
+
 		let leftInComparison = [...candidates];
-		let i = 1;
+		let i = 10;
 		while (leftInComparison.length > 1 && i > 0) {
-			leftInComparison = this.highestRankedCandidatesByPointCount(i, leftInComparison, votes);
+			const rr = this.highestRankedCandidatesByPointCount(i, leftInComparison, votes);
+			leftInComparison = rr.candidates;
+			messages.push(rr.message);
 			i--;
 		}
 
-		return leftInComparison;
+		console.log(`Highest point count: ${leftInComparison.join(", ")}`);
+
+		return {
+			candidates: leftInComparison,
+			messages,
+		};
 	}
 
-	static highestRankedCandidatesByPointCount(count: number, candidates: string[], votes: Vote[]): string[] {
+	static highestRankedCandidatesByPointCount(
+		count: number,
+		candidates: string[],
+		votes: Vote[],
+	): { candidates: string[]; message: EvaluationMessagePreliminaryListSpotDuoTieBreaker } {
 		const nCount: { [candidateId: string]: number } = {};
+
+		console.log(`Comparing ${candidates.length} candidates by point count of ${count}`);
 
 		for (const candidate of candidates) {
 			nCount[candidate] = 0;
 		}
 
+		// IMPORTANT: Ballots are not excluded here in case one has an abstention
 		for (const vote of votes) {
 			for (const candidate of candidates) {
 				if (vote.rankings[candidate] === count) {
@@ -356,13 +592,21 @@ export class Evaluation {
 			}
 		}
 
+		console.log(`Point count for ${count}: ${JSON.stringify(nCount)}`);
+
 		// return the highest
 		const highest = Math.max(...Object.values(nCount));
 
 		const out: string[] = [];
 		for (const k in nCount) if (nCount[k] === highest) out.push(k);
 
-		return out;
+		return {
+			candidates: out,
+			message: {
+				points: count,
+				counts: nCount,
+			},
+		};
 	}
 
 	static getTwoHighest(candidates: string[], votes: Vote[]): [string, string] | string {
@@ -373,7 +617,11 @@ export class Evaluation {
 		else if (first.length === 2) return [first[0], first[1]];
 		else if (first.length > 2) {
 			// the two candidates which have a higher score more often
-			const highest = this.highestRankedCandidateByPointCounts(first, votes);
+			const obj = this.highestRankedCandidateByPointCounts(first, votes);
+
+			const highest = obj.candidates;
+
+			// TODO: do not ignore messages
 
 			if (highest.length === 2) return [highest[0], highest[1]];
 
@@ -394,11 +642,19 @@ export class Evaluation {
 
 			if (secondHighestByAverage.length === 1) return [first[0], secondHighestByAverage[0]];
 
-			const secondHighest = this.highestRankedCandidateByPointCounts(withoutHighest, votes);
+			console.log(`${secondHighestByAverage.length} candidates have the same average`);
+
+			const obj2 = this.highestRankedCandidateByPointCounts(secondHighestByAverage, votes);
+
+			const secondHighest = obj2.candidates;
+			// TODO: do not ignore messages
 
 			if (secondHighest.length === 1) return [first[0], secondHighest[0]];
 
-			throw new Error("Cannot determine second highest: All votes identical");
+			throw new Error(
+				`Cannot determine second highest: All votes identical for candidates ${secondHighest.join(", ")}\n ` +
+					`with votes ${votes.map((vote) => JSON.stringify(vote)).join(", ")}`,
+			);
 		} else {
 			throw new Error(`Huh ? ${first}`);
 		}

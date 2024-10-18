@@ -29,6 +29,7 @@ async function downloadPdf() {
 	}
 
 	const ballot = await ballotGenerator.resultComplete({
+		candidates: model.value.candidates,
 		assemblyName: model.value.general.assemblyName,
 		electionName: model.value.general.electionName,
 		result: result.value,

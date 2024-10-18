@@ -50,7 +50,7 @@ class PdfDocumentManagerImpl implements PdfDocumentManager {
 		};
 
 		const fontkit = await import("@pdf-lib/fontkit");
-		this.docs[ref].document.registerFontkit(fontkit);
+		this.docs[ref].document.registerFontkit(fontkit.default);
 
 		const splitIntoLines = (font: PDFFont, text: string, dtp: number, width: number) => {
 			const words = text.split(/\s+/);

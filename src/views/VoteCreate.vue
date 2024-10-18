@@ -54,6 +54,7 @@ const ballotValid = computed(() => {
 function complete() {
 	const vote: Vote = {
 		ballotId: ballotId.value,
+		list: props.gender,
 		created: `${new Date().getTime()}`,
 		rankings: Object.fromEntries(Object.entries(votes.value)
 			.filter(value => value[1] !== "")

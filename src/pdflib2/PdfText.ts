@@ -117,6 +117,10 @@ export function rightAlignedText(text: string, font: PdfFont, color: PdfColor, w
 	});
 }
 
+export function mapMultilineText(font: PdfFont, color: PdfColor, maxWidth: number): (text: string) => PdfObjectGroup {
+	return (text: string) => multilineText(text, font, color, maxWidth);
+}
+
 export function multilineText(mlText: string, font: PdfFont, color: PdfColor, maxWidth: number): PdfObjectGroup {
 	const lines = font.splitIntoLines(mlText, maxWidth);
 

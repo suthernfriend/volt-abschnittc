@@ -5,6 +5,7 @@ import { v4 } from "uuid";
 
 export interface PdfObjectGroup extends Pdf2DObject {
 	addFlow(obj: Pdf2DObject): PdfObjectGroup;
+	addFlow(objs: Pdf2DObject[]): PdfObjectGroup;
 
 	addRelative(obj: Pdf2DObject, relativePosition: Vector2d): PdfObjectGroup;
 
@@ -28,9 +29,15 @@ export class PdfObjectGroupImpl implements PdfObjectGroup {
 		return [...this._objects];
 	}
 
-	addFlow(obj: Pdf2DObject): PdfObjectGroup {
-		this._objects.push(positionedObject(vector2d(0, this.y), obj));
-		this.y += obj.size().height();
+	addFlow(obj: Pdf2DObject | Pdf2DObject[]): PdfObjectGroup {
+		if (Array.isArray(obj)) {
+			for (const o of obj) {
+				this.addFlow(o);
+			}
+		} else {
+			this._objects.push(positionedObject(vector2d(0, this.y), obj));
+			this.y += obj.size().height();
+		}
 		return this;
 	}
 
