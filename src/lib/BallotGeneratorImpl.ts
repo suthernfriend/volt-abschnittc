@@ -405,7 +405,7 @@ export class BallotGeneratorImpl implements BallotGenerator {
 					.addFlow(whitespace(vector2d(0, 1)))
 					.addFlow(
 						textMapper(
-							`Im Direkten vergleich wurden ${m.directComparisonExcludedBallots} Stimmzettel ausgeschlossen, ` +
+							`Im direkten Vergleich wurden ${m.directComparisonExcludedBallots} Stimmzettel ausgeschlossen, ` +
 								`da auf jeweils einem (oder beiden) der Stimmzettel keine Punktzahl angegeben wurde.`,
 						),
 					)
