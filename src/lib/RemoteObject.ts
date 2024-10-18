@@ -261,26 +261,36 @@ export function remoteReactive<T extends object>(
 		{ deep: true },
 	);
 
-	const token = authManager.getToken();
 
-	api.v1SynchronizedObject(name, token).then((ns) => {
-		stream = ns;
+	const tryLaunch = () => {
+		if (!authManager.isAuthenticated())
+			setTimeout(tryLaunch, 1000);
+		launch()
+	}
 
-		ns.onMessage((data: MessageStreamMessage<any>) => {
-			if (data.type === "catch-up") {
-				remotelyChanged(data.data);
-				statusRef.value.ready = true;
-			}
-			if (data.type === "data") {
-				remotelyChanged(data.data);
-			} else if (data.type === "created") {
-				obj.value = defaultValue;
-				locallyChanged();
-				console.log("Now ready");
-				statusRef.value.ready = true;
-			}
+	function launch() {
+		const token = authManager.getToken();
+		api.v1SynchronizedObject(name, token).then((ns) => {
+			stream = ns;
+
+			ns.onMessage((data: MessageStreamMessage<any>) => {
+				if (data.type === "catch-up") {
+					remotelyChanged(data.data);
+					statusRef.value.ready = true;
+				}
+				if (data.type === "data") {
+					remotelyChanged(data.data);
+				} else if (data.type === "created") {
+					obj.value = defaultValue;
+					locallyChanged();
+					console.log("Now ready");
+					statusRef.value.ready = true;
+				}
+			});
 		});
-	});
+	}
+
+	setTimeout(tryLaunch, 0);
 
 	return [obj, statusRef];
 }
