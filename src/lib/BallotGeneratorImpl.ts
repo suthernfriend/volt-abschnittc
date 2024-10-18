@@ -47,7 +47,7 @@ export class BallotGeneratorImpl implements BallotGenerator {
 			case "A4":
 				return PdfGeometries.A4;
 			case "2_A4":
-				throw new Error("Not implemented");
+				throw new Error("Jan hat noch nicht fertig.");
 			case "A3_2":
 				return PdfGeometries.A3L_2;
 			case "A3_3":
