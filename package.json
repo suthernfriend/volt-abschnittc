@@ -13,6 +13,7 @@
     "test-document": "tsx --tsconfig tsconfig.app.json ./src/test/TestDocument.ts"
   },
   "dependencies": {
+    "@modyfi/vite-plugin-yaml": "^1.1.0",
     "bulma": "^1.0.2",
     "vue": "^3.4.29"
   },

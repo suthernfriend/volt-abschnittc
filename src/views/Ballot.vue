@@ -3,10 +3,10 @@ import type { Election, ElectionBallotIdType, ElectionGender } from "@/lib/Types
 import { ref } from "vue";
 import { BallotGeneratorImpl } from "@/lib/BallotGeneratorImpl";
 import type { PageSizeNames } from "@/lib/BallotGenerator";
+import Container from "@/lib/Container";
 
 const election = defineModel<Election>({ required: true });
 const ballotUrl = ref<string>("about:blank");
-const ballotGenerator = new BallotGeneratorImpl();
 
 const paperOptions: { [k in PageSizeNames]: string } = {
 	A4_2: "1 Stimmzettel auf A4 in 2 Spalten",
@@ -31,12 +31,14 @@ async function download241(list: ElectionGender) {
 
 	const uniqueId = election.value.general.ballotIds[list];
 
-	const ballot = await ballotGenerator.ballot241({
+	const ballotGenerator = await Container.ballotGenerator();
+	const ballot = await ballotGenerator.ballot232({
 		pageSize: ballotPaperType.value,
 		assemblyName: election.value.general.assemblyName,
 		electionName: election.value.general.electionName + ` (${genderTexts[list]})`,
 		candidates,
 		uniqueId,
+		maxPoints: 10
 	});
 
 	const url = URL.createObjectURL(new Blob([ballot], { type: "application/pdf" }));

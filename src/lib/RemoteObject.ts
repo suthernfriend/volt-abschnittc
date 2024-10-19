@@ -1,5 +1,5 @@
 import { type Ref, ref, watch } from "vue";
-import { container } from "@/lib/Container";
+import Container from "@/lib/Container";
 import type { MessageStream, MessageStreamMessage } from "@/lib/MessageStream";
 
 function deepCopy<T>(obj: T): T {
@@ -208,9 +208,6 @@ export function remoteReactive<T extends object>(
 		ready: false,
 	});
 
-	const api = container.voltToolsIopApi();
-	const authManager = container.authManager();
-
 	let stream: MessageStream<any> | undefined = undefined;
 
 	function remotelyChanged(remoteObj: T) {
@@ -263,13 +260,22 @@ export function remoteReactive<T extends object>(
 
 
 	const tryLaunch = () => {
-		if (!authManager.isAuthenticated())
-			setTimeout(tryLaunch, 1000);
-		launch()
+		Container.authManager().then((authManager) => {
+			if (!authManager.isAuthenticated())
+				setTimeout(tryLaunch, 1000);
+			else
+				launch().catch((e) => {
+					console.error(e);
+					setTimeout(tryLaunch, 1000);
+				});
+		});
 	}
 
-	function launch() {
+	async function launch() {
+		const api = await Container.voltToolsIopApi();
+		const authManager = await Container.authManager();
 		const token = authManager.getToken();
+
 		api.v1SynchronizedObject(name, token).then((ns) => {
 			stream = ns;
 

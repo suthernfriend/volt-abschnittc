@@ -10,7 +10,7 @@ import Export from "@/views/Export.vue";
 import { v4 } from "uuid";
 import { testCandidates, testCounts } from "@/test/TestData";
 import AuthFence from "@/AuthFence.vue";
-import { container } from "@/lib/Container";
+import Container from "@/lib/Container";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { remoteReactive } from "@/lib/RemoteObject";
@@ -62,13 +62,15 @@ const hd = "volteuropa.org";
 
 const auth = ref<null | { name: string }>(null);
 
-const authManager = container.authManager();
-
 onMounted(() => {
-	if (authManager.isAuthenticated()) auth.value = { name: authManager.payload().name };
+	Container.authManager()
+		.then(value => {
+			if (value.isAuthenticated()) auth.value = { name: value.payload().name };
+		})
 });
 
 async function useCredential(cred: string) {
+	const authManager = await Container.authManager()
 	await authManager.useCredential(cred);
 	const payload = authManager.payload();
 	console.log(payload);
@@ -76,6 +78,7 @@ async function useCredential(cred: string) {
 }
 
 async function clearAuth() {
+	const authManager = await Container.authManager()
 	authManager.clear();
 	auth.value = null;
 }

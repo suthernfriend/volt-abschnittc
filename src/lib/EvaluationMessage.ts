@@ -52,17 +52,7 @@ export interface EvaluationMessagePreliminaryListSpotSingle extends EvaluationMe
 
 export type EvaluationMessagePreliminaryListSpot = EvaluationMessagePreliminaryListSpotSingle | EvaluationMessagePreliminaryListSpotDuo;
 
-export interface EvaluationMessagePreliminaryListOverview {
-	type: "preliminary-list-overview";
-	averages: {
-		[candidateId: string]: {
-			average: number;
-			count: number;
-		};
-	};
-}
-
-export type EvaluationMessagePreliminaryListMessage = EvaluationMessagePreliminaryListSpot | EvaluationMessagePreliminaryListOverview;
+export type EvaluationMessagePreliminaryListMessage = EvaluationMessagePreliminaryListSpot;
 
 export interface EvaluationMessagePreliminaryList {
 	type: "preliminary-list";

@@ -1,16 +1,8 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
-
-function loadScript(src: string): Promise<Event> {
-	return new Promise<Event>((resolve, reject) => {
-		const script = document.createElement("script");
-		script.src = src;
-		script.async = true;
-		script.onload = resolve;
-		script.onerror = reject;
-		document.head.appendChild(script);
-	});
-}
+import { loadScript } from "@/lib/utility";
+import { AuthManager } from "@/lib/AuthManager";
+import Container from "@/lib/Container";
 
 const emits = defineEmits<{
 	(e: "credential", credential: string): void;
@@ -45,7 +37,7 @@ declare global {
 				text: string;
 				shape: string;
 				width: string;
-			},
+			}
 		): void;
 
 		prompt(): void;
@@ -65,19 +57,25 @@ function handleClientResponse(response: GoogleAccountsIdInitializeCallbackArg) {
 }
 
 onMounted(async () => {
+	const authManager = await Container.authManager();
+	if (authManager.isAuthenticated()) {
+		// do nothing for now
+		return;
+	}
+
 	await loadScript("https://accounts.google.com/gsi/client");
 
 	window.google.accounts.id.initialize({
 		client_id: props.clientId,
 		callback: handleClientResponse,
-		hd: props.domain,
+		hd: props.domain
 	});
 	window.google.accounts.id.renderButton(buttonRef.value!, {
 		theme: "outline",
 		size: "large",
 		text: "login_with",
 		shape: "rectangular",
-		width: "240px",
+		width: "240px"
 	});
 	window.google.accounts.id.prompt();
 });

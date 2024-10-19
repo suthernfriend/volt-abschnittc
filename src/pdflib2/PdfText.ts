@@ -4,6 +4,7 @@ import { v4 } from "uuid";
 import { root, vector2d, type Vector2d } from "@/pdflib2/Vector2d";
 import type { PdfFont } from "@/pdflib2/PdfFont";
 import { objectGroup, type PdfObjectGroup } from "@/pdflib2/PdfObjectGroup";
+import { whitespace } from "@/pdflib2/PdfWhitespace";
 
 export interface PdfText extends Pdf2DObject {
 	text(): string;
@@ -122,14 +123,27 @@ export function mapMultilineText(font: PdfFont, color: PdfColor, maxWidth: numbe
 }
 
 export function multilineText(mlText: string, font: PdfFont, color: PdfColor, maxWidth: number): PdfObjectGroup {
-	const lines = font.splitIntoLines(mlText, maxWidth);
 
-	console.log(`lines: ${lines}`);
+	const paragraphs = mlText.split(/\n+/);
+	const out = objectGroup();
 
-	const group = objectGroup();
+	for (let i = 0; i < paragraphs.length; i++)	{
+		const paragraph = paragraphs[i];
 
-	for (const line of lines)
-		group.addFlow(text(line, font, color));
+		const lines = font.splitIntoLines(paragraph, maxWidth);
 
-	return group;
+		console.log(`lines: ${lines}`);
+
+		const group = objectGroup();
+
+		for (const line of lines)
+			group.addFlow(text(line, font, color));
+
+		out.addFlow(group);
+
+		if (i != paragraphs.length - 1)
+			out.addFlow(whitespace(vector2d(0, 1)));
+	}
+
+	return out;
 }

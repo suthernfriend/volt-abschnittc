@@ -7,6 +7,17 @@ export function downloadFile(dataUrl: string, filename: string) {
 	link.remove();
 }
 
+export function loadScript(src: string): Promise<Event> {
+	return new Promise<Event>((resolve, reject) => {
+		const script = document.createElement("script");
+		script.src = src;
+		script.async = true;
+		script.onload = resolve;
+		script.onerror = reject;
+		document.head.appendChild(script);
+	});
+}
+
 export function randomString(length: number): string {
 	const firstAlphabet = "CFGHJKLMNPRTVWXYZ";
 	const alphabet = "1234567890CFGHJKLMNPRTVWXYZ";

@@ -5,6 +5,7 @@ import { BallotGeneratorImpl } from "@/lib/BallotGeneratorImpl";
 import { computed } from "vue";
 import { Evaluation } from "@/lib/Evaluation";
 import { downloadFile } from "@/lib/utility";
+import Container from "@/lib/Container";
 
 const model = defineModel<Election>({ required: true });
 
@@ -20,13 +21,13 @@ const result = computed(() => {
 	return evaluation.value.evaluate();
 });
 
-const ballotGenerator = new BallotGeneratorImpl();
-
 async function downloadPdf() {
 	if (result.value.type !== "list-complete") {
 		alert("Ergebnis ist nicht vollständig.");
 		return;
 	}
+
+	const ballotGenerator = await Container.ballotGenerator();
 
 	const ballot = await ballotGenerator.resultComplete({
 		candidates: model.value.candidates,

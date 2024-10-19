@@ -1,0 +1,90 @@
+groups:
+  "19":
+    title: "Stimmzettel für ${assemblyName}"
+    explainer: >-
+      Die Wahl erfolgt gemäß § 23 Abs. 4 und § 19 der Allgemeinen Wahlordnung von Volt Deutschland. Hierbei kann jeder Stimmberechtigte eine*n Bewerber*in auswählen. Gewählt ist der*diejenige Bewerber*in die mehr als die Hälfte der Stimmen erhält. Enthaltungen werden als nicht abgegebene Stimmen gezählt, nicht bei der Festellung der Mehrheit berücksichtigt und werden durch leere Felder angezeigt.
+      Bei Gleichstand wird eine erneute Stichwahl mit den selben Bewerber*innen durchgeführt.
+    instruction: "Sie haben 1 Stimme"
+
+  "232":
+    title: "Stimmzettel für ${assemblyName}"
+    explainer: >-
+      Die Wahl erfolgt gemäß § 23 der Allgemeinen Wahlordnung von Volt Deutschland. Jedem Bewerber kann 
+      dabei eine Punktzahl zwischen 0 und 5 vergeben werden. Punktzahlen können mehrfach vergeben werden.
+      Die Reihenfolge ergibt sich durch den Mittelwert der vergebenen Punktzahlen, wobei die Bewerber jeweils
+      nochmal im direkten Vergleich verglichen werden. Enthaltungen werden als nicht abgegebene Stimmen
+      gezählt und werden durch leere Felder angezeigt. Bewerber die von mehr als der Hälfte der
+      Stimmberechtigten mit 0 Punkten bewertet werden, sind nicht für die Liste zugelassen.
+    fromListenplatz: "Ab Listenplatz: ${spot}"
+    instruction: "Sie können bei jedem*jeder Bewerber*in 1 Punktzahl zwischen 0 und ${maxPoints} vergeben."
+    no: "Nein"
+
+
+  "resultComplete":
+    title: "Ergebniszettel für ${electionName} bei der ${assemblyName}"
+    subtitle:  "Ergebnis des 1. Wahlgangs nach § 23 Abs. 1 der Allgemeinen Wahlordnung von Volt Deutschland"
+    combined:
+      title: "Bestimmung der Gesamtliste nach § 24 Abs. 6 der Allgemeinen Wahlordnung von Volt Deutschland"
+    voteCount:
+      total: "Es wurden insgesamt ${count} Stimmen abgegeben."
+      count:
+        male: "${count} Stimmzettel für die Liste 2 (männlich diverse Bewerber*innen)"
+        female: "${count} Stimmzettel für die Liste 1 (männlich diverse Bewerber*innen)"
+    troublemakers:
+      title: "Zulassung zur Gesamtliste nach § 24 Abs. 1 der Allgemeinen Wahlordnung von Volt Deutschland"
+      explainer: >-
+        Die Zulassung von Bewerber*innen für die Gesamtliste wird in § 24 Abs. 1 der Allgemeinen Wahlordnung von Volt Deutschland geregelt. Demnach ist ein*e Bewerber*in nicht zugelassen, wenn er oder sie "im ersten Wahlgang auf mindestens der Hälfte der abgegebenen Wahllisten, auf denen für den*die jeweilige*n Bewerber*in eine Punktzahl vergeben wurde, die Punktzahl null erhalten" hat. Dies bedeutet im Umkehrschluss, dass Bewerber*innen zugelassen sind, wenn sie auf weniger als der Hälfte der relevanten Wahllisten null Punkte erhalten haben.
+      expl1:
+        male: Berweber*in ${name} auf Stimmzettel mit der Liste 2 (männlich / diverse Bewerber*innen) erhielt
+        female: Bewerber*in auf Stimmzettel mit der Liste 1 (weiblich / diverse Bewerber*innen) erhielt
+      nullVotes: "auf ${count} Stimmzetteln die Punktzahl 0 und "
+      nonNullVotes: "auf ${count} Stimmzetteln erhielt er*sie eine Punktzahl."
+      ok: ${name} ist demnach für die Gesamtliste zugelassen.
+      notOk: ${name} ist demnach nicht für die Gesamtliste zugelassen.
+    runoff:
+      title: Ergebnis der Stichwahl nach § 23 Abs. 4 der Allgemeinen Wahlordnung von Volt Deutschland
+      explainer: >-
+        TODO
+
+    preliminaryList:
+      title:
+        male: Bestimmung der Vorabliste 2 (männlich / diverse Bewerber*innen) nach § 24 Abs. 2 der Allgemeinen Wahlordnung von Volt Deutschland
+        female: Bestimmung der Vorabliste 1 (weiblich / diverse Bewerber*innen) nach § 24 Abs. 2 der Allgemeinen Wahlordnung von Volt Deutschland
+      explainer: >-
+        Die Bestimmung der Listenplätze auf den vorläufigen Listen erfolgt gemäß § 24 Absatz 2 der Allgemeinen Wahlordnung von Volt Deutschland in einem mehrstufigen Prozess. Zunächst wird für jeden Listenplatz der Mittelwert der abgegebenen Punktzahlen aller noch nicht platzierten Bewerber*innen ermittelt. Dabei werden nicht abgegebene Punktzahlen nicht berücksichtigt. Anschließend werden die beiden Kandidat*innen mit den höchsten Mittelwerten direkt verglichen, wobei derjenige den Listenplatz erhält, der häufiger eine höhere Punktzahl bekommen hat.
+        
+        Bei Gleichständen zwischen drei oder mehr Bewerber*innen werden diejenigen zwei verglichen, die am häufigsten die höchste Punktzahl erhalten haben. Sollte es auch hier zu einem Gleichstand kommen, entscheidet die Anzahl der nächsthöchsten Punktzahl. Wenn alle Bewertungen gleich sind, wird per Losverfahren entschieden. Der Paragraph sieht auch vor, dass der*die letzte verbliebene Bewerber*in automatisch den letzten Listenplatz erhält. Dieser Prozess wird für jeden Listenplatz wiederholt, bis die vorläufige Liste vollständig ist.
+      overview: Übersicht der erlangten durchschnittlichen Punktzahlen der Bewerber*innen
+      average: "Durchschnitt: ${score}"
+      spot: "Listenplatz ${position}"
+      shift: "Direkte Vergleiche verloren: ${shift}"
+      summary:
+        male: "Die Vorabliste 2 (männlich / diverse Bewerber*innen)  wurde wie folgt bestimmt:"
+        female: "Die Vorabliste 1 (weiblich / diverse Bewerber*innen)  wurde wie folgt bestimmt:"
+      titleSpot:
+        female: Bestimmung des Listenplatzes ${position} auf der Vorabliste 1 (weiblich / diverse Bewerber*innen)
+        male: Bestimmung des Listenplatzes ${position} auf der Vorabliste 2 (männlich / diverse Bewerber*innen)
+      highestRankedForSpot: Die Bewerber*innen ${winnerName} und ${loserName} haben jeweils die beiden höchsten Mittelwerte.
+      spotScoreWinner: ${winnerName} erhielt eine Punktzahl von ${winnerScore} und
+      spotScoreLoser: ${loserName} eine Punktzahl von ${loserScore}.
+      directComparisonExcluded: Im Direkten vergleich wurden ${count} Stimmzettel ausgeschlossen, da auf jeweils einem (oder beiden) der Stimmzettel keine Punktzahl angegeben wurde.
+      directComparisonWinner: Auf ${count} Stimmzetteln erhielt ${winnerName} die höhere Punktzahl,
+      directComparisonLoser: auf ${count} Stimmzetteln erhielt ${loserName} die höhere Punktzahl.
+      directComparisonTieBreaker: Durch den Gleichstand wird nun die Anzahl der Punktzahlen verglichen, welche nicht bei beiden Bewerber*innen gleich ist.
+      directComparisonTieBreakerPoints: Bewerber*in ${name} erhielt auf ${count} Stimmzetteln die Punktzahl ${points}
+      spotResult:
+        male: ${winnerName} erhält somit den Listenplatz ${spot} auf der Vorabliste 2 (männlich / diverse Bewerber*innen).
+        female: ${winnerName} erhält somit den Listenplatz ${spot} auf der Vorabliste 1 (weiblich / diverse Bewerber*innen).
+      lastExpl: Als letzte*r verbleibende*r Beweber*in erhält ${name} den Listenplatz.
+    runoffCandidates:
+      title: "Bestimmung Bewerber*innen für die Stichwahl nach § 23 Abs. 4 der Allgemeinen Wahlordnung von Volt Deutschland"
+      subtitle: "Als Bewerber*innen für die Stichwahl wurden bestimmt:"
+      explainer: >-
+        Gemäß § 24 Abs. 4 der Allgemeinen Wahlordnung von Volt Deutschland wird der zweite Wahlgang als Einzelwahl zwischen den jeweils erstplatzierten Bewerber*innen der vorläufigen Listen durchgeführt. Diese vorläufigen Listen entstehen nach § 24 Abs. 2, der in diesem Textauszug nicht enthalten ist. Es ist wichtig zu beachten, dass dabei die Regelungen aus § 24 Abs. 3 bis 5 berücksichtigt werden müssen.
+        
+        Es gibt einige Sonderregelungen: Wenn eine der vorläufigen Listen keine Bewerber*innen enthält, entfällt der zweite Wahlgang komplett (§ 23 Abs. 3). Falls der oder die erstplatzierte Bewerber*in nicht für alle Listenplätze kandidiert, rückt im zweiten Wahlgang stattdessen der oder die nächstbeste Bewerber*in nach, sofern diese Person für alle Plätze antritt (§ 23 Abs. 4). 
+        
+        Der zweite Wahlgang wird in jedem Fall durchgeführt, wenn auf beiden vorläufigen Listen Kandidierende verzeichnet sind. Dabei kann es vorkommen, dass der von den Bewerber*innen ursprünglich festgelegte Wunsch-Listenplatz nicht berücksichtigt wird (§ 23 Abs. 5).
+      afterName:
+        male: für die Liste 2 (männlich / diverse Bewerber*innen)
+        female: für die Liste 1 (weiblich / diverse Bewerber*innen)
