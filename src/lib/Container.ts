@@ -2,6 +2,8 @@ import { VoltToolsIopApi } from "@/lib/VoltToolsIopApi";
 import { AuthManager } from "@/lib/AuthManager";
 import { BallotGeneratorImpl } from "@/lib/BallotGeneratorImpl";
 import { type TextFile, TextProviderImpl } from "@/lib/TextProvider";
+import type { AssistantProvider, AssistantProviderImplFile } from "@/lib/AssistantProvider";
+import { AssistantProviderImpl } from "@/lib/AssistantProvider";
 
 console.log(import.meta.env);
 
@@ -39,6 +41,14 @@ async function ballotGenerator() {
 	});
 }
 
+async function assistantProvider() {
+	return once("assistantProvider", async  () => {
+		return new AssistantProviderImpl({
+			file: ((await import("@/text/assistant.yaml"))).default as AssistantProviderImplFile
+		})
+	})
+}
+
 const instances: { [name: string]: any } = [];
 
 async function once<T>(name: string, creator: () => Promise<T>): Promise<T> {
@@ -55,10 +65,13 @@ export interface Container {
 	authManager(): Promise<AuthManager>;
 
 	ballotGenerator(): Promise<BallotGeneratorImpl>;
+
+	assistantProvider(): Promise<AssistantProvider>;
 }
 
 export default {
 	voltToolsIopApi: () => voltToolsIopApi(),
 	authManager: () => authManager(),
-	ballotGenerator: () => ballotGenerator()
+	ballotGenerator: () => ballotGenerator(),
+	assistantProvider: () => assistantProvider()
 } as Container;
