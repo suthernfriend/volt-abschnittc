@@ -1,132 +1,187 @@
+order:
+  - app-configuration
+  - link-step-candidates-import
+  - candidates-double-check
+  - link-print-ballots
+  - execute-vote
+  - numbering-ballots
+  - input-ballots
+  - control-input
+  - commit-result
+  - display-result
+  - lot
+  - commit-candidates-2
+  - print-ballots-2
+  - execute-vote-2
+  - count-votes-2
+  - input-result-2
+  - commit-result-2
+  - display-result-2
+  - repeat-runoff
+  - commit-acceptance
+  - display-full-list
+  - export
 steps:
-  - title: Konfiguration der Auszählungssoftware
-    explanation: Richten Sie die Auszählungssoftware ein, indem Sie die Zählkommission, den Verband, den Namen der Versammlung und das zu wählende Organ angeben. Stellen Sie sicher, dass alle Informationen korrekt eingegeben werden. Überprüfen Sie die Einstellungen vor dem Fortfahren.
-    actions:
-      - link: [ Einstellungen-Fenster ]
-        alternative: Öffnen Sie das Einstellungen-Fenster
+  app-configuration:
+    title: Konfiguration der Auszählungssoftware
+    explanation: >-
+      Richten Sie die Auszählungssoftware ein, indem Sie die Zählkommission, den Verband, den Namen
+      der Versammlung und das zu wählende Organ angeben. Stellen Sie sicher, dass alle Informationen 
+      korrekt eingegeben werden. Überprüfen Sie die Einstellungen vor dem Fortfahren.
+  link-step-candidates-import:
+    title: Import der Bewerberliste
+    explanation: >-
+      Importieren Sie die Liste aller Bewerber*innen in die Auszählungssoftware. Achten Sie 
+      darauf, dass alle erforderlichen Informationen wie Name, Geschlecht und gewünschter 
+      Listenplatz korrekt übernommen werden. Stellen Sie sicher, dass keine Bewerber*innen 
+      fehlen oder doppelt aufgeführt sind.
+  candidates-double-check:
+    title: Kontrolle der Bewerberliste
+    explanation: >-
+      Überprüfen Sie die importierte Bewerberliste nach dem Vier-Augen-Prinzip. Lassen
+      Sie zwei unabhängige Personen die Liste auf Vollständigkeit und Richtigkeit kontrollieren.
+      Korrigieren Sie eventuelle Fehler oder Unstimmigkeiten im Bewerber-Tab sofort.
+  link-print-ballots:
+    title: Erstellung und Druck der Stimmzettel für den 1. Wahlgang
+    explanation: >-
+      Erstellen Sie die Stimmzettel für den ersten Wahlgang gemäß § 23 Abs. 2 und 3.
+      Sie können die Stimmzettel im Stimmzettel-Tab herunterladen und ausdrucken. Es gibt seperate 
+      Stimmzettel für die zwei Listen. Kontrollieren sie nach dem Druck erneut, ob die Stimmzettel
+      alle Bewerber*innen und ihre gewünschten Listenplätze korrekt sind. Drucken sie ausreichend Kopien aus.
+  execute-vote:
+    title: Durchführung der Abstimmung
+    explanation: >-
+      Zur Durchführung des ersten Wahlgangs bei der Wahl innerhalb der Partei Volt Deutschland sind
+      mehrere wichtige Schritte zu beachten, um einen reibungslosen und ordnungsgemäßen Ablauf zu
+      gewährleisten. Zunächst ist es erforderlich, den Raum, in dem die Abstimmung stattfindet,
+      zu schließen, um eine kontrollierte Umgebung zu schaffen.
 
-  - title: Import der Bewerberliste
-    explanation: Importieren Sie die Liste aller Bewerber*innen in die Auszählungssoftware. Achten Sie darauf, dass alle erforderlichen Informationen wie Name, Geschlecht und gewünschter Listenplatz korrekt übernommen werden. Stellen Sie sicher, dass keine Bewerber*innen fehlen oder doppelt aufgeführt sind.
-    actions:
-      - link: [ Bewerber-Fenster ]
-        alternative: Öffnen Sie das Bewerber-Fenster
+      Zu Beginn des Wahlvorgangs werden die Stimmzettel an die Wahlberechtigten ausgegeben. Hierbei
+      ist besondere Sorgfalt geboten, um sicherzustellen, dass jede wahlberechtigte Person genau zwei
+      Stimmzettel erhält - einen für jede Liste. Es müssen geeignete Maßnahmen ergriffen werden, um zu
+      verhindern, dass einzelne Personen mehr als die vorgesehene Anzahl an Stimmzetteln erhalten. Die
+      Wahlberechtigten werden ausdrücklich darauf hingewiesen, dass sie die Stimmzettel zu diesem Zeitpunkt
+      noch nicht ausfüllen dürfen.
 
-  - title: Kontrolle der Bewerberliste
-    explanation: Überprüfen Sie die importierte Bewerberliste nach dem Vier-Augen-Prinzip. Lassen Sie zwei unabhängige Personen die Liste auf Vollständigkeit und Richtigkeit kontrollieren. Korrigieren Sie eventuelle Fehler oder Unstimmigkeiten sofort.
-    actions:
-      - link: [ Bewerber-Fenster ]
-        alternative: Überprüfen Sie die Liste im Bewerber-Fenster
+      Es ist wichtig, mehrfach zu kontrollieren und nachzufragen, ob noch jemand Stimmzettel benötigt,
+      um sicherzustellen, dass alle Wahlberechtigten die Möglichkeit zur Teilnahme haben. Anschließend
+      wird die Wahlurne den Anwesenden vorgezeigt, um zu demonstrieren, dass sie leer ist, bevor sie
+      verschlossen wird.
 
-  - title: Erstellung und Druck der Stimmzettel für den 1. Wahlgang
-    explanation: Erstellen Sie die Stimmzettel für den ersten Wahlgang gemäß § 23 Abs. 2 und 3. Teilen Sie die Kandidat*innen in zwei Listen auf (weiblich/divers und männlich/divers). Drucken Sie die Stimmzettel in ausreichender Anzahl aus. Stellen Sie sicher, dass die Stimmzettel klar und verständlich sind.
-    actions:
-      - link: [ Stimmzettel-Fenster ]
-        alternative: Generieren Sie die Stimmzettel im Stimmzettel-Fenster
+      Bevor der eigentliche Wahlgang eröffnet wird, muss den Wahlberechtigten das Verfahren zur Punktevergabe
+      ausführlich erklärt werden. Dies ist besonders wichtig, da es sich um ein komplexes Wahlsystem handelt.
+      Es sollte sichergestellt werden, dass alle Teilnehmenden das Verfahren verstanden haben und eventuelle
+      Fragen geklärt werden.
 
-  - title: Durchführung der Abstimmung
-    explanation: Führen Sie die Abstimmung für den ersten Wahlgang durch. Erklären Sie den Wahlberechtigten das Verfahren zur Punktevergabe. Stellen Sie sicher, dass jede*r Wahlberechtigte nur einen Stimmzettel erhält. Gewährleisten Sie eine geheime Wahl durch geeignete Maßnahmen.
-    actions:
-      - link: [ placeholder for a list ]
-        alternative: Verteilen Sie die Stimmzettel und sammeln Sie sie wieder ein
+      Der Wahlgang wird offiziell eröffnet und sollte mindestens fünf Minuten geöffnet bleiben, um allen
+      Wahlberechtigten ausreichend Zeit für ihre Stimmabgabe zu geben. Während dieser Zeit müssen
+      geeignete Maßnahmen getroffen werden, um eine geheime Wahl zu gewährleisten. Dies kann
+      beispielsweise durch die Bereitstellung von Wahlkabinen oder abgetrennten Bereichen erfolgen.
 
-  - title: Nummerierung der Stimmzettel
-    explanation: Versehen Sie alle abgegebenen Stimmzettel mit eindeutigen Kennwörtern oder Nummern. Verwenden Sie dafür beispielsweise fortlaufende Nummern oder alphanumerische Bezeichner wie "A1", "B55". Stellen Sie sicher, dass jeder Stimmzettel eine einzigartige Kennzeichnung erhält.
-    actions:
-      - link: [ placeholder for a list ]
-        alternative: Nummerieren Sie die Stimmzettel
+      Vor der Beendigung des Wahlgangs ist es wichtig, mehrfach nachzufragen, ob noch jemand
+      zusätzliche Zeit benötigt. Dies stellt sicher, dass alle Wahlberechtigten die Möglichkeit
+      hatten, ihre Stimme abzugeben. Erst wenn sichergestellt ist, dass keine weiteren Stimmen mehr
+      abgegeben werden, wird der Wahlgang offiziell geschlossen.
 
-  - title: Eintragung der Stimmzettel
-    explanation: Tragen Sie die Ergebnisse aller Stimmzettel zweifach in die Auszählungssoftware ein. Lassen Sie zwei unabhängige Personen die Eingabe vornehmen, um Fehler zu minimieren. Achten Sie auf eine genaue und sorgfältige Übertragung aller Punktzahlen.
-    actions:
-      - link: [ Eingabe-Fenster ]
-        alternative: Öffnen Sie das Eingabe-Fenster zur Dateneingabe
+  numbering-ballots:
+    title: Nummerierung der Stimmzettel
+    explanation: >-
+      Versehen Sie alle abgegebenen Stimmzettel mit eindeutigen Kennwörtern oder Nummern. 
+      Verwenden Sie dafür beispielsweise fortlaufende Nummern oder alphanumerische Bezeichner 
+      wie "A1", "B55". Stellen Sie sicher, dass jeder Stimmzettel eine einzigartige Kennzeichnung 
+      erhält.
 
-  - title: Korrekturzählung
-    explanation: Führen Sie bei Bedarf eine Korrekturzählung für fehlerhafte Eintragungen durch. Überprüfen Sie Stimmzettel mit auffälligen oder widersprüchlichen Eingaben erneut. Korrigieren Sie eventuelle Fehler in der Auszählungssoftware.
-    actions:
-      - link: [ Ergebnis-Fenster ]
-        alternative: Überprüfen Sie die Ergebnisse im Ergebnis-Fenster
+  input-ballots:
+    title: Eintragung der Stimmzettel
+    explanation: >-
+      
+      Die Erfassung der Wahlergebnisse ist ein kritischer Prozess, der höchste Präzision und Sorgfalt erfordert. 
+      Um die Genauigkeit zu maximieren und potenzielle Fehler zu minimieren, ist es unerlässlich, dass die Ergebnisse
+      aller Stimmzettel zweifach in die Auszählungssoftware eingetragen werden. Dieser Vorgang sollte von zwei
+      unabhängigen Teams durchgeführt werden, um eine zusätzliche Kontrollinstanz zu gewährleisten.
 
-  - title: Feststellung des Ergebnisses
-    explanation: Stellen Sie das Ergebnis des ersten Wahlgangs fest. Überprüfen Sie, ob alle Stimmzettel korrekt erfasst wurden. Lassen Sie das Ergebnis von der Wahlleitung bestätigen.
-    actions:
-      - link: [ Ergebnis-Fenster ]
-        alternative: Rufen Sie das endgültige Ergebnis im Ergebnis-Fenster auf
+      Für eine effiziente und zuverlässige Durchführung empfiehlt es sich, die Auszählung in Zweierteams zu organisieren.
+      Zunächst werden alle nummerierten Stimmzettel gleichmäßig auf die Teams aufgeteilt. Jedes Team sollte Zugang zu
+      einem elektronischen Gerät wie einem Notebook, Tablet oder Smartphone haben, um die Daten direkt in die
+      Auszählungssoftware einzugeben.
 
-  - title: Darstellung der Ergebnisse des 1. Wahlgangs
-    explanation: Präsentieren Sie die Ergebnisse des ersten Wahlgangs. Zeigen Sie die Punktzahlen und Rangfolge der Kandidat*innen auf beiden Listen. Erläutern Sie das Zustandekommen der vorläufigen Listen gemäß § 24 Abs. 1 und 2.
-    actions:
-      - link: [ Ergebnis-Fenster ]
-        alternative: Zeigen Sie die Ergebnisse im Ergebnis-Fenster an
+      Der Prozess gliedert sich in zwei Phasen: In der ersten Phase trägt jedes Team die ihm zugewiesenen Stimmzettel in
+      die Software ein. Hierbei ist äußerste Sorgfalt geboten, um alle Punktzahlen exakt zu übertragen. Nach Abschluss
+      dieser ersten Eingabe folgt die zweite Phase, in der die Teams die Stimmzettel untereinander tauschen. Jedes Team
+      überprüft und erfasst nun die Stimmzettel, die zuvor von einem anderen Team bearbeitet wurden. Diese zweite
+      Zählung dient als zusätzliche Sicherheitsmaßnahme und erhöht die Verlässlichkeit der Endergebnisse signifikant.
 
-  - title: Auslosung von Plätzen
-    explanation: Führen Sie bei Bedarf eine Auslosung für Plätze auf den vorläufigen Listen durch. Dies ist notwendig, wenn Kandidat*innen in sämtlichen Bewertungen gleichauf liegen. Lassen Sie die Versammlungsleitung das Los offen ziehen.
-    actions:
-      - link: [ Ergebnis-Fenster ]
-        alternative: Führen Sie die Auslosung im Ergebnis-Fenster durch
+      Durch dieses Vorgehen wird nicht nur die Genauigkeit der Dateneingabe maximiert, sondern auch die Transparenz und
+      Integrität des gesamten Wahlprozesses gestärkt. Es ist von größter Bedeutung, dass alle Beteiligten die
+      Wichtigkeit ihrer Aufgabe verstehen und mit höchster Konzentration und Gewissenhaftigkeit vorgehen, um ein
+      fehlerfreies und vertrauenswürdiges Wahlergebnis zu gewährleisten.
 
-  - title: Feststellung der Bewerber für den zweiten Wahlgang
+  control-input:
+    title: Korrekturzählung
+    explanation: >-
+      Führen Sie bei Bedarf eine Korrekturzählung für fehlerhafte Eintragungen durch. 
+      Überprüfen Sie Stimmzettel mit auffälligen oder widersprüchlichen Eingaben erneut. 
+      Korrigieren Sie eventuelle Fehler in der Auszählungssoftware durch eine dritte Zählung.
+
+  commit-result:
+    title: Feststellung des Ergebnisses
+    explanation: >-
+      Stellen Sie das Ergebnis des ersten Wahlgangs fest. Lassen Sie das Ergebnis von der Versammlungsleitung bestätigen.
+
+  display-result:
+    title: Darstellung der Ergebnisse des 1. Wahlgangs
+    explanation: >-
+      Präsentieren Sie die Ergebnisse des ersten Wahlgangs. Zeigen Sie die Punktzahlen und 
+      Rangfolge der Kandidat*innen auf beiden Listen. Erläutern Sie das Zustandekommen der vorläufigen 
+      Listen gemäß § 24 Abs. 1 und 2.
+
+  lot:
+    title: Auslosung von Plätzen
+    explanation: >-
+      Führen Sie bei Bedarf eine Auslosung für Plätze auf den vorläufigen Listen durch. Dies 
+      ist notwendig, wenn Kandidat*innen in sämtlichen Bewertungen gleichauf liegen. Lassen 
+      Sie die Versammlungsleitung das Los offen ziehen.
+
+  commit-candidates-2:
+    title: Feststellung der Bewerber für den zweiten Wahlgang
     explanation: Ermitteln Sie die Bewerber*innen für den zweiten Wahlgang. Berücksichtigen Sie dabei die Regelungen aus § 24 Abs. 3 bis 5. Stellen Sie sicher, dass die richtigen Kandidat*innen für den zweiten Wahlgang ausgewählt werden.
-    actions:
-      - link: [ Ergebnis-Fenster ]
-        alternative: Bestimmen Sie die Kandidat*innen im Ergebnis-Fenster
 
-  - title: Erstellung und Druck der Stimmzettel für den 2. Wahlgang
+  print-ballots-2:
+    title: Erstellung und Druck der Stimmzettel für den 2. Wahlgang
     explanation: Erstellen Sie die Stimmzettel für den zweiten Wahlgang gemäß § 23 Abs. 4. Berücksichtigen Sie dabei nur die jeweils erstplatzierten Bewerber*innen der vorläufigen Listen. Drucken Sie die Stimmzettel in ausreichender Anzahl aus.
-    actions:
-      - link: [ Stimmzettel-Fenster ]
-        alternative: Generieren Sie die Stimmzettel im Stimmzettel-Fenster
 
-  - title: Durchführung der Abstimmung
+  execute-vote-2:
+    title: Durchführung der Abstimmung
     explanation: Führen Sie die Abstimmung für den zweiten Wahlgang durch. Erklären Sie den Wahlberechtigten das Verfahren für die Einzelwahl. Stellen Sie sicher, dass jede*r Wahlberechtigte nur einen Stimmzettel erhält. Gewährleisten Sie eine geheime Wahl.
-    actions:
-      - link: [ placeholder for a list ]
-        alternative: Verteilen Sie die Stimmzettel und sammeln Sie sie wieder ein
 
-  - title: Zählung der Stimmzettel
+  count-votes-2:
+    title: Zählung der Stimmzettel
     explanation: Zählen Sie die Stimmzettel des zweiten Wahlgangs nach dem Vier-Augen-Prinzip aus. Lassen Sie zwei unabhängige Personen die Stimmen auszählen. Notieren Sie die Ergebnisse sorgfältig und nachvollziehbar.
-    actions:
-      - link: [ placeholder for a list ]
-        alternative: Zählen Sie die Stimmen aus
 
-  - title: Eintragung des Ergebnisses des 2. Wahlgangs
+  input-result-2:
+    title: Eintragung des Ergebnisses des 2. Wahlgangs
     explanation: Tragen Sie das Ergebnis des zweiten Wahlgangs in die Auszählungssoftware ein. Achten Sie auf eine korrekte Übertragung der Stimmenzahlen. Lassen Sie die Eingabe von einer zweiten Person überprüfen.
-    actions:
-      - link: [ Eingabe-Fenster ]
-        alternative: Geben Sie die Ergebnisse im Eingabe-Fenster ein
 
-  - title: Feststellung des Ergebnisses des 2. Wahlgangs
+  commit-result-2:
+    title: Feststellung des Ergebnisses des 2. Wahlgangs
     explanation: Stellen Sie das Ergebnis des zweiten Wahlgangs fest. Überprüfen Sie, ob alle Stimmen korrekt erfasst wurden. Lassen Sie das Ergebnis von der Wahlleitung bestätigen.
-    actions:
-      - link: [ Ergebnis-Fenster ]
-        alternative: Rufen Sie das endgültige Ergebnis im Ergebnis-Fenster auf
 
-  - title: Darstellung der Ergebnisse des 2. Wahlgangs
+  display-result-2:
+    title: Darstellung der Ergebnisse des 2. Wahlgangs
     explanation: Präsentieren Sie die Ergebnisse des zweiten Wahlgangs. Zeigen Sie die Stimmenzahlen für die Kandidat*innen. Erläutern Sie, wer gemäß § 19 Abs. 5 gewählt wurde.
-    actions:
-      - link: [ Ergebnis-Fenster ]
-        alternative: Zeigen Sie die Ergebnisse im Ergebnis-Fenster an
 
-  - title: Wiederholung bei Gleichstand
+  repeat-runoff:
+    title: Wiederholung bei Gleichstand
     explanation: Wiederholen Sie bei Bedarf den Wahlgang bei Stimmengleichheit. Beginnen Sie dafür wieder bei Schritt 13 (Erstellung der Stimmzettel). Führen Sie die Stichwahl so oft durch, bis ein*e Kandidat*in die einfache Mehrheit erreicht.
-    actions:
-      - link: [ placeholder for a list ]
-        alternative: Starten Sie den Wahlgang erneut
 
-  - title: Feststellung der Wahlannahme
+  commit-acceptance:
+    title: Feststellung der Wahlannahme
     explanation: Stellen Sie für jeden Listenplatz die Wahlannahme fest. Fragen Sie die gewählten Kandidat*innen, ob sie die Wahl annehmen. Notieren Sie die Annahme oder Ablehnung in der Auszählungssoftware.
-    actions:
-      - link: [ Ergebnis-Fenster ]
-        alternative: Erfassen Sie die Wahlannahmen im Ergebnis-Fenster
 
-  - title: Darstellung der Gesamtliste
+  display-full-list:
+    title: Darstellung der Gesamtliste
     explanation: Präsentieren Sie die finale Gesamtliste mit allen gewählten Kandidat*innen. Zeigen Sie die Reihenfolge der Listenplätze. Stellen Sie sicher, dass die Liste den Vorgaben aus § 22 entspricht, falls das vereinfachte Wahlverfahren angewendet wurde.
-    actions:
-      - link: [ Ergebnis-Fenster ]
-        alternative: Zeigen Sie die Gesamtliste im Ergebnis-Fenster an
 
-  - title: Export des Ergebniszettels und Protokolltexts
+  export:
+    title: Export des Ergebniszettels und Protokolltexts
     explanation: Exportieren Sie den Ergebniszettel und den Protokolltext aus der Auszählungssoftware. Speichern Sie die Dokumente in einem sicheren Format. Stellen Sie sicher, dass alle relevanten Informationen enthalten sind und die Dokumente für die Wahlleitung zugänglich sind.
-    actions:
-      - link: [ placeholder for a list ]
-        alternative: Exportieren Sie die Dokumente aus der Software

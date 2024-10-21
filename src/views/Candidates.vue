@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Candidate, Election } from "@/lib/Types";
+import type { ElectionCandidate, Election } from "@/lib/Types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faPlusSquare, faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import { ref } from "vue";
@@ -8,7 +8,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const election = defineModel<Election>({ required: true });
 
-function emptyCandidate(): Candidate {
+function emptyCandidate(): ElectionCandidate {
 	return {
 		firstName: "",
 		lastName: "",
@@ -20,7 +20,7 @@ function emptyCandidate(): Candidate {
 	};
 }
 
-const newCandidate = ref<Candidate>(emptyCandidate());
+const newCandidate = ref<ElectionCandidate>(emptyCandidate());
 
 function addCandidate() {
 	election.value.candidates.push(newCandidate.value);

@@ -2,27 +2,22 @@
 import type { Election } from "@/lib/Types";
 import ResultDisplay from "@/views/ResultDisplay.vue";
 import { BallotGeneratorImpl } from "@/lib/BallotGeneratorImpl";
-import { computed } from "vue";
-import { Evaluation } from "@/lib/Evaluation";
+import { computed, onMounted, ref } from "vue";
+import { Evaluation, type Result } from "@/lib/Evaluation";
 import { downloadFile } from "@/lib/utility";
 import Container from "@/lib/Container";
 
 const model = defineModel<Election>({ required: true });
 
-const evaluation = computed(() => {
-	return new Evaluation({
-		votes: [...model.value.counts.male, ...model.value.counts.female],
-		candidates: model.value.candidates,
-		runoffWinner: model.value.runoffWinner === "none" ? undefined : model.value.runoffWinner,
-	});
-});
+const result = ref<Result>();
 
-const result = computed(() => {
-	return evaluation.value.evaluate();
+onMounted(async () => {
+	const evaluator = await Container.voteEvaluator();
+	result.value = evaluator.evaluate(model.value);
 });
 
 async function downloadPdf() {
-	if (result.value.type !== "list-complete") {
+	if (result.value?.type !== "list-complete") {
 		alert("Ergebnis ist nicht vollständig.");
 		return;
 	}
@@ -34,7 +29,7 @@ async function downloadPdf() {
 		assemblyName: model.value.general.assemblyName,
 		electionName: model.value.general.electionName,
 		result: result.value,
-		uniqueIds: model.value.general.ballotIds,
+		uniqueIds: model.value.general.ballotIds
 	});
 
 	const url = URL.createObjectURL(new Blob([ballot], { type: "application/pdf" }));
@@ -43,7 +38,8 @@ async function downloadPdf() {
 	downloadFile(url, `${filePrefix}_Ergebnis.pdf`);
 }
 
-function copyMinutesText() {}
+function copyMinutesText() {
+}
 </script>
 
 <template>
@@ -51,7 +47,7 @@ function copyMinutesText() {}
 		<div class="block mt-5">
 			<h2 class="title is-2">Auswertung</h2>
 		</div>
-		<div class="columns">
+		<div class="columns" v-if="result">
 			<div class="column is-two-thirds">
 				<result-display :result="result" v-model="model" />
 			</div>

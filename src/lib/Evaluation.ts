@@ -1,14 +1,18 @@
-import { type Candidate, type ElectionGender, invertGender, type Vote } from "@/lib/Types";
+import {
+	type ElectionCandidate,
+	type ElectionGender,
+	type ElectionRunoffResults,
+	invertGender,
+	type Vote
+} from "@/lib/Types";
 import type {
 	EvaluationMessage,
 	EvaluationMessageCombined,
 	EvaluationMessageCombinedPosition,
-	EvaluationMessagePreliminaryList,
 	EvaluationMessagePreliminaryListMessage,
-	EvaluationMessagePreliminaryListSpot,
 	EvaluationMessagePreliminaryListSpotDuoTieBreaker,
 	EvaluationMessageRunoffCandidate,
-	EvaluationMessageTroublemakersCandidate,
+	EvaluationMessageTroublemakersCandidate
 } from "@/lib/EvaluationMessage";
 
 export interface ResultEntry {
@@ -62,25 +66,15 @@ export interface ListCompleteResult {
 
 export type Result = ListCompleteResult | NeedConfirmationResult | NeedLotResult | NeedRunoffResult;
 
-export interface EvaluationOptionsSimple {
-	candidates: Candidate[];
+export interface EvaluationOptions {
+	candidates: ElectionCandidate[];
 	votes: Vote[];
-}
-
-export interface EvaluationOptionsWithRunoffWinner extends EvaluationOptionsSimple {
-	runoffWinner: string;
-	runoffMaleVotes: number;
-	runoffFemaleVotes: number;
-}
-
-export type EvaluationOptions = EvaluationOptionsSimple | EvaluationOptionsWithRunoffWinner;
-
-function hasRunoffWinner(options: EvaluationOptions): options is EvaluationOptionsWithRunoffWinner {
-	return (options as EvaluationOptionsWithRunoffWinner).runoffWinner !== undefined;
+	runoffs: ElectionRunoffResults[];
 }
 
 export class Evaluation {
-	constructor(private options: EvaluationOptions) {}
+	constructor(private options: EvaluationOptions) {
+	}
 
 	static nullCountForCandidate(candidate: string, votes: Vote[]): number {
 		let i = 0;
@@ -128,7 +122,7 @@ export class Evaluation {
 		return sum / this.voteCountForCandidate(candidate, votes);
 	}
 
-	static filterCandidatesByList(candidates: Candidate[], list: "male" | "female") {
+	static filterCandidatesByList(candidates: ElectionCandidate[], list: "male" | "female") {
 		return candidates.filter((candidate) => candidate.list === list);
 	}
 
@@ -145,6 +139,22 @@ export class Evaluation {
 		return uniqueVotes;
 	}
 
+	public hasRunoffWinner(): boolean {
+		if (this.options.runoffs.length > 0) {
+			const last = this.options.runoffs[this.options.runoffs.length - 1];
+			return last.male !== last.female;
+		} else {
+			return false;
+		}
+	}
+
+	public runoffResult(): ElectionRunoffResults | undefined {
+		if (this.options.runoffs.length == 0)
+			return undefined;
+
+		return this.options.runoffs[this.options.runoffs.length - 1];
+	}
+
 	public evaluate(): Result {
 		const messages: EvaluationMessage[] = [];
 
@@ -156,8 +166,8 @@ export class Evaluation {
 			throw new Error("No candidates to evaluate");
 		}
 
-		const failed241: Candidate[] = [];
-		const passed241: Candidate[] = [];
+		const failed241: ElectionCandidate[] = [];
+		const passed241: ElectionCandidate[] = [];
 
 		const votes = this.uniqueVotes();
 
@@ -165,7 +175,7 @@ export class Evaluation {
 			type: "vote-count",
 			count: votes.length,
 			male: votes.filter((value) => value.list === "male").length,
-			female: votes.filter((value) => value.list === "female").length,
+			female: votes.filter((value) => value.list === "female").length
 		});
 
 		// 1. filter candidate
@@ -187,7 +197,7 @@ export class Evaluation {
 				candidateId: candidate.id,
 				nullVotes: nullCount,
 				nonNullVotes: voteCount,
-				passed: nullCount < voteCount,
+				passed: nullCount < voteCount
 			});
 		}
 
@@ -199,45 +209,45 @@ export class Evaluation {
 
 		const { result: maleList, messages: maleMessages } = Evaluation.preliminaryList(
 			male.map((value) => value.id),
-			votes.filter((value) => value.list === "male"),
+			votes.filter((value) => value.list === "male")
 		);
 		messages.push({
 			type: "preliminary-list",
 			messages: maleMessages,
-			list: "male",
+			list: "male"
 		});
 
 		const { result: femaleList, messages: femaleMessages } = Evaluation.preliminaryList(
 			female.map((value) => value.id),
-			votes.filter((value) => value.list === "female"),
+			votes.filter((value) => value.list === "female")
 		);
 		messages.push({
 			type: "preliminary-list",
 			messages: femaleMessages,
-			list: "female",
+			list: "female"
 		});
 
 		const { candidate: maleRunoffCandidate, message: maleRunoffMessage } = Evaluation.getRunoffCandidate(
 			maleList,
-			this.options.candidates,
+			this.options.candidates
 		);
 		const { candidate: femaleRunoffCandidate, message: femaleRunoffMessage } = Evaluation.getRunoffCandidate(
 			femaleList,
-			this.options.candidates,
+			this.options.candidates
 		);
 
 		messages.push({
 			type: "runoff-candidates",
 			maleCandidate: maleRunoffMessage,
-			femaleCandidate: femaleRunoffMessage,
+			femaleCandidate: femaleRunoffMessage
 		});
 
-		if (maleList.length > 0 && femaleList.length > 0 && !hasRunoffWinner(this.options)) {
+		if (maleList.length > 0 && femaleList.length > 0 && !this.hasRunoffWinner()) {
 			// runoff undecided and we have two lists
 			return {
 				type: "need-runoff",
 				preliminaryLists: { male: maleList, female: femaleList },
-				runoffCandidates: { maleCandidate: maleRunoffCandidate, femaleCandidate: femaleRunoffCandidate },
+				runoffCandidates: { maleCandidate: maleRunoffCandidate, femaleCandidate: femaleRunoffCandidate }
 			};
 		} else if (maleList.length === 0) {
 			// only female list
@@ -245,22 +255,28 @@ export class Evaluation {
 		} else if (femaleList.length === 0) {
 			// only male list
 			throw new Error("Not implemented");
-		} else if (hasRunoffWinner(this.options)) {
+		} else if (this.hasRunoffWinner()) {
 			// runoff decided, now we need to evaluate the spots
 
-			const winnerList = this.options.runoffWinner == maleRunoffCandidate ? maleList : femaleList;
-			const loserList = this.options.runoffWinner == femaleRunoffCandidate ? maleList : femaleList;
-			const winnerListGender: ElectionGender = this.options.runoffWinner == maleRunoffCandidate ? "male" : "female";
+			const votes = this.runoffResult()!;
+
+			const maleWon = votes.male > votes.female;
+
+			const winnerList = maleWon ? maleList : femaleList;
+			const loserList = maleWon ? femaleList : maleList;
+			const winnerListGender: ElectionGender = maleWon ? "male" : "female";
 
 			messages.push({
 				type: "runoff",
 				maleCandidateId: maleRunoffCandidate,
 				femaleCandidateId: femaleRunoffCandidate,
-				maleVotes: this.options.runoffMaleVotes,
-				femaleVotes: this.options.runoffFemaleVotes,
+				runoffs: this.options.runoffs
 			});
 
-			const { result: dl, message } = Evaluation.evaluateDoubleList(winnerListGender, winnerList, loserList, this.options.candidates);
+			const {
+				result: dl,
+				message
+			} = Evaluation.evaluateDoubleList(winnerListGender, winnerList, loserList, this.options.candidates);
 
 			messages.push(message);
 
@@ -269,7 +285,7 @@ export class Evaluation {
 				list: dl,
 				preliminaryLists: { male: maleList, female: femaleList },
 				runoffCandidates: { maleCandidate: maleRunoffCandidate, femaleCandidate: femaleRunoffCandidate },
-				messages,
+				messages
 			};
 		} else {
 			throw new Error("Not implemented");
@@ -280,7 +296,7 @@ export class Evaluation {
 		runoffWinner: ElectionGender,
 		runoffWinnerList: ResultEntry[],
 		runoffLoserList: ResultEntry[],
-		candidates: Candidate[],
+		candidates: ElectionCandidate[]
 	): {
 		result: ResultEntry[];
 		message: EvaluationMessageCombined;
@@ -328,7 +344,7 @@ export class Evaluation {
 						candidateId: entry.candidateId,
 						score: entry.score,
 						shift: entry.shift,
-						position: haveSpot.length + 1,
+						position: haveSpot.length + 1
 					});
 					messages.push({
 						position: haveSpot.length + 1,
@@ -336,7 +352,7 @@ export class Evaluation {
 						score: entry.score,
 						shift: entry.shift,
 						skippedCandidatesBecauseMinSpot: notConsidered,
-						preliminaryList: current,
+						preliminaryList: current
 					});
 					break;
 				}
@@ -349,18 +365,18 @@ export class Evaluation {
 			result,
 			message: {
 				type: "combined",
-				positions: messages,
-			},
+				positions: messages
+			}
 		};
 	}
 
-	static evaluateSingleList(list: ResultEntry[], candidates: Candidate[]): ResultEntry[] {
+	static evaluateSingleList(list: ResultEntry[], candidates: ElectionCandidate[]): ResultEntry[] {
 		throw new Error("Not implemented");
 	}
 
 	static getRunoffCandidate(
 		list: ResultEntry[],
-		candidates: Candidate[],
+		candidates: ElectionCandidate[]
 	): {
 		candidate: string;
 		message: EvaluationMessageRunoffCandidate;
@@ -379,8 +395,8 @@ export class Evaluation {
 						candidate: id,
 						message: {
 							candidateId: id,
-							skippedCandidatesBecauseMinSpot: considered,
-						},
+							skippedCandidatesBecauseMinSpot: considered
+						}
 					};
 				else considered.push(id);
 			}
@@ -393,7 +409,7 @@ export class Evaluation {
 
 	static preliminaryList(
 		candidates: string[],
-		votes: Vote[],
+		votes: Vote[]
 	): {
 		result: ResultEntry[];
 		messages: EvaluationMessagePreliminaryListMessage[];
@@ -421,14 +437,14 @@ export class Evaluation {
 					candidateId: twoHighest,
 					score: score,
 					shift: theShift,
-					position: next,
+					position: next
 				});
 				messages.push({
 					type: "preliminary-list-spot-single",
 					position: next,
 					score: score,
 					candidateId: twoHighest,
-					shift: theShift,
+					shift: theShift
 				});
 			} else {
 				const dcr = Evaluation.directComparison(twoHighest[0], twoHighest[1], votes);
@@ -448,7 +464,7 @@ export class Evaluation {
 					candidateId: theHigher,
 					score: winnerScore,
 					shift: winnerShift,
-					position: next,
+					position: next
 				});
 
 				// only increase shift if the lower one is the one that has the higher rating
@@ -466,14 +482,14 @@ export class Evaluation {
 						score: winnerScore,
 						candidateId: theHigher,
 						shift: winnerShift,
-						directComparisonBallots: winnerBallots,
+						directComparisonBallots: winnerBallots
 					},
 					loser: {
 						score: loserScore,
 						candidateId: theLower,
 						shift: loserShiftNow,
-						directComparisonBallots: loserBallots,
-					},
+						directComparisonBallots: loserBallots
+					}
 				});
 			}
 
@@ -482,14 +498,14 @@ export class Evaluation {
 
 		return {
 			result,
-			messages,
+			messages
 		};
 	}
 
 	static directComparison(
 		candidateA: string,
 		candidateB: string,
-		votes: Vote[],
+		votes: Vote[]
 	): {
 		a: number;
 		b: number;
@@ -533,7 +549,7 @@ export class Evaluation {
 				messages: obj.messages,
 				b,
 				excluded,
-				a,
+				a
 			};
 		} else if (a > b) {
 			return { a, b, equal, messages: [], excluded, winner: candidateA };
@@ -544,7 +560,7 @@ export class Evaluation {
 
 	static highestRankedCandidateByPointCounts(
 		candidates: string[],
-		votes: Vote[],
+		votes: Vote[]
 	): {
 		candidates: string[];
 		messages: EvaluationMessagePreliminaryListSpotDuoTieBreaker[];
@@ -566,14 +582,14 @@ export class Evaluation {
 
 		return {
 			candidates: leftInComparison,
-			messages,
+			messages
 		};
 	}
 
 	static highestRankedCandidatesByPointCount(
 		count: number,
 		candidates: string[],
-		votes: Vote[],
+		votes: Vote[]
 	): { candidates: string[]; message: EvaluationMessagePreliminaryListSpotDuoTieBreaker } {
 		const nCount: { [candidateId: string]: number } = {};
 
@@ -604,8 +620,8 @@ export class Evaluation {
 			candidates: out,
 			message: {
 				points: count,
-				counts: nCount,
-			},
+				counts: nCount
+			}
 		};
 	}
 
@@ -653,7 +669,7 @@ export class Evaluation {
 
 			throw new Error(
 				`Cannot determine second highest: All votes identical for candidates ${secondHighest.join(", ")}\n ` +
-					`with votes ${votes.map((vote) => JSON.stringify(vote)).join(", ")}`,
+				`with votes ${votes.map((vote) => JSON.stringify(vote)).join(", ")}`
 			);
 		} else {
 			throw new Error(`Huh ? ${first}`);

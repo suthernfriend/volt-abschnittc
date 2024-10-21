@@ -1,4 +1,4 @@
-import type { ElectionGender } from "@/lib/Types";
+import type { ElectionGender, ElectionRunoffResults } from "@/lib/Types";
 
 export interface EvaluationMessageVoteCount {
 	type: "vote-count";
@@ -75,8 +75,7 @@ export interface EvaluationMessageRunoff {
 	type: "runoff";
 	maleCandidateId: string;
 	femaleCandidateId: string;
-	maleVotes: number;
-	femaleVotes: number;
+	runoffs: ElectionRunoffResults[];
 }
 
 export interface EvaluationMessageCombined {

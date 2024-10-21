@@ -27,3 +27,11 @@ export function randomString(length: number): string {
 	}
 	return result;
 }
+
+export function toParagraphs(text: string): string {
+	return text.split("\n").map(p => `<p>${p}</p>`).join("");
+}
+
+export function numberFormat(n: number) {
+	return n.toFixed(4);
+}

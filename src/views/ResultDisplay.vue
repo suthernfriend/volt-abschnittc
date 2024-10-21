@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { Evaluation, type ListCompleteResult, type Result } from "@/lib/Evaluation";
-import { type Candidate, type Election, renderCandidateName } from "@/lib/Types";
+import { type ElectionCandidate, type Election, renderCandidateName } from "@/lib/Types";
+import { numberFormat } from "../lib/utility";
 
 const model = defineModel<Election>({ required: true });
 
@@ -9,7 +10,7 @@ const props = defineProps<{
 	result: Result;
 }>();
 
-function candidateById(id: string): Candidate {
+function candidateById(id: string): ElectionCandidate {
 	return model.value.candidates.find((c) => c.id === id)!;
 }
 
@@ -23,10 +24,6 @@ const tables = {
 	male: "Männlich / Diverse Vorabliste",
 	female: "Weiblich / Diverse Vorabliste",
 };
-
-function numberFormat(n: number) {
-	return n.toFixed(4);
-}
 
 const showPreliminary = computed(() => {
 	return ["need-runoff", "list-complete"].includes(props.result.type);
@@ -76,15 +73,15 @@ const showFinal = computed(() => {
 				</p>
 				<div class="block">
 					<div class="select">
-						<select v-model="model.runoffWinner">
-							<option value="none">Nicht entschieden</option>
-							<option :value="result.runoffCandidates.femaleCandidate">
-								{{ candidateNameById(result.runoffCandidates.femaleCandidate) }}
-							</option>
-							<option :value="result.runoffCandidates.maleCandidate">
-								{{ candidateNameById(result.runoffCandidates.maleCandidate) }}
-							</option>
-						</select>
+<!--						<select v-model="model.runoffWinner">-->
+<!--							<option value="none">Nicht entschieden</option>-->
+<!--							<option :value="result.runoffCandidates.femaleCandidate">-->
+<!--								{{ candidateNameById(result.runoffCandidates.femaleCandidate) }}-->
+<!--							</option>-->
+<!--							<option :value="result.runoffCandidates.maleCandidate">-->
+<!--								{{ candidateNameById(result.runoffCandidates.maleCandidate) }}-->
+<!--							</option>-->
+<!--						</select>-->
 					</div>
 				</div>
 			</div>

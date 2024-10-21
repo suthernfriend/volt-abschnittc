@@ -1,7 +1,7 @@
-import type { Candidate, Vote } from "@/lib/Types";
+import type { ElectionCandidate, Vote } from "@/lib/Types";
 import { v4 } from "uuid";
 
-export const testCandidates: Candidate[] = [
+export const testCandidates: ElectionCandidate[] = [
 	{
 		id: "d60acef7-d8ac-497b-9a49-8015c4744296",
 		firstName: "Holger",

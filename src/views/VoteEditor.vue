@@ -2,13 +2,13 @@
 
 import { ref } from "vue";
 import type { Election } from "@/lib/Types";
-import { type Candidate, renderCandidateName } from "@/lib/Types";
+import { type ElectionCandidate, renderCandidateName } from "@/lib/Types";
 
 const election = defineModel<Election>();
 
 const props = defineProps<{
 	ballotId: number;
-	candidates: Candidate[];
+	candidates: ElectionCandidate[];
 	maxRanking: number;
 }>();
 
@@ -33,7 +33,7 @@ function validateInputNumber(input: string): "invalid" | "valid" | "abstain" {
 	return "valid";
 }
 
-function getRankingClass(candidate: Candidate): "is-danger" | "is-primary" | "is-info" {
+function getRankingClass(candidate: ElectionCandidate): "is-danger" | "is-primary" | "is-info" {
 	const ranking = rankings.value[candidate.id];
 
 	const validationResult = validateInputNumber(ranking);

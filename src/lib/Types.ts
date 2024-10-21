@@ -1,14 +1,14 @@
-export interface Candidate {
+export interface ElectionCandidate {
 	id: string;
 	title?: string;
 	firstName: string;
 	lastName: string;
-	list: "male" | "female";
+	list: ElectionGender;
 	extra?: string;
 	minSpot: number;
 }
 
-export function renderCandidateName(candidate: Candidate) {
+export function renderCandidateName(candidate: ElectionCandidate) {
 	const output = [];
 
 	if (candidate.title) {
@@ -106,7 +106,7 @@ export function voteDiff(a: Vote, b: Vote): VoteDiffEntry[] {
 					type: "points-missmatch",
 					candidateId: key,
 					pointsA: a.rankings[key],
-					pointsB: b.rankings[key],
+					pointsB: b.rankings[key]
 				});
 			}
 		}
@@ -116,6 +116,8 @@ export function voteDiff(a: Vote, b: Vote): VoteDiffEntry[] {
 }
 
 export type ElectionGender = "male" | "female";
+
+export const ElectionGenders: ElectionGender[] = ["male", "female"];
 
 export type ElectionBallotIdType = ElectionGender | "242";
 
@@ -129,16 +131,23 @@ export interface ElectionGeneral {
 	ballotIds: ElectionBallotIds;
 	countingCommission: string[];
 	lead: string;
+	associationName: string;
+	electedOrgan: string;
+}
+
+export interface ElectionRunoffResults {
+	total: number;
+	male: number;
+	female: number;
+	abstentions: number;
 }
 
 export interface Election {
 	id: string;
 	general: ElectionGeneral;
-	candidates: Candidate[];
-	runoffWinner: string;
-	counts: {
-		[k in ElectionGender]: Vote[];
-	};
+	candidates: ElectionCandidate[];
+	runoffs: ElectionRunoffResults[];
+	votes: Vote[];
 }
 
 export function invertGender(gender: ElectionGender): ElectionGender {
@@ -152,11 +161,11 @@ export function electionGenderString(gender: ElectionGender): string {
 		return "Weiblich / Diverse";
 }
 
-export function sortCandidates(candidates: Candidate[]): Candidate[] {
+export function sortCandidates(candidates: ElectionCandidate[]): ElectionCandidate[] {
 	return candidates.sort(candidateSort);
 }
 
-export function candidateSort(a: Candidate, b: Candidate): number {
+export function candidateSort(a: ElectionCandidate, b: ElectionCandidate): number {
 	if (a.minSpot !== b.minSpot) {
 		return a.minSpot - b.minSpot;
 	} else if (a.lastName !== b.lastName) {
@@ -175,3 +184,10 @@ export function candidateSort(a: Candidate, b: Candidate): number {
 		return 0;
 	}
 }
+
+export type AuthenticatedAppView = "assistant" |
+	"candidates" | "ballot" |
+	"vote-input" | "export" |
+	"introduction" | "lot-and-runoff" |
+	"preliminary" | "result" |
+	"runoff";

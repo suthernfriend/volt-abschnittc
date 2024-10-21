@@ -1,10 +1,10 @@
-import type { Candidate, ElectionBallotIds } from "@/lib/Types";
+import type { ElectionCandidate, ElectionBallotIds } from "@/lib/Types";
 import type { ListCompleteResult, NeedRunoffResult } from "@/lib/Evaluation";
 
 export type PageSizeNames = "A4_2" | "A4" | "2_A4" | "A3_2" | "A3_3";
 
 export interface Ballot232 {
-	candidates: Candidate[];
+	candidates: ElectionCandidate[];
 	electionName: string;
 	assemblyName: string;
 	maxPoints: number;
@@ -13,8 +13,8 @@ export interface Ballot232 {
 }
 
 export interface Ballot19 {
-	candidate1: Candidate;
-	candidate2: Candidate;
+	candidate1: ElectionCandidate;
+	candidate2: ElectionCandidate;
 	nth: number;
 	electionName: string;
 	assemblyName: string;
@@ -25,7 +25,7 @@ export interface Ballot19 {
 export interface ResultComplete {
 	electionName: string;
 	assemblyName: string;
-	candidates: Candidate[];
+	candidates: ElectionCandidate[];
 	result: ListCompleteResult;
 	uniqueIds: ElectionBallotIds;
 }

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { type Candidate, type ElectionGender, renderCandidateName, sortCandidates, type Vote } from "@/lib/Types";
+import { type ElectionCandidate, type ElectionGender, renderCandidateName, sortCandidates, type Vote } from "@/lib/Types";
 import { computed, ref } from "vue";
 
 const props = defineProps<{
-	candidates: Candidate[];
+	candidates: ElectionCandidate[];
 	gender: ElectionGender;
 }>();
 
