@@ -1,3 +1,5 @@
+import { arrayEquals } from "@/lib/utility";
+
 export interface ElectionCandidate {
 	id: string;
 	title?: string;
@@ -46,20 +48,6 @@ export function voteEquals(a: Vote, b: Vote): boolean {
 
 	for (const key of aKeys) {
 		if (a.rankings[key] !== b.rankings[key]) {
-			return false;
-		}
-	}
-
-	return true;
-}
-
-export function arrayEquals<T>(a: T[], b: T[]): boolean {
-	if (a.length !== b.length) {
-		return false;
-	}
-
-	for (let i = 0; i < a.length; i++) {
-		if (a[i] !== b[i]) {
 			return false;
 		}
 	}
@@ -142,12 +130,18 @@ export interface ElectionRunoffResults {
 	abstentions: number;
 }
 
+export interface ElectionLotResult {
+	candidates: string[];
+	winner?: string;
+}
+
 export interface Election {
 	id: string;
 	general: ElectionGeneral;
 	candidates: ElectionCandidate[];
 	runoffs: ElectionRunoffResults[];
 	votes: Vote[];
+	lots: ElectionLotResult[];
 }
 
 export function invertGender(gender: ElectionGender): ElectionGender {

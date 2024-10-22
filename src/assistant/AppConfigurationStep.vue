@@ -8,7 +8,6 @@ import type { AssistantProviderStep } from "@/lib/AssistantProvider";
 const model = defineModel<ElectionGeneral>({ required: true });
 
 const props = defineProps<{
-	n: number;
 	step: AssistantProviderStep;
 }>();
 
@@ -29,16 +28,11 @@ const names: {
 </script>
 
 <template>
-	<div class="box">
-		<div class="block">
-			<h2 class="title is-3">Schritt {{ props.n }} - {{ props.step.title() }}</h2>
-			<div class="content" v-html="toParagraphs(props.step.explanation())" />
-			<form-field v-for="(opts, key) in names" :label="opts.label">
-				<input v-if="opts.type === 'string'" class="input" v-model="model[key]" />
-				<tags-input v-if="opts.type === 'array'" v-model="model[key] as string[]" />
-			</form-field>
-		</div>
-	</div>
+	<div class="content" v-html="toParagraphs(props.step.explanation())" />
+	<form-field v-for="(opts, key) in names" :label="opts.label">
+		<input v-if="opts.type === 'string'" class="input" v-model="model[key]" />
+		<tags-input v-if="opts.type === 'array'" v-model="model[key] as string[]" />
+	</form-field>
 </template>
 
 <style scoped>

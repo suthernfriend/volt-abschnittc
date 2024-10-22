@@ -9,7 +9,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "male",
-		minSpot: 1,
+		minSpot: 1
 	},
 	{
 		id: "f5d9e755-8c35-45a7-840d-c781019dd3c5",
@@ -18,7 +18,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "male",
-		minSpot: 1,
+		minSpot: 1
 	},
 	{
 		id: "83566313-f54e-4b92-ab76-14428ae2c2f0",
@@ -27,7 +27,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "male",
-		minSpot: 1,
+		minSpot: 1
 	},
 	{
 		id: "9346d4ac-8968-47ba-8631-3d5a036b6dd5",
@@ -36,7 +36,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "male",
-		minSpot: 3,
+		minSpot: 3
 	},
 	{
 		id: "c278d738-20dc-4801-8088-1046c44cdecf",
@@ -45,7 +45,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "male",
-		minSpot: 3,
+		minSpot: 3
 	},
 	{
 		id: "0ac6eaa1-1294-46fb-bc68-3886d116ca90",
@@ -54,7 +54,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "male",
-		minSpot: 3,
+		minSpot: 3
 	},
 	{
 		id: "f0788cb7-3836-42da-8e56-7a17ea5d79f7",
@@ -63,7 +63,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "male",
-		minSpot: 3,
+		minSpot: 3
 	},
 	{
 		id: "9888cd11-f602-4fc8-afc6-37ffeb0333e4",
@@ -72,7 +72,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "Dr.",
 		list: "male",
-		minSpot: 3,
+		minSpot: 3
 	},
 	{
 		id: "0b66d7fd-c58d-446a-949c-10efa165dad7",
@@ -81,7 +81,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "male",
-		minSpot: 3,
+		minSpot: 3
 	},
 	{
 		id: "682a7010-d97d-452e-a2dc-00e12b6d5a64",
@@ -90,7 +90,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "male",
-		minSpot: 3,
+		minSpot: 3
 	},
 	{
 		id: "2e34faee-5d30-4d2e-9461-4d0ab1046e28",
@@ -99,7 +99,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "male",
-		minSpot: 3,
+		minSpot: 3
 	},
 	{
 		id: "5c7259b1-69bd-4f69-be08-2a96a617d45f",
@@ -108,7 +108,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "male",
-		minSpot: 5,
+		minSpot: 5
 	},
 	{
 		id: "77190a30-20f7-4ca1-b33a-cb2da852d717",
@@ -117,7 +117,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "male",
-		minSpot: 5,
+		minSpot: 5
 	},
 	{
 		id: "3b6f7731-6ae0-463c-b9ba-0848c48492d1",
@@ -126,7 +126,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "male",
-		minSpot: 6,
+		minSpot: 6
 	},
 	{
 		id: "c7c287a2-06bc-4a8a-838d-7b226de68c85",
@@ -135,7 +135,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "male",
-		minSpot: 7,
+		minSpot: 7
 	},
 	{
 		id: "d092ad1f-e80a-4c05-a877-720efa6c88a7",
@@ -144,7 +144,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "male",
-		minSpot: 10,
+		minSpot: 10
 	},
 	{
 		id: "3b6de171-354c-4486-be0e-231c784eef87",
@@ -153,7 +153,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "male",
-		minSpot: 12,
+		minSpot: 12
 	},
 	{
 		id: "cf242baa-afa1-49c4-a0ae-36da4580cef7",
@@ -162,7 +162,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "female",
-		minSpot: 1,
+		minSpot: 1
 	},
 	{
 		id: "82200f88-84d8-4510-9eb1-9f3ca568730b",
@@ -171,7 +171,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "female",
-		minSpot: 1,
+		minSpot: 1
 	},
 	{
 		id: "8a6d5a2f-7f29-4d9a-83ce-0ebf628d46ae",
@@ -180,7 +180,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "female",
-		minSpot: 1,
+		minSpot: 1
 	},
 	{
 		id: "1f57a8bf-b98f-4e73-aff9-b1c9254fc2a9",
@@ -189,7 +189,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "female",
-		minSpot: 1,
+		minSpot: 1
 	},
 	{
 		id: "99b60cb7-8af7-42de-b9d3-4f1c23db05a2",
@@ -198,7 +198,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "female",
-		minSpot: 1,
+		minSpot: 1
 	},
 	{
 		id: "8f76cb95-34e5-42d5-8f90-fd45c094b3f6",
@@ -207,7 +207,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "female",
-		minSpot: 1,
+		minSpot: 1
 	},
 	{
 		id: "847c1b45-5f7b-4ceb-8f1f-c3697694f614",
@@ -216,7 +216,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "female",
-		minSpot: 1,
+		minSpot: 1
 	},
 	{
 		id: "4937e277-607f-4664-920a-6124615ddb20",
@@ -225,7 +225,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "female",
-		minSpot: 1,
+		minSpot: 1
 	},
 	{
 		id: "23836062-c26f-4e58-a1c2-fddb940d3f7e",
@@ -234,7 +234,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "female",
-		minSpot: 3,
+		minSpot: 3
 	},
 	{
 		id: "b2827528-1d3a-49b2-a850-69c3d1fdf4f5",
@@ -243,7 +243,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "female",
-		minSpot: 3,
+		minSpot: 3
 	},
 	{
 		id: "a98c9cf2-13fa-4a07-b5b3-44e833221002",
@@ -252,7 +252,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "female",
-		minSpot: 5,
+		minSpot: 5
 	},
 	{
 		id: "a6082ab7-3a88-4d47-9836-05fc9154a030",
@@ -261,7 +261,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "female",
-		minSpot: 5,
+		minSpot: 5
 	},
 	{
 		id: "c045402d-7342-4f23-9489-8e14f3197c5f",
@@ -270,7 +270,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "female",
-		minSpot: 5,
+		minSpot: 5
 	},
 	{
 		id: "b9c707b7-c76d-4223-badf-6e86e19e2d8a",
@@ -279,7 +279,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "female",
-		minSpot: 6,
+		minSpot: 6
 	},
 	{
 		id: "fc9c356f-2aa5-4b0d-ae87-01a17e8879af",
@@ -288,7 +288,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "female",
-		minSpot: 6,
+		minSpot: 6
 	},
 	{
 		id: "11bb1193-e395-445e-bde3-afadbb2056d8",
@@ -297,7 +297,7 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "female",
-		minSpot: 10,
+		minSpot: 10
 	},
 	{
 		id: "aba43ec3-25e6-4b90-a224-4e2febd46afc",
@@ -306,9 +306,10 @@ export const testCandidates: ElectionCandidate[] = [
 		extra: "",
 		title: "",
 		list: "female",
-		minSpot: 15,
-	},
+		minSpot: 15
+	}
 ];
+
 
 export const testCounts: { male: Vote[]; female: Vote[] } = {
 	male: [
@@ -333,8 +334,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 6,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 1,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 7,
-				"3b6de171-354c-4486-be0e-231c784eef87": 7,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 7
+			}
 		},
 		{
 			ballotId: "32",
@@ -357,20 +358,20 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 6,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 1,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 7,
-				"3b6de171-354c-4486-be0e-231c784eef87": 7,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 7
+			}
 		},
 		{
 			ballotId: "33",
 			created: "1729254277875",
 			list: "male",
-			rankings: { "d60acef7-d8ac-497b-9a49-8015c4744296": 10, "83566313-f54e-4b92-ab76-14428ae2c2f0": 10 },
+			rankings: { "d60acef7-d8ac-497b-9a49-8015c4744296": 10, "83566313-f54e-4b92-ab76-14428ae2c2f0": 10 }
 		},
 		{
 			ballotId: "33",
 			created: "1729254290997",
 			list: "male",
-			rankings: { "d60acef7-d8ac-497b-9a49-8015c4744296": 10, "83566313-f54e-4b92-ab76-14428ae2c2f0": 10 },
+			rankings: { "d60acef7-d8ac-497b-9a49-8015c4744296": 10, "83566313-f54e-4b92-ab76-14428ae2c2f0": 10 }
 		},
 		{
 			ballotId: "34",
@@ -392,8 +393,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 3,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 4,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 6,
-				"3b6de171-354c-4486-be0e-231c784eef87": 2,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 2
+			}
 		},
 		{
 			ballotId: "34",
@@ -415,8 +416,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 3,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 4,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 6,
-				"3b6de171-354c-4486-be0e-231c784eef87": 2,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 2
+			}
 		},
 		{
 			ballotId: "35",
@@ -439,8 +440,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 1,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 5,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 2,
-				"3b6de171-354c-4486-be0e-231c784eef87": 2,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 2
+			}
 		},
 		{
 			ballotId: "35",
@@ -463,8 +464,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 1,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 5,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 2,
-				"3b6de171-354c-4486-be0e-231c784eef87": 2,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 2
+			}
 		},
 		{
 			ballotId: "36",
@@ -487,8 +488,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 7,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 10,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 10,
-				"3b6de171-354c-4486-be0e-231c784eef87": 10,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 10
+			}
 		},
 		{
 			ballotId: "36",
@@ -511,8 +512,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 7,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 10,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 10,
-				"3b6de171-354c-4486-be0e-231c784eef87": 10,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 10
+			}
 		},
 		{
 			ballotId: "37",
@@ -535,8 +536,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 2,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 5,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 2,
-				"3b6de171-354c-4486-be0e-231c784eef87": 7,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 7
+			}
 		},
 		{
 			ballotId: "37",
@@ -559,8 +560,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 2,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 5,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 2,
-				"3b6de171-354c-4486-be0e-231c784eef87": 7,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 7
+			}
 		},
 		{
 			ballotId: "38",
@@ -583,8 +584,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 2,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 10,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 2,
-				"3b6de171-354c-4486-be0e-231c784eef87": 2,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 2
+			}
 		},
 		{
 			ballotId: "38",
@@ -607,8 +608,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 2,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 10,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 2,
-				"3b6de171-354c-4486-be0e-231c784eef87": 2,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 2
+			}
 		},
 		{
 			ballotId: "39",
@@ -631,8 +632,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 3,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 1,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 10,
-				"3b6de171-354c-4486-be0e-231c784eef87": 9,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 9
+			}
 		},
 		{
 			ballotId: "39",
@@ -655,8 +656,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 3,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 1,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 10,
-				"3b6de171-354c-4486-be0e-231c784eef87": 9,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 9
+			}
 		},
 		{
 			ballotId: "40",
@@ -679,8 +680,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 1,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 1,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 2,
-				"3b6de171-354c-4486-be0e-231c784eef87": 10,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 10
+			}
 		},
 		{
 			ballotId: "40",
@@ -703,8 +704,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 1,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 1,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 2,
-				"3b6de171-354c-4486-be0e-231c784eef87": 10,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 10
+			}
 		},
 		{
 			ballotId: "41",
@@ -723,8 +724,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"2e34faee-5d30-4d2e-9461-4d0ab1046e28": 2,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 10,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 9,
-				"3b6de171-354c-4486-be0e-231c784eef87": 8,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 8
+			}
 		},
 		{
 			ballotId: "41",
@@ -743,8 +744,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"2e34faee-5d30-4d2e-9461-4d0ab1046e28": 2,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 10,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 9,
-				"3b6de171-354c-4486-be0e-231c784eef87": 8,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 8
+			}
 		},
 		{
 			ballotId: "42",
@@ -762,8 +763,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"2e34faee-5d30-4d2e-9461-4d0ab1046e28": 10,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 1,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 3,
-				"3b6de171-354c-4486-be0e-231c784eef87": 4,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 4
+			}
 		},
 		{
 			ballotId: "42",
@@ -781,8 +782,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"2e34faee-5d30-4d2e-9461-4d0ab1046e28": 10,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 1,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 3,
-				"3b6de171-354c-4486-be0e-231c784eef87": 4,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 4
+			}
 		},
 		{
 			ballotId: "43",
@@ -804,8 +805,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"77190a30-20f7-4ca1-b33a-cb2da852d717": 4,
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 3,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 1,
-				"3b6de171-354c-4486-be0e-231c784eef87": 5,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 5
+			}
 		},
 		{
 			ballotId: "43",
@@ -827,8 +828,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"77190a30-20f7-4ca1-b33a-cb2da852d717": 4,
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 3,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 1,
-				"3b6de171-354c-4486-be0e-231c784eef87": 5,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 5
+			}
 		},
 		{
 			ballotId: "44",
@@ -851,8 +852,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 1,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 10,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 10,
-				"3b6de171-354c-4486-be0e-231c784eef87": 10,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 10
+			}
 		},
 		{
 			ballotId: "44",
@@ -875,8 +876,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 1,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 10,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 10,
-				"3b6de171-354c-4486-be0e-231c784eef87": 10,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 10
+			}
 		},
 		{
 			ballotId: "45",
@@ -899,8 +900,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 10,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 5,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 1,
-				"3b6de171-354c-4486-be0e-231c784eef87": 1,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 1
+			}
 		},
 		{
 			ballotId: "45",
@@ -923,8 +924,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 10,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 5,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 1,
-				"3b6de171-354c-4486-be0e-231c784eef87": 1,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 1
+			}
 		},
 		{
 			ballotId: "46",
@@ -947,8 +948,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 1,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 7,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 6,
-				"3b6de171-354c-4486-be0e-231c784eef87": 6,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 6
+			}
 		},
 		{
 			ballotId: "46",
@@ -971,8 +972,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 1,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 7,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 6,
-				"3b6de171-354c-4486-be0e-231c784eef87": 6,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 6
+			}
 		},
 		{
 			ballotId: "47",
@@ -995,8 +996,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 1,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 2,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 4,
-				"3b6de171-354c-4486-be0e-231c784eef87": 1,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 1
+			}
 		},
 		{
 			ballotId: "47",
@@ -1019,8 +1020,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 1,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 2,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 4,
-				"3b6de171-354c-4486-be0e-231c784eef87": 1,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 1
+			}
 		},
 		{
 			ballotId: "48",
@@ -1043,8 +1044,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 8,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 1,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 5,
-				"3b6de171-354c-4486-be0e-231c784eef87": 1,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 1
+			}
 		},
 		{
 			ballotId: "48",
@@ -1067,8 +1068,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 8,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 1,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 5,
-				"3b6de171-354c-4486-be0e-231c784eef87": 1,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 1
+			}
 		},
 		{
 			ballotId: "49",
@@ -1091,8 +1092,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 5,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 10,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 5,
-				"3b6de171-354c-4486-be0e-231c784eef87": 10,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 10
+			}
 		},
 		{
 			ballotId: "49",
@@ -1115,8 +1116,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 5,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 10,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 5,
-				"3b6de171-354c-4486-be0e-231c784eef87": 10,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 10
+			}
 		},
 		{
 			ballotId: "50",
@@ -1139,8 +1140,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 1,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 3,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 7,
-				"3b6de171-354c-4486-be0e-231c784eef87": 8,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 8
+			}
 		},
 		{
 			ballotId: "50",
@@ -1163,8 +1164,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 1,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 3,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 7,
-				"3b6de171-354c-4486-be0e-231c784eef87": 8,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 8
+			}
 		},
 		{
 			ballotId: "51",
@@ -1187,8 +1188,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 3,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 3,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 2,
-				"3b6de171-354c-4486-be0e-231c784eef87": 1,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 1
+			}
 		},
 		{
 			ballotId: "51",
@@ -1211,8 +1212,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 3,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 3,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 2,
-				"3b6de171-354c-4486-be0e-231c784eef87": 1,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 1
+			}
 		},
 		{
 			ballotId: "52",
@@ -1235,8 +1236,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 1,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 5,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 5,
-				"3b6de171-354c-4486-be0e-231c784eef87": 5,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 5
+			}
 		},
 		{
 			ballotId: "52",
@@ -1259,8 +1260,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 1,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 5,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 5,
-				"3b6de171-354c-4486-be0e-231c784eef87": 5,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 5
+			}
 		},
 		{
 			ballotId: "53",
@@ -1283,8 +1284,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 2,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 2,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 1,
-				"3b6de171-354c-4486-be0e-231c784eef87": 1,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 1
+			}
 		},
 		{
 			ballotId: "53",
@@ -1307,8 +1308,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 2,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 2,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 1,
-				"3b6de171-354c-4486-be0e-231c784eef87": 1,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 1
+			}
 		},
 		{
 			ballotId: "54",
@@ -1331,8 +1332,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 3,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 3,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 7,
-				"3b6de171-354c-4486-be0e-231c784eef87": 3,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 3
+			}
 		},
 		{
 			ballotId: "54",
@@ -1355,8 +1356,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 3,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 3,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 7,
-				"3b6de171-354c-4486-be0e-231c784eef87": 3,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 3
+			}
 		},
 		{
 			ballotId: "55",
@@ -1379,8 +1380,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 1,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 2,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 10,
-				"3b6de171-354c-4486-be0e-231c784eef87": 4,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 4
+			}
 		},
 		{
 			ballotId: "55",
@@ -1403,8 +1404,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 1,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 2,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 10,
-				"3b6de171-354c-4486-be0e-231c784eef87": 4,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 4
+			}
 		},
 		{
 			ballotId: "56",
@@ -1427,8 +1428,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 9,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 10,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 10,
-				"3b6de171-354c-4486-be0e-231c784eef87": 9,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 9
+			}
 		},
 		{
 			ballotId: "56",
@@ -1451,8 +1452,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 9,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 10,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 10,
-				"3b6de171-354c-4486-be0e-231c784eef87": 9,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 9
+			}
 		},
 		{
 			ballotId: "57",
@@ -1475,8 +1476,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 5,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 1,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 3,
-				"3b6de171-354c-4486-be0e-231c784eef87": 3,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 3
+			}
 		},
 		{
 			ballotId: "57",
@@ -1499,8 +1500,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 5,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 1,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 3,
-				"3b6de171-354c-4486-be0e-231c784eef87": 3,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 3
+			}
 		},
 		{
 			ballotId: "58",
@@ -1523,8 +1524,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 1,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 4,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 1,
-				"3b6de171-354c-4486-be0e-231c784eef87": 1,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 1
+			}
 		},
 		{
 			ballotId: "58",
@@ -1547,8 +1548,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 1,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 4,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 1,
-				"3b6de171-354c-4486-be0e-231c784eef87": 1,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 1
+			}
 		},
 		{
 			ballotId: "59",
@@ -1567,8 +1568,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"682a7010-d97d-452e-a2dc-00e12b6d5a64": 1,
 				"5c7259b1-69bd-4f69-be08-2a96a617d45f": 7,
 				"77190a30-20f7-4ca1-b33a-cb2da852d717": 5,
-				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 10,
-			},
+				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 10
+			}
 		},
 		{
 			ballotId: "59",
@@ -1587,8 +1588,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"682a7010-d97d-452e-a2dc-00e12b6d5a64": 1,
 				"5c7259b1-69bd-4f69-be08-2a96a617d45f": 7,
 				"77190a30-20f7-4ca1-b33a-cb2da852d717": 5,
-				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 10,
-			},
+				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 10
+			}
 		},
 		{
 			ballotId: "60",
@@ -1609,8 +1610,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 7,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 7,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 6,
-				"3b6de171-354c-4486-be0e-231c784eef87": 4,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 4
+			}
 		},
 		{
 			ballotId: "60",
@@ -1631,8 +1632,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 7,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 7,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 6,
-				"3b6de171-354c-4486-be0e-231c784eef87": 4,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 4
+			}
 		},
 		{
 			ballotId: "61",
@@ -1648,8 +1649,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"682a7010-d97d-452e-a2dc-00e12b6d5a64": 2,
 				"2e34faee-5d30-4d2e-9461-4d0ab1046e28": 6,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 5,
-				"3b6de171-354c-4486-be0e-231c784eef87": 9,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 9
+			}
 		},
 		{
 			ballotId: "61",
@@ -1665,8 +1666,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"682a7010-d97d-452e-a2dc-00e12b6d5a64": 2,
 				"2e34faee-5d30-4d2e-9461-4d0ab1046e28": 6,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 5,
-				"3b6de171-354c-4486-be0e-231c784eef87": 9,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 9
+			}
 		},
 		{
 			ballotId: "62",
@@ -1689,8 +1690,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 5,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 4,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 7,
-				"3b6de171-354c-4486-be0e-231c784eef87": 6,
-			},
+				"3b6de171-354c-4486-be0e-231c784eef87": 6
+			}
 		},
 		{
 			ballotId: "62",
@@ -1713,9 +1714,9 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"3b6f7731-6ae0-463c-b9ba-0848c48492d1": 5,
 				"c7c287a2-06bc-4a8a-838d-7b226de68c85": 4,
 				"d092ad1f-e80a-4c05-a877-720efa6c88a7": 7,
-				"3b6de171-354c-4486-be0e-231c784eef87": 6,
-			},
-		},
+				"3b6de171-354c-4486-be0e-231c784eef87": 6
+			}
+		}
 	],
 	female: [
 		{
@@ -1737,8 +1738,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"c045402d-7342-4f23-9489-8e14f3197c5f": 5,
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 4,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 6,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 2,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 2
+			}
 		},
 		{
 			ballotId: "1",
@@ -1759,8 +1760,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"c045402d-7342-4f23-9489-8e14f3197c5f": 5,
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 4,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 6,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 2,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 2
+			}
 		},
 		{
 			ballotId: "2",
@@ -1782,8 +1783,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 6,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "2",
@@ -1805,8 +1806,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 6,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "3",
@@ -1829,8 +1830,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 5,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 10,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 10,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 10,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 10
+			}
 		},
 		{
 			ballotId: "3",
@@ -1853,8 +1854,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 5,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 10,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 10,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 10,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 10
+			}
 		},
 		{
 			ballotId: "4",
@@ -1877,8 +1878,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 3,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 3,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 3,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 3,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 3
+			}
 		},
 		{
 			ballotId: "4",
@@ -1901,8 +1902,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 3,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 3,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 3,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 3,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 3
+			}
 		},
 		{
 			ballotId: "5",
@@ -1915,8 +1916,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"99b60cb7-8af7-42de-b9d3-4f1c23db05a2": 5,
 				"4937e277-607f-4664-920a-6124615ddb20": 10,
 				"23836062-c26f-4e58-a1c2-fddb940d3f7e": 7,
-				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 10,
-			},
+				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 10
+			}
 		},
 		{
 			ballotId: "5",
@@ -1929,8 +1930,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"99b60cb7-8af7-42de-b9d3-4f1c23db05a2": 5,
 				"4937e277-607f-4664-920a-6124615ddb20": 10,
 				"23836062-c26f-4e58-a1c2-fddb940d3f7e": 7,
-				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 10,
-			},
+				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 10
+			}
 		},
 		{
 			ballotId: "6",
@@ -1953,8 +1954,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 2,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 2,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 4,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 2,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 2
+			}
 		},
 		{
 			ballotId: "6",
@@ -1977,8 +1978,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 2,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 2,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 4,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 2,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 2
+			}
 		},
 		{
 			ballotId: "7",
@@ -1997,8 +1998,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 10,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 9,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 9,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 9,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 9
+			}
 		},
 		{
 			ballotId: "7",
@@ -2017,8 +2018,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 10,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 9,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 9,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 9,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 9
+			}
 		},
 		{
 			ballotId: "8",
@@ -2039,8 +2040,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 2,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 2,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 2,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 10,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 10
+			}
 		},
 		{
 			ballotId: "8",
@@ -2061,8 +2062,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 2,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 2,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 2,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 10,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 10
+			}
 		},
 		{
 			ballotId: "9",
@@ -2085,8 +2086,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "9",
@@ -2109,8 +2110,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "10",
@@ -2133,8 +2134,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 4,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "10",
@@ -2157,8 +2158,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 4,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "11",
@@ -2181,8 +2182,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 10,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 10
+			}
 		},
 		{
 			ballotId: "11",
@@ -2205,8 +2206,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 10,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 10
+			}
 		},
 		{
 			ballotId: "12",
@@ -2229,8 +2230,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "12",
@@ -2253,8 +2254,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "13",
@@ -2277,8 +2278,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 2,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "13",
@@ -2301,8 +2302,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 2,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "14",
@@ -2325,8 +2326,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 2,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 2,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 2,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 3,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 3
+			}
 		},
 		{
 			ballotId: "14",
@@ -2349,8 +2350,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 2,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 2,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 2,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 3,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 3
+			}
 		},
 		{
 			ballotId: "15",
@@ -2373,8 +2374,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "15",
@@ -2397,8 +2398,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "16",
@@ -2421,8 +2422,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 3,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 3,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 2,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 2,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 2
+			}
 		},
 		{
 			ballotId: "16",
@@ -2445,8 +2446,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 3,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 3,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 2,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 2,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 2
+			}
 		},
 		{
 			ballotId: "17",
@@ -2460,8 +2461,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"847c1b45-5f7b-4ceb-8f1f-c3697694f614": 5,
 				"4937e277-607f-4664-920a-6124615ddb20": 5,
 				"23836062-c26f-4e58-a1c2-fddb940d3f7e": 10,
-				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 10,
-			},
+				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 10
+			}
 		},
 		{
 			ballotId: "17",
@@ -2475,8 +2476,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"847c1b45-5f7b-4ceb-8f1f-c3697694f614": 5,
 				"4937e277-607f-4664-920a-6124615ddb20": 5,
 				"23836062-c26f-4e58-a1c2-fddb940d3f7e": 10,
-				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 10,
-			},
+				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 10
+			}
 		},
 		{
 			ballotId: "18",
@@ -2486,8 +2487,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"cf242baa-afa1-49c4-a0ae-36da4580cef7": 10,
 				"4937e277-607f-4664-920a-6124615ddb20": 10,
 				"23836062-c26f-4e58-a1c2-fddb940d3f7e": 1,
-				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 1,
-			},
+				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 1
+			}
 		},
 		{
 			ballotId: "18",
@@ -2497,8 +2498,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"cf242baa-afa1-49c4-a0ae-36da4580cef7": 10,
 				"4937e277-607f-4664-920a-6124615ddb20": 10,
 				"23836062-c26f-4e58-a1c2-fddb940d3f7e": 1,
-				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 1,
-			},
+				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 1
+			}
 		},
 		{
 			ballotId: "19",
@@ -2521,8 +2522,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "19",
@@ -2545,8 +2546,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "20",
@@ -2569,8 +2570,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 2,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 2,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "20",
@@ -2593,8 +2594,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 2,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 2,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "21",
@@ -2617,8 +2618,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "21",
@@ -2641,8 +2642,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "22",
@@ -2665,8 +2666,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 5,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "22",
@@ -2689,8 +2690,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 5,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "23",
@@ -2713,8 +2714,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "23",
@@ -2737,8 +2738,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "24",
@@ -2756,8 +2757,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 7,
 				"c045402d-7342-4f23-9489-8e14f3197c5f": 7,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 5,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "24",
@@ -2775,8 +2776,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 7,
 				"c045402d-7342-4f23-9489-8e14f3197c5f": 7,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 5,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "25",
@@ -2789,8 +2790,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"1f57a8bf-b98f-4e73-aff9-b1c9254fc2a9": 6,
 				"23836062-c26f-4e58-a1c2-fddb940d3f7e": 10,
 				"b2827528-1d3a-49b2-a850-69c3d1fdf4f5": 5,
-				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 5,
-			},
+				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 5
+			}
 		},
 		{
 			ballotId: "25",
@@ -2803,8 +2804,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"1f57a8bf-b98f-4e73-aff9-b1c9254fc2a9": 6,
 				"23836062-c26f-4e58-a1c2-fddb940d3f7e": 10,
 				"b2827528-1d3a-49b2-a850-69c3d1fdf4f5": 5,
-				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 5,
-			},
+				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 5
+			}
 		},
 		{
 			ballotId: "26",
@@ -2827,8 +2828,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 7,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 4,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 6,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 3,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 3
+			}
 		},
 		{
 			ballotId: "26",
@@ -2851,8 +2852,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 7,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 4,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 6,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 3,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 3
+			}
 		},
 		{
 			ballotId: "27",
@@ -2875,8 +2876,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 4,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 3,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 3,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 3,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 3
+			}
 		},
 		{
 			ballotId: "27",
@@ -2899,8 +2900,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 4,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 3,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 3,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 3,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 3
+			}
 		},
 		{
 			ballotId: "28",
@@ -2921,8 +2922,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "28",
@@ -2943,8 +2944,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 1,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 1,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 1,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 1
+			}
 		},
 		{
 			ballotId: "29",
@@ -2967,8 +2968,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 2,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 2,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 2,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 2,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 2
+			}
 		},
 		{
 			ballotId: "29",
@@ -2991,8 +2992,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 2,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 2,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 2,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 2,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 2
+			}
 		},
 		{
 			ballotId: "30",
@@ -3015,8 +3016,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 3,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 3,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 3,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 10,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 10
+			}
 		},
 		{
 			ballotId: "30",
@@ -3039,8 +3040,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"b9c707b7-c76d-4223-badf-6e86e19e2d8a": 3,
 				"fc9c356f-2aa5-4b0d-ae87-01a17e8879af": 3,
 				"11bb1193-e395-445e-bde3-afadbb2056d8": 3,
-				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 10,
-			},
+				"aba43ec3-25e6-4b90-a224-4e2febd46afc": 10
+			}
 		},
 		{
 			ballotId: "31",
@@ -3055,8 +3056,8 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"4937e277-607f-4664-920a-6124615ddb20": 7,
 				"23836062-c26f-4e58-a1c2-fddb940d3f7e": 7,
 				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 10,
-				"c045402d-7342-4f23-9489-8e14f3197c5f": 3,
-			},
+				"c045402d-7342-4f23-9489-8e14f3197c5f": 3
+			}
 		},
 		{
 			ballotId: "31",
@@ -3071,8 +3072,11 @@ export const testCounts: { male: Vote[]; female: Vote[] } = {
 				"4937e277-607f-4664-920a-6124615ddb20": 7,
 				"23836062-c26f-4e58-a1c2-fddb940d3f7e": 7,
 				"a98c9cf2-13fa-4a07-b5b3-44e833221002": 10,
-				"c045402d-7342-4f23-9489-8e14f3197c5f": 3,
-			},
-		},
-	],
+				"c045402d-7342-4f23-9489-8e14f3197c5f": 3
+			}
+		}
+	]
 };
+
+//
+// asd

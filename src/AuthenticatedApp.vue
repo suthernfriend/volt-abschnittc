@@ -20,10 +20,31 @@ const props = defineProps<{
 	name: string;
 }>();
 
-const assistantStep = ref<number>(1);
+const assistantStep = ref<string>("app-configuration");
+
+function testCounts2() {
+	const votes = testCounts
+		.male.map(value => {
+			if (value.rankings.hasOwnProperty("2e34faee-5d30-4d2e-9461-4d0ab1046e28")) {
+				value.rankings["9888cd11-f602-4fc8-afc6-37ffeb0333e4"] = value.rankings["2e34faee-5d30-4d2e-9461-4d0ab1046e28"];
+				value.rankings["0ac6eaa1-1294-46fb-bc68-3886d116ca90"] = value.rankings["2e34faee-5d30-4d2e-9461-4d0ab1046e28"];
+			} else {
+				delete value.rankings["9888cd11-f602-4fc8-afc6-37ffeb0333e4"];
+				delete value.rankings["0ac6eaa1-1294-46fb-bc68-3886d116ca90"];
+			}
+			return value;
+		});
+
+	return {
+		male: votes,
+		female: testCounts.female
+	};
+}
+
+const tc2 = testCounts2();
 
 const [election, dataStatus] = remoteReactive<Election>(props.remoteKey, {
-	votes: [...testCounts.female, ...testCounts.male],
+	votes: [...tc2.female, ...tc2.male],
 	general: {
 		lead: "Leitung der Zählkommission",
 		electedOrgan: "Organ",
@@ -39,6 +60,7 @@ const [election, dataStatus] = remoteReactive<Election>(props.remoteKey, {
 	},
 	candidates: [...testCandidates],
 	runoffs: [],
+	lots: [],
 	id: v4()
 });
 const view = ref<AuthenticatedAppView>("assistant");
@@ -66,6 +88,7 @@ const menuItems: { view: AuthenticatedAppView; title: string; classes(): string 
 const ready = computed(() => {
 	return dataStatus.value.ready;
 });
+
 </script>
 
 <template>
@@ -78,6 +101,7 @@ const ready = computed(() => {
 			</ul>
 		</div>
 	</nav>
+
 	<main v-if="ready && election">
 		<assistant v-if="view === 'assistant'" @open="view => setView(view)" v-model:election="election"
 				   v-model:step="assistantStep" />

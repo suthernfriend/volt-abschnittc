@@ -9,8 +9,8 @@ import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import FormField from "@/components/FormField.vue";
 
 const auth = ref<{ name: string } | null>(null);
-const remoteKey = ref<string>("av-rlp-ltw-25-2");
-const accepted = ref<boolean>(false);
+const remoteKey = ref<string>("av-rlp-ltw-25-9");
+const accepted = ref<boolean>(true);
 
 const clientId = "612877073998-0nn7h87htlg1f76es2m2f3mr3lgglgsg.apps.googleusercontent.com";
 const hd = "volteuropa.org";

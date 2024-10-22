@@ -1,26 +1,4 @@
-export type AssistantProviderStepType =
-	"app-configuration" |
-	"link-step-candidates-import" |
-	"candidates-double-check" |
-	"link-print-ballots" |
-	"execute-vote" |
-	"numbering-ballots" |
-	"input-ballots" |
-	"control-input" |
-	"commit-result" |
-	"display-result" |
-	"lot" |
-	"commit-candidates-2" |
-	"print-ballots-2" |
-	"execute-vote-2" |
-	"count-votes-2" |
-	"input-result-2" |
-	"commit-result-2" |
-	"display-result-2" |
-	"repeat-runoff" |
-	"commit-acceptance" |
-	"display-full-list" |
-	"export";
+export type AssistantProviderStepType = string;
 
 export interface AssistantProviderStep {
 	title(): string;
@@ -28,10 +6,14 @@ export interface AssistantProviderStep {
 	explanation(): string;
 
 	type(): AssistantProviderStepType;
+
+	no(): number;
 }
 
 export interface AssistantProvider {
-	getSteps(): AssistantProviderStep[];
+	getSteps(): AssistantProviderStepType[];
+
+	getStep(name: string): AssistantProviderStep;
 }
 
 export interface AssistantProviderImplFile {
@@ -53,22 +35,27 @@ export class AssistantProviderImpl implements AssistantProvider {
 	constructor(private options: AssistantProviderImplOptions) {
 	}
 
-	getSteps(): AssistantProviderStep[] {
+	getSteps(): AssistantProviderStepType[] {
+		return [...this.options.file.order];
 
-		const out: AssistantProviderStep[] = [];
+	}
 
-		for (const order of this.options.file.order) {
+	getStep(name: string): AssistantProviderStep {
+		if (!this.options.file.steps.hasOwnProperty(name))
+			throw new Error(`assistant.yaml file invalid. Missing: ${name}`);
 
-			if (!this.options.file.steps.hasOwnProperty(order))
-				throw new Error(`assistant.yaml file invalid. Missing: ${order}`);
-
-			out.push({
-				title: () => this.options.file.steps[order].title,
-				explanation: () => this.options.file.steps[order].explanation,
-				type: () => order
-			});
+		let i = 1;
+		for (const step of this.options.file.order) {
+			if (step === name)
+				break;
+			i++;
 		}
 
-		return out;
+		return {
+			no: () => i,
+			title: () => this.options.file.steps[name].title,
+			explanation: () => this.options.file.steps[name].explanation,
+			type: () => name
+		};
 	}
 }

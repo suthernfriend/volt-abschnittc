@@ -11,8 +11,6 @@ export class VoteEvaluatorImpl implements VoteEvaluator {
 
 	evaluate(election: Election): Result {
 
-		console.log(election.votes);
-
 		const ballotValidator = new BallotValidatorImpl({
 			votes: election.votes
 		});
@@ -20,7 +18,8 @@ export class VoteEvaluatorImpl implements VoteEvaluator {
 		const evaluation = new Evaluation({
 			votes: ballotValidator.merged(),
 			candidates: election.candidates,
-			runoffs: election.runoffs
+			runoffs: election.runoffs,
+			lotResults: election.lots
 		});
 
 		return evaluation.evaluate();

@@ -1,8 +1,10 @@
 import {
 	type ElectionCandidate,
 	type ElectionGender,
+	type ElectionLotResult,
 	type ElectionRunoffResults,
 	invertGender,
+	renderCandidateName,
 	type Vote
 } from "@/lib/Types";
 import type {
@@ -14,6 +16,7 @@ import type {
 	EvaluationMessageRunoffCandidate,
 	EvaluationMessageTroublemakersCandidate
 } from "@/lib/EvaluationMessage";
+import { arraySameContents, deepCopy, equalsWithEpsilon } from "@/lib/utility";
 
 export interface ResultEntry {
 	candidateId: string;
@@ -28,21 +31,15 @@ export interface NeedRunoffResult {
 		male: ResultEntry[];
 		female: ResultEntry[];
 	};
-	runoffCandidates: {
-		maleCandidate: string;
-		femaleCandidate: string;
+	runoff: {
+		male: string;
+		female: string;
 	};
 }
 
 export interface NeedLotResult {
 	type: "need-lot";
-	toLot: {
-		candidates: string[];
-		position: number;
-		list: "male" | "female";
-	};
-	preliminaryLists: NeedRunoffResult["preliminaryLists"];
-	runoffCandidates: NeedRunoffResult["runoffCandidates"];
+	details: Required<NeedLotDetails>;
 }
 
 export interface NeedConfirmationResult {
@@ -53,14 +50,14 @@ export interface NeedConfirmationResult {
 	};
 	list: ResultEntry[];
 	preliminaryLists: NeedRunoffResult["preliminaryLists"];
-	runoffCandidates: NeedRunoffResult["runoffCandidates"];
+	runoff: NeedRunoffResult["runoff"];
 }
 
 export interface ListCompleteResult {
 	type: "list-complete";
 	list: ResultEntry[];
 	preliminaryLists: NeedRunoffResult["preliminaryLists"];
-	runoffCandidates: NeedRunoffResult["runoffCandidates"];
+	runoff: NeedRunoffResult["runoff"];
 	messages: EvaluationMessage[];
 }
 
@@ -69,14 +66,71 @@ export type Result = ListCompleteResult | NeedConfirmationResult | NeedLotResult
 export interface EvaluationOptions {
 	candidates: ElectionCandidate[];
 	votes: Vote[];
+	lotResults: ElectionLotResult[];
 	runoffs: ElectionRunoffResults[];
+}
+
+export interface NeedLotDetailsAllVotesEqual {
+	type: "all-votes-equal";
+	candidates: string[];
+	list?: ElectionGender;
+	position?: number;
+	score?: number;
+}
+
+export type NeedLotDetails = NeedLotDetailsAllVotesEqual;
+
+export class NeedLotException extends Error {
+	constructor(public details: NeedLotDetails) {
+		super("Need lot");
+	}
+
+	withList(list: ElectionGender): NeedLotException {
+		return new NeedLotException({
+			...this.details,
+			list
+		});
+	}
+
+	withPosition(position: number): NeedLotException {
+		return new NeedLotException({
+			...this.details,
+			position
+		});
+	}
+
+	withScore(score: number): NeedLotException {
+		return new NeedLotException({
+			...this.details,
+			score
+		});
+	}
+}
+
+function attemptAndCatchLotException<T>(fn: () => T, opts: Partial<NeedLotDetailsAllVotesEqual>): T {
+	try {
+		return fn();
+	} catch (e) {
+		if (e instanceof NeedLotException) {
+			const details = deepCopy(e.details);
+			if (opts.position)
+				details.position = opts.position;
+			if (opts.score)
+				details.score = opts.score;
+			if (opts.list)
+				details.list = opts.list;
+			throw new NeedLotException(details);
+		} else {
+			throw e;
+		}
+	}
 }
 
 export class Evaluation {
 	constructor(private options: EvaluationOptions) {
 	}
 
-	static nullCountForCandidate(candidate: string, votes: Vote[]): number {
+	nullCountForCandidate(candidate: string, votes: Vote[]): number {
 		let i = 0;
 
 		for (const vote of votes) {
@@ -88,7 +142,7 @@ export class Evaluation {
 		return i;
 	}
 
-	static voteCountForCandidate(candidate: string, votes: Vote[]): number {
+	voteCountForCandidate(candidate: string, votes: Vote[]): number {
 		let i = 0;
 
 		for (const vote of votes) {
@@ -98,11 +152,11 @@ export class Evaluation {
 		return i;
 	}
 
-	static nonNullCountForCandidate(candidate: string, votes: Vote[]): number {
+	nonNullCountForCandidate(candidate: string, votes: Vote[]): number {
 		return this.voteCountForCandidate(candidate, votes) - this.nullCountForCandidate(candidate, votes);
 	}
 
-	static averagesForCandidates(candidates: string[], votes: Vote[]): { [candidate: string]: number } {
+	averagesForCandidates(candidates: string[], votes: Vote[]): { [candidate: string]: number } {
 		const out: { [candidate: string]: number } = {};
 
 		for (const candidate of candidates) {
@@ -112,14 +166,19 @@ export class Evaluation {
 		return out;
 	}
 
-	static averageForCandidate(candidate: string, votes: Vote[]): number {
+	averageForCandidate(candidate: string, votes: Vote[]): number {
 		let sum = 0;
 
 		for (const vote of votes) {
 			if (vote.rankings.hasOwnProperty(candidate)) sum += vote.rankings[candidate];
 		}
 
-		return sum / this.voteCountForCandidate(candidate, votes);
+		const voteCount = this.voteCountForCandidate(candidate, votes);
+
+		if (voteCount === 0)
+			throw new Error(`Vote count for candidate ${this.candidateNameById(candidate)} (${candidate}) is zero`);
+
+		return sum / voteCount;
 	}
 
 	static filterCandidatesByList(candidates: ElectionCandidate[], list: "male" | "female") {
@@ -156,6 +215,27 @@ export class Evaluation {
 	}
 
 	public evaluate(): Result {
+		try {
+			return this.evaluateUnsafe();
+		} catch (e) {
+			if (e instanceof NeedLotException) {
+				return {
+					type: "need-lot",
+					details: {
+						type: "all-votes-equal",
+						candidates: e.details.candidates!,
+						position: e.details.position!,
+						score: e.details.score!,
+						list: e.details.list!
+					}
+				};
+			} else {
+				throw e;
+			}
+		}
+	}
+
+	public evaluateUnsafe(): Result {
 		const messages: EvaluationMessage[] = [];
 
 		if (this.options.votes.length === 0) {
@@ -184,8 +264,8 @@ export class Evaluation {
 		const troublemakers: EvaluationMessageTroublemakersCandidate[] = [];
 
 		for (const candidate of this.options.candidates) {
-			const nullCount = Evaluation.nullCountForCandidate(candidate.id, votes);
-			const voteCount = Evaluation.nonNullCountForCandidate(candidate.id, votes);
+			const nullCount = this.nullCountForCandidate(candidate.id, votes);
+			const voteCount = this.nonNullCountForCandidate(candidate.id, votes);
 
 			if (nullCount >= voteCount) {
 				failed241.push(candidate);
@@ -207,31 +287,54 @@ export class Evaluation {
 		const male = Evaluation.filterCandidatesByList(passed241, "male");
 		const female = Evaluation.filterCandidatesByList(passed241, "female");
 
-		const { result: maleList, messages: maleMessages } = Evaluation.preliminaryList(
+		const maleList: ResultEntry[] = [], femaleList: ResultEntry[] = [];
+
+		const {
+			result: mResult,
+			messages: maleMessages
+		} = attemptAndCatchLotException(() => this.preliminaryList(
 			male.map((value) => value.id),
 			votes.filter((value) => value.list === "male")
-		);
+		), {
+			list: "male"
+		});
+		maleList.push(...mResult);
+
 		messages.push({
 			type: "preliminary-list",
 			messages: maleMessages,
 			list: "male"
 		});
 
-		const { result: femaleList, messages: femaleMessages } = Evaluation.preliminaryList(
+		const {
+			result: fResult,
+			messages: femaleMessages
+		} = attemptAndCatchLotException(() => this.preliminaryList(
 			female.map((value) => value.id),
 			votes.filter((value) => value.list === "female")
-		);
+		), {
+			list: "female"
+		});
+		femaleList.push(...fResult);
+
 		messages.push({
 			type: "preliminary-list",
 			messages: femaleMessages,
 			list: "female"
 		});
 
-		const { candidate: maleRunoffCandidate, message: maleRunoffMessage } = Evaluation.getRunoffCandidate(
+		const {
+			candidate: maleRunoffCandidate,
+			message: maleRunoffMessage
+		} = Evaluation.getRunoffCandidate(
 			maleList,
 			this.options.candidates
 		);
-		const { candidate: femaleRunoffCandidate, message: femaleRunoffMessage } = Evaluation.getRunoffCandidate(
+
+		const {
+			candidate: femaleRunoffCandidate,
+			message: femaleRunoffMessage
+		} = Evaluation.getRunoffCandidate(
 			femaleList,
 			this.options.candidates
 		);
@@ -247,7 +350,10 @@ export class Evaluation {
 			return {
 				type: "need-runoff",
 				preliminaryLists: { male: maleList, female: femaleList },
-				runoffCandidates: { maleCandidate: maleRunoffCandidate, femaleCandidate: femaleRunoffCandidate }
+				runoff: {
+					male: maleRunoffCandidate,
+					female: femaleRunoffCandidate
+				}
 			};
 		} else if (maleList.length === 0) {
 			// only female list
@@ -284,7 +390,7 @@ export class Evaluation {
 				type: "list-complete",
 				list: dl,
 				preliminaryLists: { male: maleList, female: femaleList },
-				runoffCandidates: { maleCandidate: maleRunoffCandidate, femaleCandidate: femaleRunoffCandidate },
+				runoff: { male: maleRunoffCandidate, female: femaleRunoffCandidate },
 				messages
 			};
 		} else {
@@ -407,7 +513,7 @@ export class Evaluation {
 		throw new Error("No candidate found for runoff");
 	}
 
-	static preliminaryList(
+	preliminaryList(
 		candidates: string[],
 		votes: Vote[]
 	): {
@@ -423,15 +529,28 @@ export class Evaluation {
 		for (const candidateId of candidates) shift[candidateId] = 0;
 
 		while (result.length < candidates.length) {
+
+			console.log(`Now determining position ${next} of ${candidates.length}`);
+
 			const toConsiderForNext = candidates
 				.filter((value) => result.find((value1) => value1.candidateId === value) === undefined)
 				.map((value) => value);
 
-			// find out how many candidates have the heighest average
-			const twoHighest = Evaluation.getTwoHighest(toConsiderForNext, votes);
+			console.log(`${toConsiderForNext.length} candidates left for position ${next}`);
 
-			if (typeof twoHighest === "string") {
-				const score = Evaluation.averageForCandidate(twoHighest, votes);
+			// find out how many candidates have the highest average
+			let twoHighest: string | [string, string] | undefined = undefined;
+
+			twoHighest = attemptAndCatchLotException(() => this.getTwoHighest(toConsiderForNext, votes), {
+				position: next
+			});
+
+			if (twoHighest === undefined) {
+				throw new Error("This is not possible");
+			} else if (typeof twoHighest === "string") {
+				console.log(`There is only one candidate with the highest average: ${this.candidateNameById(twoHighest)}`);
+
+				const score = this.averageForCandidate(twoHighest, votes);
 				const theShift = -shift[twoHighest];
 				result.push({
 					candidateId: twoHighest,
@@ -447,7 +566,10 @@ export class Evaluation {
 					shift: theShift
 				});
 			} else {
-				const dcr = Evaluation.directComparison(twoHighest[0], twoHighest[1], votes);
+				console.log(`Two highest: ${twoHighest.length}`);
+				console.log(`Need direct comparison between: ${this.candidateNameById(twoHighest[0])} and ${this.candidateNameById(twoHighest[1])}.`);
+
+				const dcr = this.directComparison(twoHighest[0], twoHighest[1], votes);
 
 				const { a, b, equal, excluded } = dcr;
 
@@ -456,8 +578,10 @@ export class Evaluation {
 				const winnerBallots = Math.max(a, b);
 				const loserBallots = Math.min(a, b);
 
-				const winnerScore = Evaluation.averageForCandidate(theHigher, votes);
-				const loserScore = Evaluation.averageForCandidate(theLower, votes);
+				const winnerScore = this.averageForCandidate(theHigher, votes);
+				const loserScore = this.averageForCandidate(theLower, votes);
+
+				console.log(`Direct comparison won by ${this.candidateNameById(theHigher)} (${winnerBallots} vs ${this.candidateNameById(theLower)}: ${loserBallots})`);
 
 				const winnerShift = -shift[theHigher];
 				result.push({
@@ -502,7 +626,15 @@ export class Evaluation {
 		};
 	}
 
-	static directComparison(
+	candidateNameById(id: string): string {
+		const candidate = this.options.candidates.find((value) => value.id === id);
+		if (candidate === undefined) {
+			throw new Error(`Candidate with id ${id} not found`);
+		}
+		return renderCandidateName(candidate);
+	}
+
+	directComparison(
 		candidateA: string,
 		candidateB: string,
 		votes: Vote[]
@@ -514,7 +646,11 @@ export class Evaluation {
 		messages: EvaluationMessagePreliminaryListSpotDuoTieBreaker[];
 		winner: string;
 	} {
-		console.log(`Performing direct comparison for candidates ${candidateA} and ${candidateB} with ${votes.length} votes`);
+
+		const nameA = this.candidateNameById(candidateA);
+		const nameB = this.candidateNameById(candidateB);
+
+		console.log(`Performing direct comparison for candidates ${nameA} and ${nameB} with ${votes.length} votes`);
 
 		let a = 0;
 		let b = 0;
@@ -538,19 +674,21 @@ export class Evaluation {
 
 			const obj = this.highestRankedCandidateByPointCounts([candidateA, candidateB], votes);
 
-			if (obj.candidates.length > 1)
-				throw new Error(`Cannot determine winner between ${candidateA} and ${candidateB} with ${votes.length} votes: ${a} vs ${b}`);
+			let winner = obj.candidates[0];
 
-			console.log(obj.messages);
+			if (obj.candidates.length > 1) {
+				winner = this.getLotWinnerOrThrow(obj.candidates);
+			}
 
 			return {
-				winner: obj.candidates[0],
+				winner,
 				equal,
 				messages: obj.messages,
 				b,
 				excluded,
 				a
 			};
+
 		} else if (a > b) {
 			return { a, b, equal, messages: [], excluded, winner: candidateA };
 		} else {
@@ -558,7 +696,11 @@ export class Evaluation {
 		}
 	}
 
-	static highestRankedCandidateByPointCounts(
+	candidateNamesByIds(ids: string[]): string[] {
+		return ids.map((value) => this.candidateNameById(value));
+	}
+
+	highestRankedCandidateByPointCounts(
 		candidates: string[],
 		votes: Vote[]
 	): {
@@ -567,7 +709,8 @@ export class Evaluation {
 	} {
 		const messages: EvaluationMessagePreliminaryListSpotDuoTieBreaker[] = [];
 
-		console.log(`Trying to determine highest point count for candidates: ${candidates.join(", ")}`);
+		console.log(`Trying to determine highest point count for candidates: ${
+			this.candidateNamesByIds(candidates).join(", ")}`);
 
 		let leftInComparison = [...candidates];
 		let i = 10;
@@ -578,7 +721,7 @@ export class Evaluation {
 			i--;
 		}
 
-		console.log(`Highest point count: ${leftInComparison.join(", ")}`);
+		console.log(`Highest point count: ${this.candidateNamesByIds(leftInComparison).join(", ")}`);
 
 		return {
 			candidates: leftInComparison,
@@ -586,14 +729,14 @@ export class Evaluation {
 		};
 	}
 
-	static highestRankedCandidatesByPointCount(
+	highestRankedCandidatesByPointCount(
 		count: number,
 		candidates: string[],
 		votes: Vote[]
 	): { candidates: string[]; message: EvaluationMessagePreliminaryListSpotDuoTieBreaker } {
 		const nCount: { [candidateId: string]: number } = {};
 
-		console.log(`Comparing ${candidates.length} candidates by point count of ${count}`);
+		console.log(`Comparing ${this.candidateNamesByIds(candidates).join(", ")} candidates by point count of ${count}`);
 
 		for (const candidate of candidates) {
 			nCount[candidate] = 0;
@@ -625,21 +768,41 @@ export class Evaluation {
 		};
 	}
 
-	static getTwoHighest(candidates: string[], votes: Vote[]): [string, string] | string {
+	getLotWinnerOrThrow(candidates: string[]): string {
+		for (const lr of this.options.lotResults) {
+			if (lr.winner && arraySameContents(lr.candidates, candidates))
+				return lr.winner;
+		}
+
+		throw new NeedLotException({
+			type: "all-votes-equal",
+			candidates: candidates
+		});
+	}
+
+	getTwoHighest(candidates: string[], votes: Vote[]): [string, string] | string {
+
+		if (candidates.length === 0)
+			throw new Error("No candidates to compare");
+
 		// first
 		const first = this.getHighestAverage(candidates, votes);
 
 		if (candidates.length === 1) return candidates[0];
-		else if (first.length === 2) return [first[0], first[1]];
-		else if (first.length > 2) {
+		else if (first.length === 2) {
+			console.log("Two candidates have the highest average");
+			return [first[0], first[1]];
+		} else if (first.length > 2) {
 			// the two candidates which have a higher score more often
 			const obj = this.highestRankedCandidateByPointCounts(first, votes);
 
 			const highest = obj.candidates;
 
 			// TODO: do not ignore messages
-
-			if (highest.length === 2) return [highest[0], highest[1]];
+			if (highest.length === 2) {
+				console.log("Two candidates have been selected by point counts.");
+				return [highest[0], highest[1]];
+			}
 
 			if (highest.length === 1) {
 				const withoutHeighest = first.filter((value) => value !== highest[0]);
@@ -648,8 +811,14 @@ export class Evaluation {
 				if (nextHighest.length === 1) return [highest[0], nextHighest[0]];
 			}
 
-			throw new Error("This is not possible without all votes being equal");
+			console.log(`${highest.length} candidates have the same points. Need lot`);
+			const lotFirst = this.getLotWinnerOrThrow(highest);
+			const lotSecond = this.getLotWinnerOrThrow(highest.filter(v => v !== lotFirst));
+
+			return [lotFirst, lotSecond];
+
 		} else if (first.length === 1) {
+
 			// we have 1 guy with the highest average
 			const withoutHighest = candidates.filter((value) => value !== first[0]);
 
@@ -658,28 +827,30 @@ export class Evaluation {
 
 			if (secondHighestByAverage.length === 1) return [first[0], secondHighestByAverage[0]];
 
-			console.log(`${secondHighestByAverage.length} candidates have the same average`);
+			console.log(`For the second spot ${secondHighestByAverage.length} candidates have the same average. `
+				+ `Determining second spot by point counts. (${this.candidateNamesByIds(secondHighestByAverage).join(", ")})`);
 
 			const obj2 = this.highestRankedCandidateByPointCounts(secondHighestByAverage, votes);
 
 			const secondHighest = obj2.candidates;
 			// TODO: do not ignore messages
 
-			if (secondHighest.length === 1) return [first[0], secondHighest[0]];
+			if (secondHighest.length === 1)
+				return [first[0], secondHighest[0]];
 
-			throw new Error(
-				`Cannot determine second highest: All votes identical for candidates ${secondHighest.join(", ")}\n ` +
-				`with votes ${votes.map((vote) => JSON.stringify(vote)).join(", ")}`
-			);
+			// need lot
+			const winner = this.getLotWinnerOrThrow(secondHighest);
+			return [first[0], winner];
 		} else {
-			throw new Error(`Huh ? ${first}`);
+			console.log(`Two highest count is empty? ${candidates.length} candidates given`);
+			throw new Error("This is not possible");
 		}
 	}
 
 	/**
 	 * If the first N candidates with the same average
 	 */
-	static getHighestAverage(candidates: string[], votes: Vote[]): string[] {
+	getHighestAverage(candidates: string[], votes: Vote[]): string[] {
 		if (candidates.length === 0) {
 			return [];
 		}
@@ -691,12 +862,11 @@ export class Evaluation {
 		const averages = this.averagesForCandidates(candidates, votes);
 		const highest = Math.max(...Object.values(averages));
 
+		console.log(averages);
+
 		const out: string[] = [];
-		for (const k in averages) if (this.equalsWithEpsilon(averages[k], highest, 1e-7)) out.push(k);
+		for (const k in averages) if (equalsWithEpsilon(averages[k], highest, 1e-7)) out.push(k);
 		return out;
 	}
 
-	static equalsWithEpsilon(a: number, b: number, epsilon: number): boolean {
-		return Math.abs(a - b) < epsilon;
-	}
 }

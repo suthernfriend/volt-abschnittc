@@ -7,9 +7,9 @@ order:
   - numbering-ballots
   - input-ballots
   - control-input
+  - lot
   - commit-result
   - display-result
-  - lot
   - commit-candidates-2
   - print-ballots-2
   - execute-vote-2
@@ -123,6 +123,13 @@ steps:
       Überprüfen Sie Stimmzettel mit auffälligen oder widersprüchlichen Eingaben erneut. 
       Korrigieren Sie eventuelle Fehler in der Auszählungssoftware durch eine dritte Zählung.
 
+  lot:
+    title: Auslosung von Plätzen
+    explanation: >-
+      Führen Sie bei Bedarf eine Auslosung für Plätze auf den vorläufigen Listen durch. Dies 
+      ist notwendig, wenn Kandidat*innen in sämtlichen Bewertungen gleichauf liegen. Lassen 
+      Sie die Versammlungsleitung das Los offen ziehen.
+
   commit-result:
     title: Feststellung des Ergebnisses
     explanation: >-
@@ -134,13 +141,6 @@ steps:
       Präsentieren Sie die Ergebnisse des ersten Wahlgangs. Zeigen Sie die Punktzahlen und 
       Rangfolge der Kandidat*innen auf beiden Listen. Erläutern Sie das Zustandekommen der vorläufigen 
       Listen gemäß § 24 Abs. 1 und 2.
-
-  lot:
-    title: Auslosung von Plätzen
-    explanation: >-
-      Führen Sie bei Bedarf eine Auslosung für Plätze auf den vorläufigen Listen durch. Dies 
-      ist notwendig, wenn Kandidat*innen in sämtlichen Bewertungen gleichauf liegen. Lassen 
-      Sie die Versammlungsleitung das Los offen ziehen.
 
   commit-candidates-2:
     title: Feststellung der Bewerber für den zweiten Wahlgang
