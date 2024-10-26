@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import type { Election } from "@/lib/Types";
-import PdfPreview from "@/components/PdfPreview.vue";
+import FormField from "@/App.vue";
 
 const model = defineModel<Election>({
 	required: true
@@ -21,7 +21,10 @@ const model = defineModel<Election>({
 						<button class="button is-primary">Stimmzettel herunterladen</button>
 					</div>
 				</div>
-				<div class="column is-one-third">
+				<div class="column is-two-thirds">
+					<h4 class="title is-4">Ergebnisse eintragen</h4>
+					<div v-for="runoff in model.runoffs">
+					</div>
 				</div>
 			</div>
 		</div>

@@ -14,6 +14,16 @@ const result = ref<Result>();
 onMounted(async () => {
 	const evaluator = await Container.voteEvaluator();
 	result.value = evaluator.evaluate(model.value);
+
+	if (result.value?.type === "need-runoff") {
+		const last = model.value.runoffs[model.value.runoffs.length - 1];
+
+		if (!last)
+			model.value.runoffs.push({ male: 0, female: 0, abstentions: 0, total: 0 });
+		else if (last.total !== 0) {
+			model.value.runoffs.push({ male: 0, female: 0, abstentions: 0, total: 0 });
+		}
+	}
 });
 
 async function downloadPdf() {

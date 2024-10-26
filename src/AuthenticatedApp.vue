@@ -44,6 +44,26 @@ function testCounts2() {
 const tc2 = testCounts2();
 
 const [election, dataStatus] = remoteReactive<Election>(props.remoteKey, {
+	id: v4(),
+	runoffs: [],
+	candidates: [],
+	lots: [],
+	votes: [],
+	general: {
+		associationName: "Volt Saarland",
+		electedOrgan: "21. Deutscher Bundestag",
+		assemblyName: "Aufstellungsversammlung zur Wahl der Landesliste",
+		ballotIds: {
+			male: randomString(8),
+			female: randomString(8),
+			"242": randomString(8)
+		},
+		countingCommission: [],
+		lead: "Sebastian Gerhard",
+		electionName: "Wahl der Landesliste für die Wahl zum 21. Deutschen Bundestag für Volt im Land Saarland"
+	}
+} satisfies Election);
+/*
 	votes: [...tc2.female, ...tc2.male],
 	general: {
 		lead: "Leitung der Zählkommission",
@@ -63,6 +83,8 @@ const [election, dataStatus] = remoteReactive<Election>(props.remoteKey, {
 	lots: [],
 	id: v4()
 });
+ */
+
 const view = ref<AuthenticatedAppView>("assistant");
 
 

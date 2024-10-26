@@ -382,7 +382,7 @@ export class Evaluation {
 			const {
 				result: dl,
 				message
-			} = Evaluation.evaluateDoubleList(winnerListGender, winnerList, loserList, this.options.candidates);
+			} = this.evaluateDoubleList(winnerListGender, winnerList, loserList, this.options.candidates);
 
 			messages.push(message);
 
@@ -398,7 +398,7 @@ export class Evaluation {
 		}
 	}
 
-	static evaluateDoubleList(
+	 evaluateDoubleList(
 		runoffWinner: ElectionGender,
 		runoffWinnerList: ResultEntry[],
 		runoffLoserList: ResultEntry[],
@@ -445,15 +445,16 @@ export class Evaluation {
 				const minSpot = candidates.find((value) => value.id === entry.candidateId)!.minSpot;
 
 				if (minSpot <= haveSpot.length + 1) {
+					const theSpot = haveSpot.length + 1;
 					haveSpot.push(entry.candidateId);
 					result.push({
 						candidateId: entry.candidateId,
 						score: entry.score,
 						shift: entry.shift,
-						position: haveSpot.length + 1
+						position: theSpot
 					});
 					messages.push({
-						position: haveSpot.length + 1,
+						position: theSpot,
 						candidateId: entry.candidateId,
 						score: entry.score,
 						shift: entry.shift,

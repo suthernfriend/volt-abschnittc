@@ -2,7 +2,8 @@
 import { computed } from "vue";
 import { Evaluation, type ListCompleteResult, type Result } from "@/lib/Evaluation";
 import { type ElectionCandidate, type Election, renderCandidateName } from "@/lib/Types";
-import { numberFormat } from "../lib/utility";
+import { numberFormat } from "@/lib/utility";
+import FormField from "@/components/FormField.vue";
 
 const model = defineModel<Election>({ required: true });
 
@@ -32,6 +33,7 @@ const showPreliminary = computed(() => {
 const showFinal = computed(() => {
 	return ["list-complete"].includes(props.result.type);
 });
+
 </script>
 
 <template>
@@ -71,18 +73,20 @@ const showFinal = computed(() => {
 					<strong>{{ candidateNameById(result.runoff.male) }}</strong>
 					muss ein zweiter Wahlgang für den Spitzenplatz der Liste stattfinden.
 				</p>
-				<div class="block">
-					<div class="select">
-						<!--						<select v-model="model.runoffWinner">-->
-						<!--							<option value="none">Nicht entschieden</option>-->
-						<!--							<option :value="result.runoffCandidates.femaleCandidate">-->
-						<!--								{{ candidateNameById(result.runoffCandidates.femaleCandidate) }}-->
-						<!--							</option>-->
-						<!--							<option :value="result.runoffCandidates.maleCandidate">-->
-						<!--								{{ candidateNameById(result.runoffCandidates.maleCandidate) }}-->
-						<!--							</option>-->
-						<!--						</select>-->
-					</div>
+				<div class="block" v-for="(k, i) in model.runoffs">
+					<h4>{{ i }}</h4>
+					<form-field :label="candidateNameById(result.runoff.male)">
+						<input type="number" class="input" v-model="model.runoffs[i].male">
+					</form-field>
+					<form-field :label="candidateNameById(result.runoff.female)">
+						<input type="number" class="input" v-model="model.runoffs[i].female">
+					</form-field>
+					<form-field label="Enthaltungen">
+						<input type="number" class="input" v-model="model.runoffs[i].abstentions">
+					</form-field>
+					<form-field label="Gesamt">
+						<input type="number" class="input" v-model="model.runoffs[i].total">
+					</form-field>
 				</div>
 			</div>
 		</div>
