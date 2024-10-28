@@ -94,7 +94,7 @@ export function voteDiff(a: Vote, b: Vote): VoteDiffEntry[] {
 					type: "points-missmatch",
 					candidateId: key,
 					pointsA: a.rankings[key],
-					pointsB: b.rankings[key]
+					pointsB: b.rankings[key],
 				});
 			}
 		}
@@ -135,6 +135,11 @@ export interface ElectionLotResult {
 	winner?: string;
 }
 
+export interface ElectionConfirmation {
+	candidate: string;
+	accepted: boolean;
+}
+
 export interface Election {
 	id: string;
 	general: ElectionGeneral;
@@ -142,6 +147,7 @@ export interface Election {
 	runoffs: ElectionRunoffResults[];
 	votes: Vote[];
 	lots: ElectionLotResult[];
+	confirmations: ElectionConfirmation[];
 }
 
 export function invertGender(gender: ElectionGender): ElectionGender {
@@ -149,10 +155,8 @@ export function invertGender(gender: ElectionGender): ElectionGender {
 }
 
 export function electionGenderString(gender: ElectionGender): string {
-	if (gender === "male")
-		return "Männlich / Diverse";
-	else
-		return "Weiblich / Diverse";
+	if (gender === "male") return "Männlich / Diverse";
+	else return "Weiblich / Diverse";
 }
 
 export function sortCandidates(candidates: ElectionCandidate[]): ElectionCandidate[] {
@@ -179,9 +183,14 @@ export function candidateSort(a: ElectionCandidate, b: ElectionCandidate): numbe
 	}
 }
 
-export type AuthenticatedAppView = "assistant" |
-	"candidates" | "ballot" |
-	"vote-input" | "export" |
-	"introduction" | "lot-and-runoff" |
-	"preliminary" | "result" |
-	"runoff";
+export type AuthenticatedAppView =
+	| "assistant"
+	| "candidates"
+	| "ballot"
+	| "vote-input"
+	| "export"
+	| "introduction"
+	| "lot-and-runoff"
+	| "preliminary"
+	| "result"
+	| "runoff";

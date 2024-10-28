@@ -3,9 +3,10 @@
 import type { AssistantProviderStep } from "@/lib/AssistantProvider";
 import { toParagraphs } from "@/lib/utility";
 import { onMounted, ref } from "vue";
-import type { Result } from "@/lib/Evaluation";
 import Container from "@/lib/Container";
 import type { Election } from "@/lib/Types";
+
+import type { EvaluationResult } from "@/lib/EvaluationResult";
 
 const props = defineProps<{
 	step: AssistantProviderStep;
@@ -17,7 +18,7 @@ const emits = defineEmits<{
 	(event: "open"): void
 }>();
 
-const result = ref<Result>();
+const result = ref<EvaluationResult>();
 
 onMounted(async () => {
 	const voteEvaluator = await Container.voteEvaluator();

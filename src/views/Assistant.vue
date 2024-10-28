@@ -129,6 +129,14 @@ function select(i: number) {
 					:step="current"
 					@open="emit('open', 'ballot')"
 					:election="model" />
+				<text-step
+					v-if="isCurrentStep('execute-vote-2')"
+					:step="current" />
+				<link-step
+					v-if="isCurrentStep('input-result-2')"
+					link-title="Zum Eingabe-Tab"
+					:step="current"
+					@open="emit('open', 'vote-input')" />
 			</div>
 		</div>
 	</div>

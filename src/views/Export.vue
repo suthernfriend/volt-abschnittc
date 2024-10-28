@@ -3,13 +3,15 @@ import type { Election } from "@/lib/Types";
 import ResultDisplay from "@/views/ResultDisplay.vue";
 import { BallotGeneratorImpl } from "@/lib/BallotGeneratorImpl";
 import { computed, onMounted, ref } from "vue";
-import { Evaluation, type Result } from "@/lib/Evaluation";
+import { Evaluation } from "@/lib/Evaluation";
 import { downloadFile } from "@/lib/utility";
 import Container from "@/lib/Container";
 
+import type { EvaluationResult } from "@/lib/EvaluationResult";
+
 const model = defineModel<Election>({ required: true });
 
-const result = ref<Result>();
+const result = ref<EvaluationResult>();
 
 onMounted(async () => {
 	const evaluator = await Container.voteEvaluator();

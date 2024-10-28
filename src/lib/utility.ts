@@ -29,7 +29,10 @@ export function randomString(length: number): string {
 }
 
 export function toParagraphs(text: string): string {
-	return text.split("\n").map(p => `<p>${p}</p>`).join("");
+	return text
+		.split("\n")
+		.map((p) => `<p>${p}</p>`)
+		.join("");
 }
 
 export function numberFormat(n: number) {
@@ -237,4 +240,14 @@ export function applyDiff<T>(target: T, source: T, path?: string) {
 			delete target[key];
 		}
 	}
+}
+
+export function requireAll<T>(obj: Partial<T>): Required<T> {
+	for (const key in obj) {
+		if (obj[key] === undefined) {
+			throw new Error(`Missing required key: ${key}`);
+		}
+	}
+
+	return obj as Required<T>;
 }

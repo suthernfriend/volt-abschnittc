@@ -1,12 +1,12 @@
 <script setup lang="ts">
 
 import { type ElectionCandidate, renderCandidateName } from "@/lib/Types";
-import type { ResultEntry } from "@/lib/Evaluation";
 import { numberFormat } from "@/lib/utility";
+import type { EvaluationResultEntry } from "@/lib/EvaluationResult";
 
 const props = defineProps<{
 	title: string;
-	result: ResultEntry[];
+	result: EvaluationResultEntry[];
 	candidates: ElectionCandidate[];
 }>();
 

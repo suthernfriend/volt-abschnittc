@@ -60,6 +60,7 @@ const [election, dataStatus] = remoteReactive<Election>(props.remoteKey, {
 	},
 	candidates: [...testCandidates],
 	runoffs: [],
+	confirmations: [],
 	lots: [],
 	id: v4()
 });

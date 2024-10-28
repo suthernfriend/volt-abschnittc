@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { Evaluation, type ListCompleteResult, type Result } from "@/lib/Evaluation";
+import { Evaluation } from "@/lib/Evaluation";
 import { type ElectionCandidate, type Election, renderCandidateName } from "@/lib/Types";
 import { numberFormat } from "../lib/utility";
+import type { EvaluationListCompleteResult, EvaluationResult } from "@/lib/EvaluationResult";
 
 const model = defineModel<Election>({ required: true });
 
 const props = defineProps<{
-	result: Result;
+	result: EvaluationResult;
 }>();
 
 function candidateById(id: string): ElectionCandidate {
@@ -63,10 +64,10 @@ const showFinal = computed(() => {
 	<div class="columns" v-if="result.type != 'need-lot'">
 		<div class="column">
 			<div class="box">
-				<h4 class="title is-5">Zweiter Wahlgang benötigt</h4>
+				<h4 class="title is-5">Weiterer Wahlgang benötigt</h4>
 				<p class="content">
 					Zwischen
-					<strong>{{ candidateNameById(result.runoff.female) }}</strong>
+					<strong>{{ candidateNameById(result.runoff.) }}</strong>
 					und
 					<strong>{{ candidateNameById(result.runoff.male) }}</strong>
 					muss ein zweiter Wahlgang für den Spitzenplatz der Liste stattfinden.
@@ -102,7 +103,7 @@ const showFinal = computed(() => {
 					</tr>
 					</thead>
 					<tbody>
-					<tr v-for="x in (result as ListCompleteResult).list">
+					<tr v-for="x in (result as EvaluationListCompleteResult).list">
 						<td>{{ x.position }}</td>
 						<td>{{ candidateNameById(x.candidateId) }}</td>
 						<td>{{ candidateById(x.candidateId).minSpot }}</td>

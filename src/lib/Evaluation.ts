@@ -5,7 +5,7 @@ import {
 	type ElectionRunoffResults,
 	invertGender,
 	renderCandidateName,
-	type Vote
+	type Vote,
 } from "@/lib/Types";
 import type {
 	EvaluationMessage,
@@ -14,121 +14,24 @@ import type {
 	EvaluationMessagePreliminaryListMessage,
 	EvaluationMessagePreliminaryListSpotDuoTieBreaker,
 	EvaluationMessageRunoffCandidate,
-	EvaluationMessageTroublemakersCandidate
+	EvaluationMessageTroublemakersCandidate,
 } from "@/lib/EvaluationMessage";
-import { arraySameContents, deepCopy, equalsWithEpsilon } from "@/lib/utility";
+import { arraySameContents, equalsWithEpsilon, requireAll } from "@/lib/utility";
 
-export interface ResultEntry {
-	candidateId: string;
-	score: number;
-	shift: number;
-	position: number;
-}
-
-export interface NeedRunoffResult {
-	type: "need-runoff";
-	preliminaryLists: {
-		male: ResultEntry[];
-		female: ResultEntry[];
-	};
-	runoff: {
-		male: string;
-		female: string;
-	};
-}
-
-export interface NeedLotResult {
-	type: "need-lot";
-	details: Required<NeedLotDetails>;
-}
-
-export interface NeedConfirmationResult {
-	type: "need-confirmation";
-	confirmationRequiredFor: {
-		candidate: string;
-		position: number;
-	};
-	list: ResultEntry[];
-	preliminaryLists: NeedRunoffResult["preliminaryLists"];
-	runoff: NeedRunoffResult["runoff"];
-}
-
-export interface ListCompleteResult {
-	type: "list-complete";
-	list: ResultEntry[];
-	preliminaryLists: NeedRunoffResult["preliminaryLists"];
-	runoff: NeedRunoffResult["runoff"];
-	messages: EvaluationMessage[];
-}
-
-export type Result = ListCompleteResult | NeedConfirmationResult | NeedLotResult | NeedRunoffResult;
+import type { EvaluationConfirmation, EvaluationResult, EvaluationResultEntry, EvaluationRunoffCandidates } from "@/lib/EvaluationResult";
+import { attemptAndCatchLotException, EvaluationNeedLotException } from "@/lib/EvaluationNeedLotException";
+import { attemptAndCatchNeedConfirmationException, EvaluationNeedConfirmationException } from "@/lib/EvaluationNeedConfirmationException";
 
 export interface EvaluationOptions {
 	candidates: ElectionCandidate[];
 	votes: Vote[];
 	lotResults: ElectionLotResult[];
 	runoffs: ElectionRunoffResults[];
-}
-
-export interface NeedLotDetailsAllVotesEqual {
-	type: "all-votes-equal";
-	candidates: string[];
-	list?: ElectionGender;
-	position?: number;
-	score?: number;
-}
-
-export type NeedLotDetails = NeedLotDetailsAllVotesEqual;
-
-export class NeedLotException extends Error {
-	constructor(public details: NeedLotDetails) {
-		super("Need lot");
-	}
-
-	withList(list: ElectionGender): NeedLotException {
-		return new NeedLotException({
-			...this.details,
-			list
-		});
-	}
-
-	withPosition(position: number): NeedLotException {
-		return new NeedLotException({
-			...this.details,
-			position
-		});
-	}
-
-	withScore(score: number): NeedLotException {
-		return new NeedLotException({
-			...this.details,
-			score
-		});
-	}
-}
-
-function attemptAndCatchLotException<T>(fn: () => T, opts: Partial<NeedLotDetailsAllVotesEqual>): T {
-	try {
-		return fn();
-	} catch (e) {
-		if (e instanceof NeedLotException) {
-			const details = deepCopy(e.details);
-			if (opts.position)
-				details.position = opts.position;
-			if (opts.score)
-				details.score = opts.score;
-			if (opts.list)
-				details.list = opts.list;
-			throw new NeedLotException(details);
-		} else {
-			throw e;
-		}
-	}
+	confirmations: EvaluationConfirmation[];
 }
 
 export class Evaluation {
-	constructor(private options: EvaluationOptions) {
-	}
+	constructor(private options: EvaluationOptions) {}
 
 	nullCountForCandidate(candidate: string, votes: Vote[]): number {
 		let i = 0;
@@ -175,8 +78,7 @@ export class Evaluation {
 
 		const voteCount = this.voteCountForCandidate(candidate, votes);
 
-		if (voteCount === 0)
-			throw new Error(`Vote count for candidate ${this.candidateNameById(candidate)} (${candidate}) is zero`);
+		if (voteCount === 0) throw new Error(`Vote count for candidate ${this.candidateNameById(candidate)} (${candidate}) is zero`);
 
 		return sum / voteCount;
 	}
@@ -208,34 +110,26 @@ export class Evaluation {
 	}
 
 	public runoffResult(): ElectionRunoffResults | undefined {
-		if (this.options.runoffs.length == 0)
-			return undefined;
+		if (this.options.runoffs.length == 0) return undefined;
 
 		return this.options.runoffs[this.options.runoffs.length - 1];
 	}
 
-	public evaluate(): Result {
+	public evaluate(): EvaluationResult {
 		try {
 			return this.evaluateUnsafe();
 		} catch (e) {
-			if (e instanceof NeedLotException) {
-				return {
-					type: "need-lot",
-					details: {
-						type: "all-votes-equal",
-						candidates: e.details.candidates!,
-						position: e.details.position!,
-						score: e.details.score!,
-						list: e.details.list!
-					}
-				};
+			if (e instanceof EvaluationNeedLotException) {
+				return requireAll(e.details);
+			} else if (e instanceof EvaluationNeedConfirmationException) {
+				return requireAll(e.details);
 			} else {
 				throw e;
 			}
 		}
 	}
 
-	public evaluateUnsafe(): Result {
+	public evaluateUnsafe(): EvaluationResult {
 		const messages: EvaluationMessage[] = [];
 
 		if (this.options.votes.length === 0) {
@@ -255,7 +149,7 @@ export class Evaluation {
 			type: "vote-count",
 			count: votes.length,
 			male: votes.filter((value) => value.list === "male").length,
-			female: votes.filter((value) => value.list === "female").length
+			female: votes.filter((value) => value.list === "female").length,
 		});
 
 		// 1. filter candidate
@@ -277,7 +171,7 @@ export class Evaluation {
 				candidateId: candidate.id,
 				nullVotes: nullCount,
 				nonNullVotes: voteCount,
-				passed: nullCount < voteCount
+				passed: nullCount < voteCount,
 			});
 		}
 
@@ -287,62 +181,66 @@ export class Evaluation {
 		const male = Evaluation.filterCandidatesByList(passed241, "male");
 		const female = Evaluation.filterCandidatesByList(passed241, "female");
 
-		const maleList: ResultEntry[] = [], femaleList: ResultEntry[] = [];
+		const maleList: EvaluationResultEntry[] = [],
+			femaleList: EvaluationResultEntry[] = [];
 
-		const {
-			result: mResult,
-			messages: maleMessages
-		} = attemptAndCatchLotException(() => this.preliminaryList(
-			male.map((value) => value.id),
-			votes.filter((value) => value.list === "male")
-		), {
-			list: "male"
-		});
+		const { result: mResult, messages: maleMessages } = attemptAndCatchLotException(
+			() =>
+				this.preliminaryList(
+					male.map((value) => value.id),
+					votes.filter((value) => value.list === "male"),
+				),
+			{
+				list: "male",
+			},
+		);
 		maleList.push(...mResult);
 
 		messages.push({
 			type: "preliminary-list",
 			messages: maleMessages,
-			list: "male"
+			list: "male",
 		});
 
-		const {
-			result: fResult,
-			messages: femaleMessages
-		} = attemptAndCatchLotException(() => this.preliminaryList(
-			female.map((value) => value.id),
-			votes.filter((value) => value.list === "female")
-		), {
-			list: "female"
-		});
+		const { result: fResult, messages: femaleMessages } = attemptAndCatchLotException(
+			() =>
+				this.preliminaryList(
+					female.map((value) => value.id),
+					votes.filter((value) => value.list === "female"),
+				),
+			{
+				list: "female",
+			},
+		);
 		femaleList.push(...fResult);
 
 		messages.push({
 			type: "preliminary-list",
 			messages: femaleMessages,
-			list: "female"
+			list: "female",
 		});
 
-		const {
-			candidate: maleRunoffCandidate,
-			message: maleRunoffMessage
-		} = Evaluation.getRunoffCandidate(
+		const { candidate: maleRunoffCandidate, message: maleRunoffMessage } = Evaluation.getRunoffCandidate(
 			maleList,
-			this.options.candidates
+			this.options.candidates,
 		);
 
-		const {
-			candidate: femaleRunoffCandidate,
-			message: femaleRunoffMessage
-		} = Evaluation.getRunoffCandidate(
+		const { candidate: femaleRunoffCandidate, message: femaleRunoffMessage } = Evaluation.getRunoffCandidate(
 			femaleList,
-			this.options.candidates
+			this.options.candidates,
 		);
+
+		const runoffCandidates: EvaluationRunoffCandidates = [
+			{
+				female: femaleRunoffCandidate,
+				male: maleRunoffCandidate,
+			},
+		];
 
 		messages.push({
 			type: "runoff-candidates",
 			maleCandidate: maleRunoffMessage,
-			femaleCandidate: femaleRunoffMessage
+			femaleCandidate: femaleRunoffMessage,
 		});
 
 		if (maleList.length > 0 && femaleList.length > 0 && !this.hasRunoffWinner()) {
@@ -350,10 +248,7 @@ export class Evaluation {
 			return {
 				type: "need-runoff",
 				preliminaryLists: { male: maleList, female: femaleList },
-				runoff: {
-					male: maleRunoffCandidate,
-					female: femaleRunoffCandidate
-				}
+				runoff: runoffCandidates,
 			};
 		} else if (maleList.length === 0) {
 			// only female list
@@ -376,46 +271,76 @@ export class Evaluation {
 				type: "runoff",
 				maleCandidateId: maleRunoffCandidate,
 				femaleCandidateId: femaleRunoffCandidate,
-				runoffs: this.options.runoffs
+				runoffs: this.options.runoffs,
 			});
 
-			const {
-				result: dl,
-				message
-			} = Evaluation.evaluateDoubleList(winnerListGender, winnerList, loserList, this.options.candidates);
+			const { result: dl, message } = attemptAndCatchNeedConfirmationException(
+				() => {
+					return this.evaluateDoubleList(winnerListGender, winnerList, loserList, this.options.candidates);
+				},
+				{
+					runoff: [
+						{
+							male: maleRunoffCandidate,
+							female: femaleRunoffCandidate,
+						},
+					],
+					preliminaryLists: { male: maleList, female: femaleList },
+				},
+			);
 
 			messages.push(message);
 
 			return {
 				type: "list-complete",
-				list: dl,
+				finalList: dl,
 				preliminaryLists: { male: maleList, female: femaleList },
-				runoff: { male: maleRunoffCandidate, female: femaleRunoffCandidate },
-				messages
+				runoff: runoffCandidates,
+				messages,
 			};
 		} else {
 			throw new Error("Not implemented");
 		}
 	}
 
-	static evaluateDoubleList(
+	hasConfirmedSpot(candidateId: string): boolean {
+		const confirmation = this.options.confirmations.find((value) => value.candidate === candidateId);
+
+		if (confirmation === undefined) {
+			return false;
+		} else {
+			return confirmation.accepted;
+		}
+	}
+
+	hasNotRejected(candidateId: string): boolean {
+		const confirmation = this.options.confirmations.find((value) => value.candidate === candidateId);
+
+		if (confirmation === undefined || confirmation.accepted) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	evaluateDoubleList(
 		runoffWinner: ElectionGender,
-		runoffWinnerList: ResultEntry[],
-		runoffLoserList: ResultEntry[],
-		candidates: ElectionCandidate[]
+		runoffWinnerList: EvaluationResultEntry[],
+		runoffLoserList: EvaluationResultEntry[],
+		candidates: ElectionCandidate[],
 	): {
-		result: ResultEntry[];
+		result: EvaluationResultEntry[];
 		message: EvaluationMessageCombined;
 	} {
 		const messages: EvaluationMessageCombinedPosition[] = [];
-		const result: ResultEntry[] = [];
+		const result: EvaluationResultEntry[] = [];
 		const haveSpot: string[] = [];
 
 		let previous = "none";
 		let current: ElectionGender = runoffWinner;
 
 		while (haveSpot.length < candidates.length) {
-			let nextList: ResultEntry[];
+			let nextList: EvaluationResultEntry[];
 
 			if (previous === "winner") {
 				nextList = runoffLoserList;
@@ -427,7 +352,9 @@ export class Evaluation {
 				current = runoffWinner;
 			}
 
-			let nextPossible = nextList.filter((value) => !haveSpot.includes(value.candidateId));
+			let nextPossible = nextList
+				.filter((value) => !haveSpot.includes(value.candidateId))
+				.filter((value) => this.hasNotRejected(value.candidateId));
 
 			if (nextPossible.length === 0) {
 				if (previous === "winner") {
@@ -444,21 +371,30 @@ export class Evaluation {
 			for (const entry of nextPossible) {
 				const minSpot = candidates.find((value) => value.id === entry.candidateId)!.minSpot;
 
-				if (minSpot <= haveSpot.length + 1) {
+				let nextSpot = haveSpot.length + 1;
+				if (minSpot <= nextSpot) {
+					if (!this.hasConfirmedSpot(entry.candidateId)) {
+						throw new EvaluationNeedConfirmationException({
+							candidate: entry.candidateId,
+							position: nextSpot,
+							partialList: result,
+						});
+					}
+
 					haveSpot.push(entry.candidateId);
 					result.push({
 						candidateId: entry.candidateId,
 						score: entry.score,
 						shift: entry.shift,
-						position: haveSpot.length + 1
+						position: nextSpot,
 					});
 					messages.push({
-						position: haveSpot.length + 1,
+						position: nextSpot,
 						candidateId: entry.candidateId,
 						score: entry.score,
 						shift: entry.shift,
 						skippedCandidatesBecauseMinSpot: notConsidered,
-						preliminaryList: current
+						preliminaryList: current,
 					});
 					break;
 				}
@@ -471,18 +407,18 @@ export class Evaluation {
 			result,
 			message: {
 				type: "combined",
-				positions: messages
-			}
+				positions: messages,
+			},
 		};
 	}
 
-	static evaluateSingleList(list: ResultEntry[], candidates: ElectionCandidate[]): ResultEntry[] {
+	static evaluateSingleList(list: EvaluationResultEntry[], candidates: ElectionCandidate[]): EvaluationResultEntry[] {
 		throw new Error("Not implemented");
 	}
 
 	static getRunoffCandidate(
-		list: ResultEntry[],
-		candidates: ElectionCandidate[]
+		list: EvaluationResultEntry[],
+		candidates: ElectionCandidate[],
 	): {
 		candidate: string;
 		message: EvaluationMessageRunoffCandidate;
@@ -501,8 +437,8 @@ export class Evaluation {
 						candidate: id,
 						message: {
 							candidateId: id,
-							skippedCandidatesBecauseMinSpot: considered
-						}
+							skippedCandidatesBecauseMinSpot: considered,
+						},
 					};
 				else considered.push(id);
 			}
@@ -515,21 +451,20 @@ export class Evaluation {
 
 	preliminaryList(
 		candidates: string[],
-		votes: Vote[]
+		votes: Vote[],
 	): {
-		result: ResultEntry[];
+		result: EvaluationResultEntry[];
 		messages: EvaluationMessagePreliminaryListMessage[];
 	} {
 		const messages: EvaluationMessagePreliminaryListMessage[] = [];
 
-		const result: ResultEntry[] = [];
+		const result: EvaluationResultEntry[] = [];
 		let next = 1;
 		const shift: { [candidateId: string]: number } = {};
 
 		for (const candidateId of candidates) shift[candidateId] = 0;
 
 		while (result.length < candidates.length) {
-
 			console.log(`Now determining position ${next} of ${candidates.length}`);
 
 			const toConsiderForNext = candidates
@@ -542,7 +477,7 @@ export class Evaluation {
 			let twoHighest: string | [string, string] | undefined = undefined;
 
 			twoHighest = attemptAndCatchLotException(() => this.getTwoHighest(toConsiderForNext, votes), {
-				position: next
+				position: next,
 			});
 
 			if (twoHighest === undefined) {
@@ -556,18 +491,20 @@ export class Evaluation {
 					candidateId: twoHighest,
 					score: score,
 					shift: theShift,
-					position: next
+					position: next,
 				});
 				messages.push({
 					type: "preliminary-list-spot-single",
 					position: next,
 					score: score,
 					candidateId: twoHighest,
-					shift: theShift
+					shift: theShift,
 				});
 			} else {
 				console.log(`Two highest: ${twoHighest.length}`);
-				console.log(`Need direct comparison between: ${this.candidateNameById(twoHighest[0])} and ${this.candidateNameById(twoHighest[1])}.`);
+				console.log(
+					`Need direct comparison between: ${this.candidateNameById(twoHighest[0])} and ${this.candidateNameById(twoHighest[1])}.`,
+				);
 
 				const dcr = this.directComparison(twoHighest[0], twoHighest[1], votes);
 
@@ -581,14 +518,16 @@ export class Evaluation {
 				const winnerScore = this.averageForCandidate(theHigher, votes);
 				const loserScore = this.averageForCandidate(theLower, votes);
 
-				console.log(`Direct comparison won by ${this.candidateNameById(theHigher)} (${winnerBallots} vs ${this.candidateNameById(theLower)}: ${loserBallots})`);
+				console.log(
+					`Direct comparison won by ${this.candidateNameById(theHigher)} (${winnerBallots} vs ${this.candidateNameById(theLower)}: ${loserBallots})`,
+				);
 
 				const winnerShift = -shift[theHigher];
 				result.push({
 					candidateId: theHigher,
 					score: winnerScore,
 					shift: winnerShift,
-					position: next
+					position: next,
 				});
 
 				// only increase shift if the lower one is the one that has the higher rating
@@ -606,14 +545,14 @@ export class Evaluation {
 						score: winnerScore,
 						candidateId: theHigher,
 						shift: winnerShift,
-						directComparisonBallots: winnerBallots
+						directComparisonBallots: winnerBallots,
 					},
 					loser: {
 						score: loserScore,
 						candidateId: theLower,
 						shift: loserShiftNow,
-						directComparisonBallots: loserBallots
-					}
+						directComparisonBallots: loserBallots,
+					},
 				});
 			}
 
@@ -622,7 +561,7 @@ export class Evaluation {
 
 		return {
 			result,
-			messages
+			messages,
 		};
 	}
 
@@ -637,7 +576,7 @@ export class Evaluation {
 	directComparison(
 		candidateA: string,
 		candidateB: string,
-		votes: Vote[]
+		votes: Vote[],
 	): {
 		a: number;
 		b: number;
@@ -646,7 +585,6 @@ export class Evaluation {
 		messages: EvaluationMessagePreliminaryListSpotDuoTieBreaker[];
 		winner: string;
 	} {
-
 		const nameA = this.candidateNameById(candidateA);
 		const nameB = this.candidateNameById(candidateB);
 
@@ -686,9 +624,8 @@ export class Evaluation {
 				messages: obj.messages,
 				b,
 				excluded,
-				a
+				a,
 			};
-
 		} else if (a > b) {
 			return { a, b, equal, messages: [], excluded, winner: candidateA };
 		} else {
@@ -702,15 +639,14 @@ export class Evaluation {
 
 	highestRankedCandidateByPointCounts(
 		candidates: string[],
-		votes: Vote[]
+		votes: Vote[],
 	): {
 		candidates: string[];
 		messages: EvaluationMessagePreliminaryListSpotDuoTieBreaker[];
 	} {
 		const messages: EvaluationMessagePreliminaryListSpotDuoTieBreaker[] = [];
 
-		console.log(`Trying to determine highest point count for candidates: ${
-			this.candidateNamesByIds(candidates).join(", ")}`);
+		console.log(`Trying to determine highest point count for candidates: ${this.candidateNamesByIds(candidates).join(", ")}`);
 
 		let leftInComparison = [...candidates];
 		let i = 10;
@@ -725,14 +661,14 @@ export class Evaluation {
 
 		return {
 			candidates: leftInComparison,
-			messages
+			messages,
 		};
 	}
 
 	highestRankedCandidatesByPointCount(
 		count: number,
 		candidates: string[],
-		votes: Vote[]
+		votes: Vote[],
 	): { candidates: string[]; message: EvaluationMessagePreliminaryListSpotDuoTieBreaker } {
 		const nCount: { [candidateId: string]: number } = {};
 
@@ -763,27 +699,23 @@ export class Evaluation {
 			candidates: out,
 			message: {
 				points: count,
-				counts: nCount
-			}
+				counts: nCount,
+			},
 		};
 	}
 
 	getLotWinnerOrThrow(candidates: string[]): string {
 		for (const lr of this.options.lotResults) {
-			if (lr.winner && arraySameContents(lr.candidates, candidates))
-				return lr.winner;
+			if (lr.winner && arraySameContents(lr.candidates, candidates)) return lr.winner;
 		}
 
-		throw new NeedLotException({
-			type: "all-votes-equal",
-			candidates: candidates
+		throw new EvaluationNeedLotException({
+			candidates: candidates,
 		});
 	}
 
 	getTwoHighest(candidates: string[], votes: Vote[]): [string, string] | string {
-
-		if (candidates.length === 0)
-			throw new Error("No candidates to compare");
+		if (candidates.length === 0) throw new Error("No candidates to compare");
 
 		// first
 		const first = this.getHighestAverage(candidates, votes);
@@ -813,12 +745,10 @@ export class Evaluation {
 
 			console.log(`${highest.length} candidates have the same points. Need lot`);
 			const lotFirst = this.getLotWinnerOrThrow(highest);
-			const lotSecond = this.getLotWinnerOrThrow(highest.filter(v => v !== lotFirst));
+			const lotSecond = this.getLotWinnerOrThrow(highest.filter((v) => v !== lotFirst));
 
 			return [lotFirst, lotSecond];
-
 		} else if (first.length === 1) {
-
 			// we have 1 guy with the highest average
 			const withoutHighest = candidates.filter((value) => value !== first[0]);
 
@@ -827,16 +757,17 @@ export class Evaluation {
 
 			if (secondHighestByAverage.length === 1) return [first[0], secondHighestByAverage[0]];
 
-			console.log(`For the second spot ${secondHighestByAverage.length} candidates have the same average. `
-				+ `Determining second spot by point counts. (${this.candidateNamesByIds(secondHighestByAverage).join(", ")})`);
+			console.log(
+				`For the second spot ${secondHighestByAverage.length} candidates have the same average. ` +
+					`Determining second spot by point counts. (${this.candidateNamesByIds(secondHighestByAverage).join(", ")})`,
+			);
 
 			const obj2 = this.highestRankedCandidateByPointCounts(secondHighestByAverage, votes);
 
 			const secondHighest = obj2.candidates;
 			// TODO: do not ignore messages
 
-			if (secondHighest.length === 1)
-				return [first[0], secondHighest[0]];
+			if (secondHighest.length === 1) return [first[0], secondHighest[0]];
 
 			// need lot
 			const winner = this.getLotWinnerOrThrow(secondHighest);
@@ -868,5 +799,4 @@ export class Evaluation {
 		for (const k in averages) if (equalsWithEpsilon(averages[k], highest, 1e-7)) out.push(k);
 		return out;
 	}
-
 }

@@ -3,16 +3,17 @@
 import ResultTable from "@/components/ResultTable.vue";
 import { type Election, ElectionGenders, electionGenderString, type ElectionLotResult } from "@/lib/Types";
 import { computed, onMounted, ref } from "vue";
-import type { Result } from "@/lib/Evaluation";
 import Container from "@/lib/Container";
 import LotInterface from "@/components/LotInterface.vue";
 import { arraySameContents } from "@/lib/utility";
+
+import type { EvaluationResult } from "@/lib/EvaluationResult";
 
 const model = defineModel<Election>({
 	required: true
 });
 
-const result = ref<Result>();
+const result = ref<EvaluationResult>();
 
 onMounted(async () => {
 	await reevaluate();
@@ -42,14 +43,14 @@ function createLotInterfaces() {
 	if (result.value?.type === "need-lot") {
 		// check if we need to add a new lot
 		for (const lot of previous) {
-			if (arraySameContents(lot.candidates, result.value.details.candidates))
+			if (arraySameContents(lot.candidates, result.value.candidates))
 				return previous;
 		}
 
 		return [...previous, {
 			winner: undefined,
 			candidates: [
-				...result.value.details.candidates
+				...result.value.candidates
 			]
 		}];
 	} else {

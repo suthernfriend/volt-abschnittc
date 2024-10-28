@@ -4,8 +4,10 @@ import { toParagraphs } from "@/lib/utility";
 import type { AssistantProviderStep } from "@/lib/AssistantProvider";
 import { type Election, renderCandidateName } from "@/lib/Types";
 import { computed, onMounted, ref } from "vue";
-import type { Result } from "@/lib/Evaluation";
 import Container from "@/lib/Container";
+
+import type { EvaluationResult } from "@/lib/EvaluationResult";
+import { runoffCandidateNames, voteEvaluator } from "@/lib/VoteEvaluator";
 
 const props = defineProps<{
 	step: AssistantProviderStep;
@@ -16,34 +18,15 @@ const emits = defineEmits<{
 	(event: "open"): void
 }>();
 
-const result = ref<Result>();
-
-onMounted(async () => {
-	const voteEvaluator = await Container.voteEvaluator();
-	result.value = voteEvaluator.evaluate(props.election);
-
-	console.log(result.value);
-});
-
-const twoCandidates = computed(() => {
-	if (result.value?.type !== "need-runoff")
-		return [];
-
-	const candidates = [
-		result.value.runoff.male,
-		result.value.runoff.female
-	].map(candidate => props.election.candidates.find(c => c.id === candidate)!)
-		.map(value => renderCandidateName(value));
-
-	return candidates.join(" und ");
-});
+const result = voteEvaluator(props.election);
+const twoCandidates = computed(() => runoffCandidateNames(props.election, result.value));
 
 </script>
 
 <template>
 	<div class="content" v-html="toParagraphs(props.step.explanation())" />
 	<div class="block">
-		Die Bewerber für den zweiten Wahlgang sind: {{ twoCandidates }}
+		Die Bewerber für den zweiten Wahlgang sind: {{ twoCandidates.join(" und ") }}
 	</div>
 	<div class="buttons">
 		<button class="button is-primary" @click="emits('open')">

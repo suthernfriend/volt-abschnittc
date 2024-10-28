@@ -1,5 +1,5 @@
-import type { ElectionCandidate, ElectionBallotIds } from "@/lib/Types";
-import type { ListCompleteResult, NeedRunoffResult } from "@/lib/Evaluation";
+import type { ElectionBallotIds, ElectionCandidate } from "@/lib/Types";
+import type { EvaluationResultListComplete } from "@/lib/EvaluationResult";
 
 export type PageSizeNames = "A4_2" | "A4" | "2_A4" | "A3_2" | "A3_3";
 
@@ -26,7 +26,7 @@ export interface ResultComplete {
 	electionName: string;
 	assemblyName: string;
 	candidates: ElectionCandidate[];
-	result: ListCompleteResult;
+	result: EvaluationResultListComplete;
 	uniqueIds: ElectionBallotIds;
 }
 
